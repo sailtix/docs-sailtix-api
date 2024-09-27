@@ -1,0 +1,55 @@
+openapi: 3.0.3
+info:
+  title: SailTix REST API
+  description: API documentation for SailTix backend services.
+  version: 1.0.0
+servers:
+  - url: https://sailtix.rest/api/v1
+    description: Production server
+paths:
+  /users:
+    get:
+      summary: Retrieve a list of users
+      responses:
+        '200':
+          description: A JSON array of user objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /users/{id}:
+    get:
+      summary: Retrieve a single user by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The user ID
+      responses:
+        '200':
+          description: A user object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+      required:
+        - id
+        - name
+        - email
