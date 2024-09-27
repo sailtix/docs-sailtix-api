@@ -1,15 +1,18 @@
 openapi: 3.0.3
 info:
   title: SailTix REST API
-  description: API documentation for SailTix backend services.
+  description: Comprehensive API documentation for SailTix backend services.
   version: 1.0.0
 servers:
   - url: https://sailtix.rest/api/v1
     description: Production server
+  - url: http://localhost:3000/api/v1
+    description: Development server
 paths:
   /users:
     get:
       summary: Retrieve a list of users
+      description: Returns a list of all registered users.
       responses:
         '200':
           description: A JSON array of user objects
@@ -19,16 +22,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        '500':
+          description: Server error
   /users/{id}:
     get:
       summary: Retrieve a single user by ID
+      description: Returns a user object based on the provided ID.
       parameters:
         - in: path
           name: id
           required: true
           schema:
             type: string
-          description: The user ID
+          description: The unique identifier of the user
       responses:
         '200':
           description: A user object
@@ -38,6 +44,61 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: User not found
+        '500':
+          description: Server error
+    put:
+      summary: Update a user by ID
+      description: Updates the details of an existing user.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+        '404':
+          description: User not found
+        '500':
+          description: Server error
+  /auth/login:
+    post:
+      summary: User login
+      description: Authenticates a user and returns a JWT token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Unauthorized
+        '500':
+          description: Server error
 components:
   schemas:
     User:
@@ -45,11 +106,46 @@ components:
       properties:
         id:
           type: string
+          description: Unique identifier for the user
         name:
           type: string
+          description: Full name of the user
         email:
           type: string
+          description: Email address of the user
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the user was created
       required:
         - id
         - name
         - email
+    UserInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Full name of the user
+        email:
+          type: string
+          description: Email address of the user
+        password:
+          type: string
+          description: Password for the user account
+      required:
+        - name
+        - email
+        - password
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Registered email address
+        password:
+          type: string
+          description: Password for the account
+      required:
+        - email
+        - password
