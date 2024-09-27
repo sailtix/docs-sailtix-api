@@ -1,61 +1,110 @@
 openapi: 3.0.3
 info:
   title: SailTix REST API
-  description: Comprehensive API documentation for SailTix backend services.
+  description: >
+    Comprehensive API documentation for SailTix backend services, enabling seamless integration and utilization.
   version: 1.0.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
 servers:
-  - url: https://sailtix.rest/api/v1
-    description: Production server
-  - url: http://localhost:3000/api/v1
-    description: Development server
+  - url: https://api.sailtix.com/v1
+    description: Production server - Stable API for all end-users.
+security:
+  - BearerAuth: []
 paths:
-  /users:
+  /hello:
     get:
-      summary: Retrieve a list of users
-      description: Returns a list of all registered users.
+      summary: Say Hello
+      description: >
+        Returns a friendly greeting message to confirm API connectivity and functionality.
+      operationId: sayHello
       responses:
         '200':
-          description: A JSON array of user objects
+          description: Successful response with a greeting message.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Hello, World!"
+        '400':
+          description: Bad Request due to invalid parameters.
+  /users:
+    get:
+      summary: Retrieve Users
+      description: >
+        Returns a comprehensive list of all registered users in the system, including their details.
+      operationId: getUsers
+      responses:
+        '200':
+          description: A list of user objects successfully retrieved.
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-        '500':
-          description: Server error
-  /users/{id}:
-    get:
-      summary: Retrieve a single user by ID
-      description: Returns a user object based on the provided ID.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: The unique identifier of the user
+        '400':
+          description: Bad Request due to invalid query parameters.
+    post:
+      summary: Create User
+      description: >
+        Creates a new user account with the provided user details, ensuring all required fields are valid.
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
       responses:
-        '200':
-          description: A user object
+        '201':
+          description: User created successfully with the provided details.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '404':
-          description: User not found
-        '500':
-          description: Server error
-    put:
-      summary: Update a user by ID
-      description: Updates the details of an existing user.
+        '400':
+          description: Bad Request due to invalid input data.
+  /users/{id}:
+    get:
+      summary: Get User by ID
+      description: >
+        Retrieves detailed information of a user based on their unique identifier, ensuring the user exists.
+      operationId: getUserById
       parameters:
         - in: path
           name: id
           required: true
           schema:
             type: string
-          description: The unique identifier of the user
+          description: The unique identifier of the user to retrieve.
+      responses:
+        '200':
+          description: A user object successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request due to invalid user ID format.
+        '404':
+          description: User not found with the provided ID.
+    put:
+      summary: Update User
+      description: >
+        Updates the details of an existing user with the provided information, ensuring data integrity.
+      operationId: updateUser
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the user to update.
       requestBody:
         required: true
         content:
@@ -64,59 +113,38 @@ paths:
               $ref: '#/components/schemas/UserInput'
       responses:
         '200':
-          description: User updated successfully
+          description: User updated successfully with the new details.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '400':
-          description: Invalid input
+          description: Bad Request due to invalid input data.
         '404':
-          description: User not found
-        '500':
-          description: Server error
-  /auth/login:
-    post:
-      summary: User login
-      description: Authenticates a user and returns a JWT token.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginInput'
-      responses:
-        '200':
-          description: Authentication successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-        '401':
-          description: Unauthorized
-        '500':
-          description: Server error
+          description: User not found with the provided ID.
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     User:
       type: object
       properties:
         id:
           type: string
-          description: Unique identifier for the user
+          description: Unique identifier for the user.
         name:
           type: string
-          description: Full name of the user
+          description: Full name of the user.
         email:
           type: string
-          description: Email address of the user
+          description: Email address of the user.
         createdAt:
           type: string
           format: date-time
-          description: Timestamp when the user was created
+          description: Timestamp when the user was created.
       required:
         - id
         - name
@@ -126,13 +154,13 @@ components:
       properties:
         name:
           type: string
-          description: Full name of the user
+          description: Full name of the user.
         email:
           type: string
-          description: Email address of the user
+          description: Email address of the user.
         password:
           type: string
-          description: Password for the user account
+          description: Password for the user account.
       required:
         - name
         - email
@@ -142,10 +170,10 @@ components:
       properties:
         email:
           type: string
-          description: Registered email address
+          description: Registered email address.
         password:
           type: string
-          description: Password for the account
+          description: Password for the account.
       required:
         - email
         - password
