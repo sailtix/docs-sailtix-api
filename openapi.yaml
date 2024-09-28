@@ -1,179 +1,1681 @@
-openapi: 3.0.3
+basePath: /
+definitions:
+  AuthEmailLoginRequest:
+    properties:
+      email:
+        maxLength: 100
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  AuthTokenResponse:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        type: string
+      access_token_expired_at:
+        example: "2006-01-02T03:04:05+07:00"
+        format: YYYY-MM-DDThh:mm:ssZ
+        type: string
+      token_type:
+        example: Bearer
+        type: string
+    type: object
+  CompanyCreateRequest:
+    properties:
+      address:
+        type: string
+      branch_name:
+        maxLength: 255
+        type: string
+      child_age_policy:
+        type: string
+      description:
+        type: string
+      infant_policy:
+        type: string
+      is_active:
+        type: boolean
+      legal_name:
+        maxLength: 255
+        type: string
+      logo:
+        type: string
+      phone:
+        type: string
+      photo:
+        type: string
+      refund_policy:
+        type: string
+      reschedule_policy:
+        type: string
+      type:
+        $ref: '#/definitions/CompanyTypeEnum'
+      user_email:
+        maxLength: 100
+        type: string
+      user_name:
+        maxLength: 255
+        type: string
+      user_password:
+        type: string
+      user_person_in_charge:
+        maxLength: 100
+        type: string
+    required:
+    - address
+    - branch_name
+    - child_age_policy
+    - description
+    - infant_policy
+    - legal_name
+    - logo
+    - phone
+    - photo
+    - refund_policy
+    - reschedule_policy
+    - type
+    - user_email
+    - user_name
+    - user_password
+    - user_person_in_charge
+    type: object
+  CompanyFetchRequest:
+    properties:
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - branch_name
+              - legal_name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+      type:
+        allOf:
+        - $ref: '#/definitions/CompanyTypeEnum'
+        x-nullable: true
+    type: object
+  CompanyPublicResponse:
+    properties:
+      address:
+        example: Address
+        type: string
+      branch_name:
+        example: Ekajaya
+        type: string
+      child_age_policy:
+        example: Policy
+        type: string
+      description:
+        example: Desc
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      infant_policy:
+        example: Policy
+        type: string
+      legal_name:
+        example: Ekajaya
+        type: string
+      logo:
+        example: https://link.image.com or base64
+        type: string
+      phone:
+        example: "+6285275758484"
+        type: string
+      photo:
+        example: https://link.image.com or base64
+        type: string
+      refund_policy:
+        example: Policy
+        type: string
+      reschedule_policy:
+        example: Policy
+        type: string
+      type:
+        $ref: '#/definitions/CompanyTypeEnum'
+    type: object
+  CompanyResponse:
+    properties:
+      address:
+        example: Address
+        type: string
+      branch_name:
+        example: Ekajaya
+        type: string
+      child_age_policy:
+        example: Policy
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      created_by_user:
+        allOf:
+        - $ref: '#/definitions/UserPreviewResponse'
+        x-nullable: true
+      description:
+        example: Desc
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      infant_policy:
+        example: Policy
+        type: string
+      legal_name:
+        example: Ekajaya
+        type: string
+      logo:
+        example: https://link.image.com or base64
+        type: string
+      phone:
+        example: "+6285275758484"
+        type: string
+      photo:
+        example: https://link.image.com or base64
+        type: string
+      refund_policy:
+        example: Policy
+        type: string
+      reschedule_policy:
+        example: Policy
+        type: string
+      type:
+        $ref: '#/definitions/CompanyTypeEnum'
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+      updated_by_user:
+        allOf:
+        - $ref: '#/definitions/UserPreviewResponse'
+        x-nullable: true
+    type: object
+  CompanyTypeEnum:
+    enum:
+    - INTERNAL
+    - VENDOR
+    type: string
+  CompanyUpdateRequest:
+    properties:
+      address:
+        type: string
+      branch_name:
+        maxLength: 255
+        type: string
+      child_age_policy:
+        type: string
+      description:
+        type: string
+      infant_policy:
+        type: string
+      is_active:
+        type: boolean
+      legal_name:
+        maxLength: 255
+        type: string
+      logo:
+        type: string
+      phone:
+        type: string
+      photo:
+        type: string
+      refund_policy:
+        type: string
+      reschedule_policy:
+        type: string
+    required:
+    - address
+    - branch_name
+    - child_age_policy
+    - description
+    - infant_policy
+    - legal_name
+    - logo
+    - phone
+    - photo
+    - refund_policy
+    - reschedule_policy
+    type: object
+  CustomerTierNameEnum:
+    enum:
+    - SILVER
+    - GOLD
+    - PLATINUM
+    type: string
+  CustomerTierOptionForCustomerFormRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  CustomerTierResponse:
+    properties:
+      id:
+        example: bbb6c083-52d5-436f-811b-28d27b252fd5
+        type: string
+      is_active:
+        type: boolean
+      name:
+        $ref: '#/definitions/CustomerTierNameEnum'
+    type: object
+  DataResponse:
+    additionalProperties: true
+    type: object
+  DockCreateRequest:
+    properties:
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+    required:
+    - name
+    type: object
+  DockFetchRequest:
+    properties:
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - branch_name
+              - legal_name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  DockOptionForRouteFormRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - branch_name
+              - legal_name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  DockResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      is_active:
+        type: boolean
+      name:
+        example: Pelabuhan A
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  DockUpdateRequest:
+    properties:
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+    required:
+    - name
+    type: object
+  PaginationResponse:
+    properties:
+      limit:
+        example: 10
+        type: integer
+      nodes: {}
+      page:
+        example: 1
+        type: integer
+      total:
+        example: 24
+        type: integer
+    type: object
+  Response:
+    properties:
+      data: {}
+    type: object
+  RoleEnum:
+    enum:
+    - SUPER_ADMIN
+    - ACCOUNTING
+    - FULL_ACCESS
+    - CONTENT_MANAGEMENT
+    - READ_ONLY
+    type: string
+  RoleOptionForUserFormRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  RoleResponse:
+    properties:
+      description:
+        type: string
+        x-nullable: true
+      id:
+        type: string
+      name:
+        $ref: '#/definitions/RoleEnum'
+    type: object
+  RouteCreateRequest:
+    properties:
+      arrival_dock_id:
+        type: string
+      arrival_time:
+        $ref: '#/definitions/data_type.HourTime'
+      departure_dock_id:
+        type: string
+      departure_time:
+        $ref: '#/definitions/data_type.HourTime'
+      is_active:
+        type: boolean
+      vessel_id:
+        type: string
+    required:
+    - arrival_dock_id
+    - departure_dock_id
+    - vessel_id
+    type: object
+  RouteFetchRequest:
+    properties:
+      arrival_dock_id:
+        type: string
+        x-nullable: true
+      departure_dock_id:
+        type: string
+        x-nullable: true
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - branch_name
+              - legal_name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+      vessel_id:
+        type: string
+        x-nullable: true
+    type: object
+  RouteResponse:
+    properties:
+      arrival_dock:
+        allOf:
+        - $ref: '#/definitions/DockResponse'
+        x-nullable: true
+      arrival_dock_id:
+        example: 47199607-eb7c-47fe-b2a9-748ab71a3038
+        type: string
+      arrival_time:
+        $ref: '#/definitions/data_type.HourTime'
+      departure_dock:
+        allOf:
+        - $ref: '#/definitions/DockResponse'
+        x-nullable: true
+      departure_dock_id:
+        example: 899bdba5-678e-4dc0-8059-dab796611361
+        type: string
+      departure_time:
+        $ref: '#/definitions/data_type.HourTime'
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      is_active:
+        type: boolean
+      vessel:
+        allOf:
+        - $ref: '#/definitions/VesselPublicResponse'
+        x-nullable: true
+      vessel_id:
+        example: d0c3f551-ce1b-45b7-aa16-73f9e4506dd8
+        type: string
+    type: object
+  RouteUpdateRequest:
+    properties:
+      arrival_time:
+        $ref: '#/definitions/data_type.HourTime'
+      departure_time:
+        $ref: '#/definitions/data_type.HourTime'
+      is_active:
+        type: boolean
+    type: object
+  SuccessResponse:
+    properties:
+      message:
+        example: OK
+        type: string
+    type: object
+  UserCreateRequest:
+    properties:
+      avatar:
+        type: string
+      company_id:
+        type: string
+      email:
+        maxLength: 100
+        type: string
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+      password:
+        type: string
+      person_in_charge:
+        maxLength: 100
+        type: string
+      role_id:
+        type: string
+    required:
+    - company_id
+    - email
+    - name
+    - password
+    - person_in_charge
+    - role_id
+    type: object
+  UserPreviewResponse:
+    properties:
+      avatar:
+        type: string
+        x-nullable: true
+      email:
+        example: john.doe@gmail.com
+        type: string
+      id:
+        example: 5f3e8885-a233-4a94-b657-432c369ae0fc
+        type: string
+      name:
+        example: John Doe
+        type: string
+    type: object
+  UserResponse:
+    properties:
+      avatar:
+        type: string
+        x-nullable: true
+      email:
+        example: john.doe@gmail.com
+        type: string
+      id:
+        example: 5f3e8885-a233-4a94-b657-432c369ae0fc
+        type: string
+      is_active:
+        type: boolean
+      name:
+        example: John Doe
+        type: string
+      person_in_charge:
+        example: Jane Doe
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/RoleResponse'
+        x-nullable: true
+      role_id:
+        example: fce116d4-7ba9-4f29-9aa4-ec97e7a6f26c
+        type: string
+      verified_at:
+        example: "2020-01-01T01:02:03Z"
+        type: string
+    type: object
+  VesselDashboardFetchRequest:
+    properties:
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: asc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: username
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+      type:
+        allOf:
+        - $ref: '#/definitions/VesselTypeEnum'
+        x-nullable: true
+    type: object
+  VesselDashboardOptionForRouteFormRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: asc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: username
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+      type:
+        allOf:
+        - $ref: '#/definitions/VesselTypeEnum'
+        x-nullable: true
+    type: object
+  VesselPublicResponse:
+    properties:
+      active_since:
+        example: "2020-01-01"
+        type: string
+      company:
+        allOf:
+        - $ref: '#/definitions/CompanyPublicResponse'
+        x-nullable: true
+      company_id:
+        example: e38da19b-36c6-4732-8677-3780e4562e43
+        type: string
+      facility:
+        example: Facility List
+        type: string
+      id:
+        example: d263d9cb-7465-4455-a5de-cda4862dcd81
+        type: string
+      name:
+        example: Vessel A
+        type: string
+      seat:
+        example: 200
+        type: integer
+      type:
+        $ref: '#/definitions/VesselTypeEnum'
+    type: object
+  VesselResponse:
+    properties:
+      active_since:
+        example: "2020-01-01"
+        type: string
+      company:
+        allOf:
+        - $ref: '#/definitions/CompanyPublicResponse'
+        x-nullable: true
+      company_id:
+        example: e38da19b-36c6-4732-8677-3780e4562e43
+        type: string
+      facility:
+        example: Facility List
+        type: string
+      id:
+        example: d263d9cb-7465-4455-a5de-cda4862dcd81
+        type: string
+      is_active:
+        type: boolean
+      name:
+        example: Vessel A
+        type: string
+      seat:
+        example: 200
+        type: integer
+      type:
+        $ref: '#/definitions/VesselTypeEnum'
+    type: object
+  VesselTypeEnum:
+    enum:
+    - FERRY
+    - FASTBOAT
+    type: string
+  data_type.HourTime:
+    type: object
+host: api.sailtix.com
 info:
-  title: SailTix REST API
-  description: >
-    Comprehensive API documentation for SailTix backend services, enabling seamless integration and utilization.
+  contact: {}
+  title: Sailtix
   version: 1.0.0
-  license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
-servers:
-  - url: https://api.sailtix.com/v1
-    description: Production server - Stable API for all end-users.
-security:
-  - BearerAuth: []
 paths:
-  /hello:
-    get:
-      summary: Say Hello
-      description: >
-        Returns a friendly greeting message to confirm API connectivity and functionality.
-      operationId: sayHello
-      responses:
-        '200':
-          description: Successful response with a greeting message.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Hello, World!"
-        '400':
-          description: Bad Request due to invalid parameters.
-  /users:
-    get:
-      summary: Retrieve Users
-      description: >
-        Returns a comprehensive list of all registered users in the system, including their details.
-      operationId: getUsers
-      responses:
-        '200':
-          description: A list of user objects successfully retrieved.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
-        '400':
-          description: Bad Request due to invalid query parameters.
+  /auth/login:
     post:
-      summary: Create User
-      description: >
-        Creates a new user account with the provided user details, ensuring all required fields are valid.
-      operationId: createUser
-      requestBody:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.AuthEmailLoginRequest
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserInput'
+        schema:
+          $ref: '#/definitions/AuthEmailLoginRequest'
+      produces:
+      - application/json
       responses:
-        '201':
-          description: User created successfully with the provided details.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: Bad Request due to invalid input data.
-  /users/{id}:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/AuthTokenResponse'
+              type: object
+      summary: Email Login
+      tags:
+      - Auth
+  /auth/logout:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/SuccessResponse'
+      summary: Logout
+      tags:
+      - Auth
+  /dash/companies:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CompanyCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      company:
+                        items:
+                          $ref: '#/definitions/CompanyResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: DashboardCreate Company (Dashboard)
+      tags:
+      - Companies
+  /dash/companies/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft DashboardDelete company by Id (dashboard)
+      tags:
+      - Companies
     get:
-      summary: Get User by ID
-      description: >
-        Retrieves detailed information of a user based on their unique identifier, ensuring the user exists.
-      operationId: getUserById
+      consumes:
+      - application/json
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: The unique identifier of the user to retrieve.
-      responses:
-        '200':
-          description: A user object successfully retrieved.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: Bad Request due to invalid user ID format.
-        '404':
-          description: User not found with the provided ID.
-    put:
-      summary: Update User
-      description: >
-        Updates the details of an existing user with the provided information, ensuring data integrity.
-      operationId: updateUser
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: The unique identifier of the user to update.
-      requestBody:
+      - description: Id
+        in: path
+        name: id
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserInput'
+        type: string
+      produces:
+      - application/json
       responses:
-        '200':
-          description: User updated successfully with the new details.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: Bad Request due to invalid input data.
-        '404':
-          description: User not found with the provided ID.
-components:
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-  schemas:
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the user.
-        name:
-          type: string
-          description: Full name of the user.
-        email:
-          type: string
-          description: Email address of the user.
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp when the user was created.
-      required:
-        - id
-        - name
-        - email
-    UserInput:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Full name of the user.
-        email:
-          type: string
-          description: Email address of the user.
-        password:
-          type: string
-          description: Password for the user account.
-      required:
-        - name
-        - email
-        - password
-    LoginInput:
-      type: object
-      properties:
-        email:
-          type: string
-          description: Registered email address.
-        password:
-          type: string
-          description: Password for the account.
-      required:
-        - email
-        - password
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      company:
+                        $ref: '#/definitions/CompanyResponse'
+                    type: object
+              type: object
+      summary: DashboardGet company by Id (dashboard)
+      tags:
+      - Companies
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.CompanyUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      company:
+                        $ref: '#/definitions/CompanyResponse'
+                    type: object
+              type: object
+      summary: DashboardUpdate company by Id (dashboard)
+      tags:
+      - Companies
+  /dash/companies/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CompanyFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CompanyResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Companies (Dashboard)
+      tags:
+      - Companies
+  /dash/customer-tier/options/customer-form:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CustomerTierOptionForCustomerFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CustomerTierOptionForCustomerFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CustomerTierResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for Customer Form (Dashboard)
+      tags:
+      - CustomerTiers
+  /dash/docks:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.DockCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DockCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      dock:
+                        items:
+                          $ref: '#/definitions/DockResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: DashboardCreate Dock (Dashboard)
+      tags:
+      - Docks
+  /dash/docks/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft DashboardDelete dock by Id (dashboard)
+      tags:
+      - Docks
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      dock:
+                        $ref: '#/definitions/DockResponse'
+                    type: object
+              type: object
+      summary: DashboardGet dock by Id (dashboard)
+      tags:
+      - Docks
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.DockUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DockUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      dock:
+                        $ref: '#/definitions/DockResponse'
+                    type: object
+              type: object
+      summary: DashboardUpdate dock by Id (dashboard)
+      tags:
+      - Docks
+  /dash/docks/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.DockFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DockFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/DockResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Dock (Dashboard)
+      tags:
+      - Docks
+  /dash/docks/options/route-form:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.DockOptionForRouteFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DockOptionForRouteFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/DockResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for Route Form (Dashboard)
+      tags:
+      - Docks
+  /dash/roles/options/user-form:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.RoleOptionForUserFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RoleOptionForUserFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/RoleResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for User Form (Dashboard)
+      tags:
+      - Roles
+  /dash/routes:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.RouteCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RouteCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      route:
+                        items:
+                          $ref: '#/definitions/RouteResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Create Route (Dashboard)
+      tags:
+      - Routes
+  /dash/routes/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete route by Id (dashboard)
+      tags:
+      - Routes
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      route:
+                        $ref: '#/definitions/RouteResponse'
+                    type: object
+              type: object
+      summary: Get route by Id (dashboard)
+      tags:
+      - Routes
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.RouteUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RouteUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      route:
+                        $ref: '#/definitions/RouteResponse'
+                    type: object
+              type: object
+      summary: Update route by Id (dashboard)
+      tags:
+      - Routes
+  /dash/routes/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.RouteFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RouteFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/RouteResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Routes (Dashboard)
+      tags:
+      - Routes
+  /dash/uploads:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Body with file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      link:
+                        type: string
+                    type: object
+              type: object
+      summary: Upload file to temporary
+      tags:
+      - Uploads
+  /dash/users:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.UserCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/UserCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      user:
+                        $ref: '#/definitions/UserResponse'
+                    type: object
+              type: object
+      summary: DashboardCreate
+      tags:
+      - Users
+  /dash/vessels/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      vessel:
+                        $ref: '#/definitions/VesselResponse'
+                    type: object
+              type: object
+      summary: Get (Dashboard)
+      tags:
+      - Vessels
+  /dash/vessels/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.VesselDashboardFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/VesselDashboardFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/VesselResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Fetch (Dashboard)
+      tags:
+      - Vessels
+  /dash/vessels/options/route-form:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.VesselDashboardOptionForRouteFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/VesselDashboardOptionForRouteFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/VesselResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option list for Route Form (Dashboard)
+      tags:
+      - Vessels
+  /landing/vessels/{id}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      vessel:
+                        $ref: '#/definitions/VesselPublicResponse'
+                    type: object
+              type: object
+      summary: Get vessel by id (Landing Page)
+      tags:
+      - Vessels
+  /landing/vessels/popular:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      vessels:
+                        items:
+                          $ref: '#/definitions/VesselPublicResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: List Popular Vessels (Landing Page)
+      tags:
+      - Vessels
+swagger: "2.0"
