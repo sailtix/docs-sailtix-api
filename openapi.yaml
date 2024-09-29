@@ -1139,6 +1139,11 @@ definitions:
     - ROUTE_GET
     - ROUTE_UPDATE
     - ROUTE_DELETE
+    - ROUTE_PRICING_CREATE
+    - ROUTE_PRICING_FETCH
+    - ROUTE_PRICING_GET
+    - ROUTE_PRICING_UPDATE
+    - ROUTE_PRICING_DELETE
     - USER_CREATE
     - USER_FETCH
     - USER_GET
@@ -1278,6 +1283,100 @@ definitions:
       vessel_id:
         type: string
         x-nullable: true
+    type: object
+  RoutePricingCreateRequest:
+    properties:
+      adult_fee:
+        type: number
+      child_fee:
+        type: number
+      infant_fee:
+        type: number
+      route_id:
+        type: string
+    required:
+    - route_id
+    type: object
+  RoutePricingFetchRequest:
+    properties:
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - branch_name
+              - legal_name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  RoutePricingResponse:
+    properties:
+      adult_fee:
+        example: 100000
+        type: number
+      child_fee:
+        example: 100000
+        type: number
+      customer_tier:
+        allOf:
+        - $ref: '#/definitions/CustomerTierResponse'
+        x-nullable: true
+      customer_tier_id:
+        example: 98c13377-e93f-4f29-b101-a0c79e02b2d8
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      infant_fee:
+        example: 100000
+        type: number
+      is_active:
+        type: boolean
+      route:
+        allOf:
+        - $ref: '#/definitions/RouteResponse'
+        x-nullable: true
+      route_id:
+        example: 12de2751-f2bf-4db8-8177-64a96340331e
+        type: string
+    type: object
+  RoutePricingUpdateRequest:
+    properties:
+      adult_fee:
+        type: number
+      child_fee:
+        type: number
+      infant_fee:
+        type: number
     type: object
   RouteResponse:
     properties:
@@ -1768,9 +1867,7 @@ paths:
                   - $ref: '#/definitions/DataResponse'
                   - properties:
                       company:
-                        items:
-                          $ref: '#/definitions/CompanyResponse'
-                        type: array
+                        $ref: '#/definitions/CompanyResponse'
                     type: object
               type: object
       summary: DashboardCreate Company (Dashboard)
@@ -2052,9 +2149,7 @@ paths:
                   - $ref: '#/definitions/DataResponse'
                   - properties:
                       dock:
-                        items:
-                          $ref: '#/definitions/DockResponse'
-                        type: array
+                        $ref: '#/definitions/DockResponse'
                     type: object
               type: object
       summary: DashboardCreate Dock (Dashboard)
@@ -2248,6 +2343,161 @@ paths:
       summary: Option for User Form (Dashboard)
       tags:
       - Roles
+  /dash/route-pricings:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.RoutePricingCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RoutePricingCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      route_pricings:
+                        items:
+                          $ref: '#/definitions/RoutePricingResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: DashboardCreate RoutePricing (Dashboard)
+      tags:
+      - RoutePricings
+  /dash/route-pricings/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft DashboardDelete routePricing by Id (dashboard)
+      tags:
+      - RoutePricings
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      route_pricing:
+                        $ref: '#/definitions/RoutePricingResponse'
+                    type: object
+              type: object
+      summary: DashboardGet routePricing by Id (dashboard)
+      tags:
+      - RoutePricings
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.RoutePricingUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RoutePricingUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      route_pricing:
+                        $ref: '#/definitions/RoutePricingResponse'
+                    type: object
+              type: object
+      summary: DashboardUpdate routePricing by Id (dashboard)
+      tags:
+      - RoutePricings
+  /dash/route-pricings/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.RoutePricingFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RoutePricingFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/RoutePricingResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter RoutePricing (Dashboard)
+      tags:
+      - RoutePricings
   /dash/routes:
     post:
       consumes:
@@ -2273,9 +2523,7 @@ paths:
                   - $ref: '#/definitions/DataResponse'
                   - properties:
                       route:
-                        items:
-                          $ref: '#/definitions/RouteResponse'
-                        type: array
+                        $ref: '#/definitions/RouteResponse'
                     type: object
               type: object
       summary: Create Route (Dashboard)
