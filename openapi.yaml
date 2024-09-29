@@ -128,6 +128,44 @@ definitions:
         - $ref: '#/definitions/CompanyTypeEnum'
         x-nullable: true
     type: object
+  CompanyOptionForVesselFormRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - branch_name
+              - legal_name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
   CompanyPublicResponse:
     properties:
       address:
@@ -271,6 +309,80 @@ definitions:
     - photo
     - refund_policy
     - reschedule_policy
+    type: object
+  CustomerFetchRequest:
+    properties:
+      customer_tier_id:
+        type: string
+        x-nullable: true
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - branch_name
+              - legal_name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  CustomerResponse:
+    properties:
+      customer_tier:
+        allOf:
+        - $ref: '#/definitions/CustomerTierResponse'
+        x-nullable: true
+      customer_tier_id:
+        example: b50dd616-c1e3-4db0-afa0-142e0cd95d13
+        type: string
+      date_of_birth:
+        example: "2020-01-01"
+        type: string
+      email:
+        example: john.doe@gmail.com
+        type: string
+      first_name:
+        example: John
+        type: string
+      id:
+        example: bbb6c083-52d5-436f-811b-28d27b252fd5
+        type: string
+      is_active:
+        type: boolean
+      last_name:
+        example: Doe
+        type: string
+      phone_number:
+        example: "+628527575272"
+        type: string
     type: object
   CustomerTierNameEnum:
     enum:
@@ -459,6 +571,41 @@ definitions:
         example: 24
         type: integer
     type: object
+  PermissionEnum:
+    enum:
+    - COMPANY_CREATE
+    - COMPANY_FETCH
+    - COMPANY_GET
+    - COMPANY_UPDATE
+    - COMPANY_DELETE
+    - COMPANY_OPTION_FOR_VESSEL_FORM
+    - CUSTOMER_TIER_OPTION_FOR_CUSTOMER_FORM
+    - CUSTOMER_FETCH
+    - CUSTOMER_GET
+    - DOCK_CREATE
+    - DOCK_FETCH
+    - DOCK_GET
+    - DOCK_UPDATE
+    - DOCK_DELETE
+    - DOCK_OPTION_FOR_ROUTE_FORM
+    - ROLE_OPTION_FOR_USER_FORM
+    - ROUTE_CREATE
+    - ROUTE_FETCH
+    - ROUTE_GET
+    - ROUTE_UPDATE
+    - ROUTE_DELETE
+    - USER_CREATE
+    - USER_FETCH
+    - USER_GET
+    - USER_UPDATE
+    - USER_UPDATE_PASSWORD
+    - VESSEL_CREATE
+    - VESSEL_FETCH
+    - VESSEL_GET
+    - VESSEL_UPDATE
+    - VESSEL_DELETE
+    - VESSEL_OPTION_FOR_ROUTE_FORM
+    type: string
   Response:
     properties:
       data: {}
@@ -664,6 +811,86 @@ definitions:
     - person_in_charge
     - role_id
     type: object
+  UserFetchRequest:
+    properties:
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      role_ids:
+        items:
+          type: string
+        type: array
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: asc
+              type: string
+            field:
+              enum:
+              - username
+              - is_active
+              - created_at
+              - updated_at
+              example: username
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  UserMeResponse:
+    properties:
+      avatar:
+        type: string
+        x-nullable: true
+      email:
+        example: john.doe@gmail.com
+        type: string
+      id:
+        example: 5f3e8885-a233-4a94-b657-432c369ae0fc
+        type: string
+      is_active:
+        type: boolean
+      name:
+        example: John Doe
+        type: string
+      permissions:
+        items:
+          $ref: '#/definitions/PermissionEnum'
+        type: array
+      person_in_charge:
+        example: Jane Doe
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/RoleResponse'
+        x-nullable: true
+      role_id:
+        example: fce116d4-7ba9-4f29-9aa4-ec97e7a6f26c
+        type: string
+      verified_at:
+        example: "2020-01-01T01:02:03Z"
+        type: string
+    type: object
   UserPreviewResponse:
     properties:
       avatar:
@@ -709,7 +936,57 @@ definitions:
         example: "2020-01-01T01:02:03Z"
         type: string
     type: object
-  VesselDashboardFetchRequest:
+  UserUpdatePasswordRequest:
+    properties:
+      password:
+        maxLength: 255
+        type: string
+    required:
+    - password
+    type: object
+  UserUpdateRequest:
+    properties:
+      avatar:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+      person_in_charge:
+        maxLength: 100
+        type: string
+      role_id:
+        type: string
+    required:
+    - name
+    - person_in_charge
+    - role_id
+    type: object
+  VesselCreateRequest:
+    properties:
+      active_since:
+        type: string
+      company_id:
+        type: string
+      facility:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+      seat:
+        type: integer
+      type:
+        $ref: '#/definitions/VesselTypeEnum'
+    required:
+    - company_id
+    - facility
+    - name
+    - type
+    type: object
+  VesselFetchRequest:
     properties:
       is_active:
         type: boolean
@@ -753,7 +1030,7 @@ definitions:
         - $ref: '#/definitions/VesselTypeEnum'
         x-nullable: true
     type: object
-  VesselDashboardOptionForRouteFormRequest:
+  VesselOptionForRouteFormRequest:
     properties:
       limit:
         example: 100
@@ -855,6 +1132,26 @@ definitions:
     - FERRY
     - FASTBOAT
     type: string
+  VesselUpdateRequest:
+    properties:
+      active_since:
+        type: string
+      facility:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+      seat:
+        type: integer
+      type:
+        $ref: '#/definitions/VesselTypeEnum'
+    required:
+    - facility
+    - name
+    - type
+    type: object
   data_type.HourTime:
     type: object
 host: api.sailtix.com
@@ -1056,6 +1353,39 @@ paths:
       summary: Filter Companies (Dashboard)
       tags:
       - Companies
+  /dash/companies/options/vessel-form:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CompanyOptionForVesselFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyOptionForVesselFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CompanyResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for Vessel Form (Dashboard)
+      tags:
+      - Companies
   /dash/customer-tier/options/customer-form:
     post:
       consumes:
@@ -1089,6 +1419,69 @@ paths:
       summary: Option for Customer Form (Dashboard)
       tags:
       - CustomerTiers
+  /dash/customer/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      customer:
+                        $ref: '#/definitions/CustomerResponse'
+                    type: object
+              type: object
+      summary: Get Customer (Dashboard)
+      tags:
+      - Customers
+  /dash/customer/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CustomerFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CustomerFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CustomerResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Fetch Customers (Dashboard)
+      tags:
+      - Customers
   /dash/docks:
     post:
       consumes:
@@ -1526,7 +1919,210 @@ paths:
       summary: DashboardCreate
       tags:
       - Users
+  /dash/users/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      user:
+                        $ref: '#/definitions/UserResponse'
+                    type: object
+              type: object
+      summary: Get
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.UserUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/UserUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      user:
+                        $ref: '#/definitions/UserResponse'
+                    type: object
+              type: object
+      summary: Update
+      tags:
+      - Users
+  /dash/users/{id}/password:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.UserUpdatePasswordRequest
+        required: true
+        schema:
+          $ref: '#/definitions/UserUpdatePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      user:
+                        $ref: '#/definitions/UserResponse'
+                    type: object
+              type: object
+      summary: Change Password
+      tags:
+      - Users
+  /dash/users/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.UserFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/UserFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/UserResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Fetch
+      tags:
+      - Users
+  /dash/users/me:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      user:
+                        $ref: '#/definitions/UserMeResponse'
+                    type: object
+              type: object
+      summary: Get Me
+      tags:
+      - Users
+  /dash/vessels:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.VesselCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/VesselCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      vessel:
+                        $ref: '#/definitions/VesselResponse'
+                    type: object
+              type: object
+      summary: Create Vessel (Dashboard)
+      tags:
+      - Vessels
   /dash/vessels/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Delete (Dashboard)
+      tags:
+      - Vessels
     get:
       consumes:
       - application/json
@@ -1556,6 +2152,41 @@ paths:
       summary: Get (Dashboard)
       tags:
       - Vessels
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Bpdy Request
+        in: body
+        name: dto_request.VesselUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/VesselUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      vessel:
+                        $ref: '#/definitions/VesselResponse'
+                    type: object
+              type: object
+      summary: Update Vessel (Dashboard)
+      tags:
+      - Vessels
   /dash/vessels/filter:
     post:
       consumes:
@@ -1563,10 +2194,10 @@ paths:
       parameters:
       - description: Body Request
         in: body
-        name: dto_request.VesselDashboardFetchRequest
+        name: dto_request.VesselFetchRequest
         required: true
         schema:
-          $ref: '#/definitions/VesselDashboardFetchRequest'
+          $ref: '#/definitions/VesselFetchRequest'
       produces:
       - application/json
       responses:
@@ -1596,10 +2227,10 @@ paths:
       parameters:
       - description: Body Request
         in: body
-        name: dto_request.VesselDashboardOptionForRouteFormRequest
+        name: dto_request.VesselOptionForRouteFormRequest
         required: true
         schema:
-          $ref: '#/definitions/VesselDashboardOptionForRouteFormRequest'
+          $ref: '#/definitions/VesselOptionForRouteFormRequest'
       produces:
       - application/json
       responses:
