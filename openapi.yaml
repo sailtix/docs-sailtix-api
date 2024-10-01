@@ -24,6 +24,73 @@ definitions:
         example: Bearer
         type: string
     type: object
+  CalendarFetchRequest:
+    properties:
+      arrival_dock_id:
+        type: string
+      customer_tier:
+        $ref: '#/definitions/CustomerTierNameEnum'
+      departure_dock_id:
+        type: string
+      end_date:
+        type: string
+      is_active:
+        type: boolean
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+      start_date:
+        type: string
+      vessel_id:
+        type: string
+    type: object
+  CalendarResponse:
+    properties:
+      route_pricing:
+        allOf:
+        - $ref: '#/definitions/RoutePricingResponse'
+        x-nullable: true
+      seat_availabilities:
+        items:
+          $ref: '#/definitions/CalendarSeatAvailabilityResponse'
+        type: array
+        x-nullable: true
+    type: object
+  CalendarSeatAvailabilityResponse:
+    properties:
+      date:
+        type: string
+      seat_left:
+        type: integer
+    type: object
   CompanyCreateRequest:
     properties:
       address:
@@ -1166,6 +1233,7 @@ definitions:
     type: object
   PermissionEnum:
     enum:
+    - CALENDAR_FETCH
     - COMPANY_CREATE
     - COMPANY_FETCH
     - COMPANY_GET
@@ -1984,6 +2052,39 @@ paths:
       summary: Logout
       tags:
       - Auth
+  /dash/calendars/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CalendarFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CalendarFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CalendarResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for User Form (Dashboard)
+      tags:
+      - Calendars
   /dash/companies:
     post:
       consumes:
@@ -2012,7 +2113,7 @@ paths:
                         $ref: '#/definitions/CompanyResponse'
                     type: object
               type: object
-      summary: DashboardCreate Company (Dashboard)
+      summary: Create Company (Dashboard)
       tags:
       - Companies
   /dash/companies/{id}:
@@ -2037,7 +2138,7 @@ paths:
                 data:
                   $ref: '#/definitions/SuccessResponse'
               type: object
-      summary: Soft DashboardDelete company by Id (dashboard)
+      summary: Soft Delete company by Id (dashboard)
       tags:
       - Companies
     get:
@@ -2066,7 +2167,7 @@ paths:
                         $ref: '#/definitions/CompanyResponse'
                     type: object
               type: object
-      summary: DashboardGet company by Id (dashboard)
+      summary: Get company by Id (dashboard)
       tags:
       - Companies
     put:
@@ -2101,7 +2202,7 @@ paths:
                         $ref: '#/definitions/CompanyResponse'
                     type: object
               type: object
-      summary: DashboardUpdate company by Id (dashboard)
+      summary: Update company by Id (dashboard)
       tags:
       - Companies
   /dash/companies/filter:
@@ -2170,7 +2271,7 @@ paths:
       summary: Option for Vessel Form (Dashboard)
       tags:
       - Companies
-  /dash/customer/{id}:
+  /dash/customers/{id}:
     get:
       consumes:
       - application/json
@@ -2200,7 +2301,7 @@ paths:
       summary: Get Customer (Dashboard)
       tags:
       - Customers
-  /dash/customer/filter:
+  /dash/customers/filter:
     post:
       consumes:
       - application/json
@@ -2261,7 +2362,7 @@ paths:
                         $ref: '#/definitions/DockResponse'
                     type: object
               type: object
-      summary: DashboardCreate Dock (Dashboard)
+      summary: Create Dock (Dashboard)
       tags:
       - Docks
   /dash/docks/{id}:
@@ -2286,7 +2387,7 @@ paths:
                 data:
                   $ref: '#/definitions/SuccessResponse'
               type: object
-      summary: Soft DashboardDelete dock by Id (dashboard)
+      summary: Soft Delete dock by Id (dashboard)
       tags:
       - Docks
     get:
@@ -2315,7 +2416,7 @@ paths:
                         $ref: '#/definitions/DockResponse'
                     type: object
               type: object
-      summary: DashboardGet dock by Id (dashboard)
+      summary: Get dock by Id (dashboard)
       tags:
       - Docks
     put:
@@ -2350,7 +2451,7 @@ paths:
                         $ref: '#/definitions/DockResponse'
                     type: object
               type: object
-      summary: DashboardUpdate dock by Id (dashboard)
+      summary: Update dock by Id (dashboard)
       tags:
       - Docks
   /dash/docks/filter:
@@ -2555,9 +2656,9 @@ paths:
                         type: array
                     type: object
               type: object
-      summary: DashboardCreate RoutePricing (Dashboard)
+      summary: Create Route Pricing (Dashboard)
       tags:
-      - RoutePricings
+      - Route Pricings
   /dash/route-pricings/{id}:
     delete:
       consumes:
@@ -2580,9 +2681,9 @@ paths:
                 data:
                   $ref: '#/definitions/SuccessResponse'
               type: object
-      summary: Soft DashboardDelete routePricing by Id (dashboard)
+      summary: Soft Delete Route Pricing by Id (dashboard)
       tags:
-      - RoutePricings
+      - Route Pricings
     get:
       consumes:
       - application/json
@@ -2609,9 +2710,9 @@ paths:
                         $ref: '#/definitions/RoutePricingResponse'
                     type: object
               type: object
-      summary: DashboardGet routePricing by Id (dashboard)
+      summary: Get Route Pricing by Id (dashboard)
       tags:
-      - RoutePricings
+      - Route Pricings
     put:
       consumes:
       - application/json
@@ -2644,9 +2745,9 @@ paths:
                         $ref: '#/definitions/RoutePricingResponse'
                     type: object
               type: object
-      summary: DashboardUpdate routePricing by Id (dashboard)
+      summary: Update Route Pricing by Id (dashboard)
       tags:
-      - RoutePricings
+      - Route Pricings
   /dash/route-pricings/filter:
     post:
       consumes:
@@ -2677,9 +2778,9 @@ paths:
                         type: array
                     type: object
               type: object
-      summary: Filter RoutePricing (Dashboard)
+      summary: Filter Route Pricing (Dashboard)
       tags:
-      - RoutePricings
+      - Route Pricings
   /dash/routes:
     post:
       consumes:
@@ -2860,7 +2961,7 @@ paths:
                         type: string
                     type: object
               type: object
-      summary: Upload file to temporary
+      summary: Upload file
       tags:
       - Uploads
   /dash/users:
@@ -2891,7 +2992,7 @@ paths:
                         $ref: '#/definitions/UserResponse'
                     type: object
               type: object
-      summary: DashboardCreate
+      summary: Create User (Dashboard)
       tags:
       - Users
   /dash/users/{id}:
@@ -2921,7 +3022,7 @@ paths:
                         $ref: '#/definitions/UserResponse'
                     type: object
               type: object
-      summary: Get
+      summary: Get User (Dashboard)
       tags:
       - Users
     put:
@@ -2951,7 +3052,7 @@ paths:
                         $ref: '#/definitions/UserResponse'
                     type: object
               type: object
-      summary: Update
+      summary: Update User (Dashboard)
       tags:
       - Users
   /dash/users/{id}/password:
@@ -2982,7 +3083,7 @@ paths:
                         $ref: '#/definitions/UserResponse'
                     type: object
               type: object
-      summary: Change Password
+      summary: Change User Password (Dashboard)
       tags:
       - Users
   /dash/users/filter:
@@ -3015,13 +3116,14 @@ paths:
                         type: array
                     type: object
               type: object
-      summary: Fetch
+      summary: Fetch Users (Dashboard)
       tags:
       - Users
   /dash/users/me:
     post:
       consumes:
       - application/json
+      description: To get current logged in user data, in dashboar
       produces:
       - application/json
       responses:
@@ -3039,7 +3141,7 @@ paths:
                         $ref: '#/definitions/UserMeResponse'
                     type: object
               type: object
-      summary: Get Me
+      summary: Get Me (Dashboard)
       tags:
       - Users
   /dash/vessels:
