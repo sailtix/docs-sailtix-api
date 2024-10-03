@@ -409,8 +409,8 @@ definitions:
               type: string
             field:
               enum:
-              - branch_name
-              - legal_name
+              - fullname
+              - email
               - created_at
               - updated_at
               example: updated_at
@@ -512,8 +512,7 @@ definitions:
               type: string
             field:
               enum:
-              - branch_name
-              - legal_name
+              - name
               - created_at
               - updated_at
               example: updated_at
@@ -554,8 +553,7 @@ definitions:
               type: string
             field:
               enum:
-              - branch_name
-              - legal_name
+              - name
               - created_at
               - updated_at
               example: updated_at
@@ -592,8 +590,7 @@ definitions:
               type: string
             field:
               enum:
-              - branch_name
-              - legal_name
+              - name
               - created_at
               - updated_at
               example: updated_at
@@ -634,8 +631,7 @@ definitions:
               type: string
             field:
               enum:
-              - branch_name
-              - legal_name
+              - name
               - created_at
               - updated_at
               example: updated_at
@@ -651,8 +647,6 @@ definitions:
     properties:
       created_at:
         type: string
-      created_by:
-        type: string
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
@@ -662,8 +656,6 @@ definitions:
         example: Pelabuhan A
         type: string
       updated_at:
-        type: string
-      updated_by:
         type: string
     type: object
   DockUpdateRequest:
@@ -678,6 +670,76 @@ definitions:
     required:
     - iana_timezone
     - name
+    type: object
+  GlobalSettingFetchRequest:
+    properties:
+      group:
+        allOf:
+        - $ref: '#/definitions/GlobalSettingGroupEnum'
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  GlobalSettingGroupEnum:
+    enum:
+    - AWS
+    type: string
+  GlobalSettingKeyEnum:
+    enum:
+    - AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY
+    - AWS_REGION
+    - AWS_BUCKET_NAME
+    - AWS_BUCKET_URL
+    type: string
+  GlobalSettingResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      key:
+        $ref: '#/definitions/GlobalSettingKeyEnum'
+      updated_at:
+        type: string
+      value:
+        type: string
+    type: object
+  GlobalSettingUpdateRequest:
+    properties:
+      value:
+        type: string
+    required:
+    - value
     type: object
   IANATimeZoneIdentifierEnum:
     enum:
@@ -1218,6 +1280,129 @@ definitions:
     - W-SU
     - Zulu
     type: string
+  OrderFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  OrderGetRequest:
+    type: object
+  OrderIssuedByEnum:
+    enum:
+    - WEB_SAILTIX
+    - ADMIN
+    type: string
+  OrderItemItemTypeEnum:
+    enum:
+    - VESSEL_BOOKING
+    type: string
+  OrderItemResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      item_id:
+        example: 361af688-80ea-4f14-81da-d7cefad6ae52
+        type: string
+      item_type:
+        $ref: '#/definitions/OrderItemItemTypeEnum'
+      order_id:
+        example: cd739b22-75b1-455b-a5de-ce4b1efc20d0
+        type: string
+      price:
+        example: 100000
+        type: number
+      updated_at:
+        type: string
+      vessel_booking:
+        allOf:
+        - $ref: '#/definitions/VesselBookingResponse'
+        x-nullable: true
+    type: object
+  OrderResponse:
+    properties:
+      created_at:
+        type: string
+      customer:
+        allOf:
+        - $ref: '#/definitions/CustomerResponse'
+        x-nullable: true
+      customer_id:
+        example: 7fc5d047-582b-45e3-a294-0c8eeff0c47e
+        type: string
+        x-nullable: true
+      guest_email:
+        example: john.doe@gmail.com
+        type: string
+        x-nullable: true
+      guest_name:
+        example: John Doe
+        type: string
+        x-nullable: true
+      guest_phone:
+        example: "+6285275756464"
+        type: string
+        x-nullable: true
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      issued_by:
+        $ref: '#/definitions/OrderIssuedByEnum'
+      order_items:
+        items:
+          $ref: '#/definitions/OrderItemResponse'
+        type: array
+        x-nullable: true
+      status:
+        $ref: '#/definitions/OrderStatusEnum'
+      total_price:
+        example: 100000
+        type: number
+      updated_at:
+        type: string
+    type: object
+  OrderStatusEnum:
+    enum:
+    - PENDING
+    - PAID
+    - CANCELLED
+    - FAILED
+    - REFUNDED
+    - RESCHEDULED
+    type: string
   PaginationResponse:
     properties:
       limit:
@@ -1252,6 +1437,18 @@ definitions:
     - DOCK_OPTION_FOR_ROUTE_FORM
     - DOCK_OPTION_FOR_ROUTE_FILTER
     - DOCK_OPTION_FOR_ROUTE_PRICING_FILTER
+    - GLOBAL_SETTING_CREATE
+    - GLOBAL_SETTING_FETCH
+    - GLOBAL_SETTING_GET
+    - GLOBAL_SETTING_UPDATE
+    - GLOBAL_SETTING_DELETE
+    - ORDER_FETCH
+    - ORDER_GET
+    - PLACE_CREATE
+    - PLACE_FETCH
+    - PLACE_GET
+    - PLACE_UPDATE
+    - PLACE_DELETE
     - ROLE_OPTION_FOR_USER_FORM
     - ROUTE_CREATE
     - ROUTE_FETCH
@@ -1277,6 +1474,102 @@ definitions:
     - VESSEL_OPTION_FOR_ROUTE_FILTER
     - VESSEL_OPTION_FOR_ROUTE_PRICING_FILTER
     type: string
+  PlaceCreateRequest:
+    properties:
+      image_link:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+      subtitle:
+        maxLength: 255
+        type: string
+    required:
+    - image_link
+    - name
+    - subtitle
+    type: object
+  PlaceFetchRequest:
+    properties:
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  PlaceResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      is_active:
+        type: boolean
+      name:
+        example: Nusa Perida
+        type: string
+      subtitle:
+        example: Bali, Indonesia
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  PlaceUpdateRequest:
+    properties:
+      image_link:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+      subtitle:
+        maxLength: 255
+        type: string
+    required:
+    - image_link
+    - name
+    - subtitle
+    type: object
   Response:
     properties:
       data: {}
@@ -1386,8 +1679,6 @@ definitions:
               type: string
             field:
               enum:
-              - branch_name
-              - legal_name
               - created_at
               - updated_at
               example: updated_at
@@ -1450,8 +1741,6 @@ definitions:
               type: string
             field:
               enum:
-              - branch_name
-              - legal_name
               - created_at
               - updated_at
               example: updated_at
@@ -1734,6 +2023,60 @@ definitions:
     - name
     - person_in_charge
     - role_id
+    type: object
+  VesselBookingPassengerResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      name:
+        example: John Doe
+        type: string
+      price:
+        example: 100000
+        type: number
+      type:
+        $ref: '#/definitions/VesselBookingPassengerTypeEnum'
+      updated_at:
+        type: string
+      vessel_booking_id:
+        example: 18fe6b3f-eb3f-42f2-a33e-eb83485147b4
+        type: string
+    type: object
+  VesselBookingPassengerTypeEnum:
+    enum:
+    - ADULT
+    - CHILD
+    - INFANT
+    type: string
+  VesselBookingResponse:
+    properties:
+      adult_fee:
+        example: 100000
+        type: number
+      child_fee:
+        example: 100000
+        type: number
+      created_at:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      infant_fee:
+        example: 100000
+        type: number
+      route_pricing_id:
+        example: 51b6b53f-685e-429b-a8bd-adad22a8a206
+        type: string
+      updated_at:
+        type: string
+      vessel_booking_passengers:
+        items:
+          $ref: '#/definitions/VesselBookingPassengerResponse'
+        type: array
+        x-nullable: true
     type: object
   VesselCreateRequest:
     properties:
@@ -2593,6 +2936,326 @@ paths:
       summary: Option for Route Pricing Filter (Dashboard)
       tags:
       - Docks
+  /dash/global-settings/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      global_setting:
+                        $ref: '#/definitions/GlobalSettingResponse'
+                    type: object
+              type: object
+      summary: Get globalSetting by Id (dashboard)
+      tags:
+      - GlobalSettings
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.GlobalSettingUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/GlobalSettingUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      global_setting:
+                        $ref: '#/definitions/GlobalSettingResponse'
+                    type: object
+              type: object
+      summary: Update globalSetting by Id (dashboard)
+      tags:
+      - GlobalSettings
+  /dash/global-settings/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.GlobalSettingFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/GlobalSettingFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/GlobalSettingResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter GlobalSetting (Dashboard)
+      tags:
+      - GlobalSettings
+  /dash/orders/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.OrderGetRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderGetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      order:
+                        $ref: '#/definitions/OrderResponse'
+                    type: object
+              type: object
+      summary: Get Order (Dashboard)
+      tags:
+      - Orders
+  /dash/orders/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.OrderFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/OrderResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Fetch Orders (Dashboard)
+      tags:
+      - Orders
+  /dash/places:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.PlaceCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      place:
+                        $ref: '#/definitions/PlaceResponse'
+                    type: object
+              type: object
+      summary: Create Place (Dashboard)
+      tags:
+      - Places
+  /dash/places/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete place by Id (dashboard)
+      tags:
+      - Places
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      place:
+                        $ref: '#/definitions/PlaceResponse'
+                    type: object
+              type: object
+      summary: Get place by Id (dashboard)
+      tags:
+      - Places
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.PlaceUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      place:
+                        $ref: '#/definitions/PlaceResponse'
+                    type: object
+              type: object
+      summary: Update place by Id (dashboard)
+      tags:
+      - Places
+  /dash/places/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.PlaceFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/PlaceResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Place (Dashboard)
+      tags:
+      - Places
   /dash/roles/options/user-form:
     post:
       consumes:
