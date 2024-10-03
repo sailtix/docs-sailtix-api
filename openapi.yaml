@@ -2357,7 +2357,7 @@ info:
   title: Sailtix
   version: 1.0.0
 paths:
-  /auth/login:
+  /dash/auth/login:
     post:
       consumes:
       - application/json
@@ -2380,10 +2380,10 @@ paths:
                 data:
                   $ref: '#/definitions/AuthTokenResponse'
               type: object
-      summary: Email Login
+      summary: Email Login (Dashboard)
       tags:
       - Auth
-  /auth/logout:
+  /dash/auth/logout:
     post:
       produces:
       - application/json
@@ -2392,7 +2392,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/SuccessResponse'
-      summary: Logout
+      summary: Logout (Dashboard)
       tags:
       - Auth
   /dash/calendars/filter:
