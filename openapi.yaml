@@ -2425,7 +2425,7 @@ paths:
                         type: array
                     type: object
               type: object
-      summary: Option for User Form (Dashboard)
+      summary: Fetch route pricing seat availabilities for selected date range (Dashboard)
       tags:
       - Calendars
   /dash/companies:
