@@ -3783,7 +3783,7 @@ paths:
       tags:
       - Users
   /dash/users/me:
-    post:
+    get:
       consumes:
       - application/json
       description: To get current logged in user data, in dashboar
