@@ -11,6 +11,60 @@ definitions:
     - email
     - password
     type: object
+  AuthLandingEmailVerificationRequest:
+    properties:
+      date_of_birth:
+        type: string
+      email:
+        maxLength: 100
+        type: string
+      first_name:
+        maxLength: 255
+        type: string
+      last_name:
+        maxLength: 255
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      verification_code:
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
+    - phone_number
+    - verification_code
+    type: object
+  AuthLandingLoginEmailRequest:
+    properties:
+      email:
+        maxLength: 100
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  AuthLandingRegisterEmailRequest:
+    properties:
+      email:
+        maxLength: 100
+        type: string
+      first_name:
+        maxLength: 255
+        type: string
+      last_name:
+        maxLength: 255
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    type: object
   AuthTokenResponse:
     properties:
       access_token:
@@ -643,6 +697,19 @@ definitions:
         type: array
         uniqueItems: true
     type: object
+  DockPublicResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      name:
+        example: Pelabuhan A
+        type: string
+      updated_at:
+        type: string
+    type: object
   DockResponse:
     properties:
       created_at:
@@ -711,6 +778,7 @@ definitions:
   GlobalSettingGroupEnum:
     enum:
     - AWS
+    - ZEPTOMAIL
     type: string
   GlobalSettingKeyEnum:
     enum:
@@ -719,6 +787,9 @@ definitions:
     - AWS_REGION
     - AWS_BUCKET_NAME
     - AWS_BUCKET_URL
+    - ZEPTOMAIL_API_KEY
+    - ZEPTOMAIL_SENDER_EMAIL
+    - ZEPTOMAIL_SENDER_NAME
     type: string
   GlobalSettingResponse:
     properties:
@@ -1280,6 +1351,89 @@ definitions:
     - W-SU
     - Zulu
     type: string
+  LandingRoutePricingResponse:
+    properties:
+      adult_fee:
+        type: number
+        x-nullable: true
+      arrival_dock:
+        allOf:
+        - $ref: '#/definitions/DockPublicResponse'
+        x-nullable: true
+      arrival_time:
+        allOf:
+        - $ref: '#/definitions/data_type.HourTime'
+        x-nullable: true
+      child_fee:
+        type: number
+        x-nullable: true
+      departure_dock:
+        allOf:
+        - $ref: '#/definitions/DockPublicResponse'
+        x-nullable: true
+      departure_time:
+        allOf:
+        - $ref: '#/definitions/data_type.HourTime'
+        x-nullable: true
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      infant_fee:
+        type: number
+        x-nullable: true
+      route_id:
+        example: 8b7e25b2-ed29-4ca1-a3fe-d4f4d1230d24
+        type: string
+      vessel:
+        allOf:
+        - $ref: '#/definitions/VesselPublicResponse'
+        x-nullable: true
+    type: object
+  OrderCreateRequest:
+    properties:
+      customer_id:
+        example: 0880396f-758a-45e2-a3bf-4c6a19913132
+        type: string
+      guest_email:
+        maxLength: 255
+        type: string
+      guest_name:
+        example: John Doe
+        maxLength: 255
+        type: string
+      guest_phone:
+        type: string
+      vessel_bookings:
+        items:
+          $ref: '#/definitions/OrderCreateRequestVesselBooking'
+        minItems: 1
+        type: array
+    type: object
+  OrderCreateRequestVesselBooking:
+    properties:
+      passengers:
+        items:
+          $ref: '#/definitions/OrderCreateRequestVesselBookingPassenger'
+        minItems: 1
+        type: array
+      route_id:
+        example: dcf9a815-21b5-4a97-b953-7e34dfccf5b4
+        type: string
+      travel_date:
+        type: string
+    required:
+    - route_id
+    type: object
+  OrderCreateRequestVesselBookingPassenger:
+    properties:
+      name:
+        maxLength: 255
+        type: string
+      type:
+        $ref: '#/definitions/VesselBookingPassengerTypeEnum'
+    required:
+    - name
+    type: object
   OrderFetchRequest:
     properties:
       limit:
@@ -1442,6 +1596,7 @@ definitions:
     - GLOBAL_SETTING_GET
     - GLOBAL_SETTING_UPDATE
     - GLOBAL_SETTING_DELETE
+    - ORDER_CREATE
     - ORDER_FETCH
     - ORDER_GET
     - PLACE_CREATE
@@ -1754,6 +1909,35 @@ definitions:
       vessel_id:
         type: string
         x-nullable: true
+    type: object
+  RoutePricingLandingSearchRequest:
+    properties:
+      adult:
+        type: integer
+      arrival_dock_id:
+        type: string
+        x-nullable: true
+      child:
+        type: integer
+      departure_date:
+        type: string
+      departure_dock_id:
+        type: string
+        x-nullable: true
+      infant:
+        type: integer
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+    required:
+    - arrival_dock_id
+    - departure_dock_id
     type: object
   RoutePricingResponse:
     properties:
@@ -3034,6 +3218,115 @@ paths:
       summary: Filter GlobalSetting (Dashboard)
       tags:
       - GlobalSettings
+  /dash/landing/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.AuthLandingLoginEmailRequest
+        required: true
+        schema:
+          $ref: '#/definitions/AuthLandingLoginEmailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/AuthTokenResponse'
+              type: object
+      summary: Customer Login Via Email (Landing)
+      tags:
+      - Auth
+  /dash/landing/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.AuthLandingRegisterEmailRequest
+        required: true
+        schema:
+          $ref: '#/definitions/AuthLandingRegisterEmailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Customer Registration Via Email (Landing)
+      tags:
+      - Auth
+  /dash/landing/verification:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.AuthLandingEmailVerificationRequest
+        required: true
+        schema:
+          $ref: '#/definitions/AuthLandingEmailVerificationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/AuthTokenResponse'
+              type: object
+      summary: Customer Verification Via OTP Email (Landing)
+      tags:
+      - Auth
+  /dash/orders:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.OrderCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      order:
+                        $ref: '#/definitions/OrderResponse'
+                    type: object
+              type: object
+      summary: Create Orders (Dashboard)
+      tags:
+      - Orders
   /dash/orders/{id}:
     get:
       consumes:
@@ -4064,6 +4357,63 @@ paths:
       summary: Option list for Route Pricing Filter (Dashboard)
       tags:
       - Vessels
+  /landing/customers/me:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      customer:
+                        $ref: '#/definitions/CustomerResponse'
+                    type: object
+              type: object
+      summary: Get Me Customer (Landing)
+      tags:
+      - Customers
+  /landing/route-pricings/search:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.RoutePricingLandingSearchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RoutePricingLandingSearchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      route_pricings:
+                        items:
+                          $ref: '#/definitions/LandingRoutePricingResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Search Route Pricing (Landing)
+      tags:
+      - Route Pricings
   /landing/vessels/{id}:
     post:
       consumes:
