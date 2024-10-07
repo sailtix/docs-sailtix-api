@@ -1411,18 +1411,24 @@ definitions:
     type: object
   OrderCreateRequestVesselBooking:
     properties:
+      depart_route_id:
+        example: dcf9a815-21b5-4a97-b953-7e34dfccf5b4
+        type: string
+      depart_travel_date:
+        type: string
       passengers:
         items:
           $ref: '#/definitions/OrderCreateRequestVesselBookingPassenger'
         minItems: 1
         type: array
-      route_id:
-        example: dcf9a815-21b5-4a97-b953-7e34dfccf5b4
+      return_route_id:
+        example: a92f3235-7470-4ceb-8b61-ba32db060c9c
         type: string
-      travel_date:
+      return_travel_date:
+        example: 41762dda-b61e-474b-bb0e-25902538af21
         type: string
     required:
-    - route_id
+    - depart_route_id
     type: object
   OrderCreateRequestVesselBookingPassenger:
     properties:
@@ -1979,6 +1985,37 @@ definitions:
       infant_fee:
         type: number
     type: object
+  RoutePublicResponse:
+    properties:
+      arrival_dock:
+        allOf:
+        - $ref: '#/definitions/DockResponse'
+        x-nullable: true
+      arrival_dock_id:
+        example: 47199607-eb7c-47fe-b2a9-748ab71a3038
+        type: string
+      arrival_time:
+        $ref: '#/definitions/data_type.HourTime'
+      departure_dock:
+        allOf:
+        - $ref: '#/definitions/DockResponse'
+        x-nullable: true
+      departure_dock_id:
+        example: 899bdba5-678e-4dc0-8059-dab796611361
+        type: string
+      departure_time:
+        $ref: '#/definitions/data_type.HourTime'
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      vessel:
+        allOf:
+        - $ref: '#/definitions/VesselPublicResponse'
+        x-nullable: true
+      vessel_id:
+        example: d0c3f551-ce1b-45b7-aa16-73f9e4506dd8
+        type: string
+    type: object
   RouteResponse:
     properties:
       arrival_dock:
@@ -2237,23 +2274,47 @@ definitions:
     type: string
   VesselBookingResponse:
     properties:
-      adult_fee:
-        example: 100000
-        type: number
-      child_fee:
-        example: 100000
-        type: number
       created_at:
+        type: string
+      depart_adult_fee:
+        example: 100000
+        type: number
+      depart_child_fee:
+        example: 100000
+        type: number
+      depart_infant_fee:
+        example: 100000
+        type: number
+      depart_route:
+        allOf:
+        - $ref: '#/definitions/RoutePublicResponse'
+        x-nullable: true
+      depart_route_pricing_id:
+        example: 3c42a939-931d-46bb-ad50-9d297dcdc5f7
         type: string
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
-      infant_fee:
+      return_adult_fee:
         example: 100000
         type: number
-      route_pricing_id:
-        example: 51b6b53f-685e-429b-a8bd-adad22a8a206
+        x-nullable: true
+      return_child_fee:
+        example: 100000
+        type: number
+        x-nullable: true
+      return_infant_fee:
+        example: 100000
+        type: number
+        x-nullable: true
+      return_route:
+        allOf:
+        - $ref: '#/definitions/RoutePublicResponse'
+        x-nullable: true
+      return_route_pricing_id:
+        example: 6675c33b-f92d-4892-b0db-9b6e5b88b2a7
         type: string
+        x-nullable: true
       updated_at:
         type: string
       vessel_booking_passengers:
