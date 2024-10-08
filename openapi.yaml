@@ -1384,6 +1384,11 @@ definitions:
       route_id:
         example: 8b7e25b2-ed29-4ca1-a3fe-d4f4d1230d24
         type: string
+      seat_left:
+        type: integer
+        x-nullable: true
+      travel_date:
+        type: string
       vessel:
         allOf:
         - $ref: '#/definitions/VesselPublicResponse'
@@ -1691,6 +1696,18 @@ definitions:
           type: object
         type: array
         uniqueItems: true
+    type: object
+  PlaceLandingFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
     type: object
   PlaceResponse:
     properties:
@@ -2126,11 +2143,12 @@ definitions:
               type: string
             field:
               enum:
-              - username
+              - name
+              - email
               - is_active
               - created_at
               - updated_at
-              example: username
+              example: name
               type: string
           required:
           - direction
@@ -4442,6 +4460,39 @@ paths:
       summary: Get Me Customer (Landing)
       tags:
       - Customers
+  /landing/places/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.PlaceLandingFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceLandingFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/PlaceResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Place (Landing)
+      tags:
+      - Places
   /landing/route-pricings/search:
     post:
       consumes:
