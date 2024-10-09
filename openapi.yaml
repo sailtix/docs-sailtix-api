@@ -249,6 +249,44 @@ definitions:
         - $ref: '#/definitions/CompanyTypeEnum'
         x-nullable: true
     type: object
+  CompanyOptionForUserFormRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - branch_name
+              - legal_name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
   CompanyOptionForVesselFormRequest:
     properties:
       limit:
@@ -2456,6 +2494,47 @@ definitions:
         - $ref: '#/definitions/VesselTypeEnum'
         x-nullable: true
     type: object
+  VesselLandingFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: asc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: username
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+      type:
+        allOf:
+        - $ref: '#/definitions/VesselTypeEnum'
+        x-nullable: true
+    type: object
   VesselOptionForRouteFilterRequest:
     properties:
       limit:
@@ -2890,6 +2969,39 @@ paths:
                     type: object
               type: object
       summary: Filter Companies (Dashboard)
+      tags:
+      - Companies
+  /dash/companies/options/user-form:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CompanyOptionForUserFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyOptionForUserFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CompanyResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for User Form (Dashboard)
       tags:
       - Companies
   /dash/companies/options/vessel-form:
@@ -4680,8 +4792,41 @@ paths:
       summary: Get vessel by id (Landing Page)
       tags:
       - Vessels
-  /landing/vessels/popular:
+  /landing/vessels/filter:
     post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.VesselLandingFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/VesselLandingFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/VesselPublicResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: List Vessels (Landing Page)
+      tags:
+      - Vessels
+  /landing/vessels/popular:
+    get:
       consumes:
       - application/json
       produces:
