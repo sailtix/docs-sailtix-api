@@ -578,6 +578,47 @@ definitions:
         type: array
         uniqueItems: true
     type: object
+  DockLandingOptionForRoutePricingSearchRequest:
+    properties:
+      arrival_dock_id:
+        type: string
+      departure_dock_id:
+        type: string
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
   DockOptionForRouteFilterRequest:
     properties:
       arrival_dock_id:
@@ -779,6 +820,7 @@ definitions:
     enum:
     - AWS
     - ZEPTOMAIL
+    - XENDIT
     type: string
   GlobalSettingKeyEnum:
     enum:
@@ -790,6 +832,11 @@ definitions:
     - ZEPTOMAIL_API_KEY
     - ZEPTOMAIL_SENDER_EMAIL
     - ZEPTOMAIL_SENDER_NAME
+    - XENDIT_API_KEY
+    - XENDIT_WEBHOOK_AUTH_HEADER
+    - XENDIT_WEBHOOK_AUTH_TOKEN
+    - XENDIT_VIRTUAL_ACCOUNT_EXPIRY
+    - XENDIT_QR_CODE_EXPIRY
     type: string
   GlobalSettingResponse:
     properties:
@@ -1606,6 +1653,7 @@ definitions:
     - GLOBAL_SETTING_FETCH
     - GLOBAL_SETTING_GET
     - GLOBAL_SETTING_UPDATE
+    - GLOBAL_SETTING_UPDATE_BATCH
     - GLOBAL_SETTING_DELETE
     - ORDER_CREATE
     - ORDER_FETCH
@@ -3173,7 +3221,7 @@ paths:
       parameters:
       - description: Body Request
         in: body
-        name: dto_request.DockPricingOptionForRouteFilterRequest
+        name: dto_request.DockOptionForRoutePricingFilterRequest
         required: true
         schema:
           $ref: '#/definitions/DockOptionForRoutePricingFilterRequest'
@@ -3262,6 +3310,47 @@ paths:
                     type: object
               type: object
       summary: Update globalSetting by Id (dashboard)
+      tags:
+      - GlobalSettings
+  /dash/global-settings/batch:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.GlobalSettingUpdateBatchRequest
+        required: true
+        schema:
+          items:
+            properties:
+              id:
+                type: string
+              value:
+                type: string
+            required:
+            - id
+            - value
+            type: object
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Update globalSetting batch (dashboard)
       tags:
       - GlobalSettings
   /dash/global-settings/filter:
@@ -4460,6 +4549,41 @@ paths:
       summary: Get Me Customer (Landing)
       tags:
       - Customers
+  /landing/docks/options/route-pricing-search:
+    post:
+      consumes:
+      - application/json
+      description: Return list of docks for route pricing, this return all active
+        route, only arrival_dock_id or departure_dock_id can be inserted in the filter
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.DockLandingOptionForRoutePricingSearchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DockLandingOptionForRoutePricingSearchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/DockPublicResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for Route Pricing Search (Landing)
+      tags:
+      - Docks
   /landing/places/filter:
     post:
       consumes:
