@@ -198,7 +198,6 @@ definitions:
     - photo
     - refund_policy
     - reschedule_policy
-    - type
     - user_email
     - user_name
     - user_password
@@ -573,7 +572,6 @@ definitions:
         maxLength: 255
         type: string
     required:
-    - iana_timezone
     - name
     type: object
   DockFetchRequest:
@@ -793,6 +791,8 @@ definitions:
     properties:
       created_at:
         type: string
+      iana_timezone:
+        $ref: '#/definitions/IANATimeZoneIdentifierEnum'
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
@@ -814,7 +814,6 @@ definitions:
         maxLength: 255
         type: string
     required:
-    - iana_timezone
     - name
     type: object
   GlobalSettingFetchRequest:
@@ -865,6 +864,7 @@ definitions:
     - AWS_ACCESS_KEY_ID
     - AWS_SECRET_ACCESS_KEY
     - AWS_REGION
+    - AWS_ENDPOINT
     - AWS_BUCKET_NAME
     - AWS_BUCKET_URL
     - ZEPTOMAIL_API_KEY
@@ -1530,6 +1530,8 @@ definitions:
     required:
     - name
     type: object
+  OrderDownloadInvoiceRequest:
+    type: object
   OrderFetchRequest:
     properties:
       limit:
@@ -1666,6 +1668,33 @@ definitions:
         example: 24
         type: integer
     type: object
+  PaymentLandingCreateOrderPaymentRequest:
+    properties:
+      order_id:
+        type: string
+      payment_method_channel:
+        $ref: '#/definitions/PaymentMethodChannelEnum'
+      payment_method_id:
+        type: string
+        x-nullable: true
+    required:
+    - order_id
+    type: object
+  PaymentMethodChannelEnum:
+    enum:
+    - BCA
+    - MANDIRI
+    - BRI
+    - BNI
+    - CIMB
+    - QR_CODE
+    - CARD
+    - SHOPEEPAY
+    - OVO
+    - DANA
+    - LINKAJA
+    - JENIUSPAY
+    type: string
   PermissionEnum:
     enum:
     - CALENDAR_FETCH
@@ -1675,6 +1704,7 @@ definitions:
     - COMPANY_UPDATE
     - COMPANY_DELETE
     - COMPANY_OPTION_FOR_VESSEL_FORM
+    - COMPANY_OPTION_FOR_USER_FORM
     - CUSTOMER_TIER_OPTION_FOR_CUSTOMER_FORM
     - CUSTOMER_TIER_OPTION_FOR_ROUTE_PRICING_FILTER
     - CUSTOMER_FETCH
@@ -1701,6 +1731,7 @@ definitions:
     - PLACE_GET
     - PLACE_UPDATE
     - PLACE_DELETE
+    - ROLE_FETCH
     - ROLE_OPTION_FOR_USER_FORM
     - ROUTE_CREATE
     - ROUTE_FETCH
@@ -1846,6 +1877,43 @@ definitions:
     - CONTENT_MANAGEMENT
     - READ_ONLY
     type: string
+  RoleFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
   RoleOptionForUserFormRequest:
     properties:
       limit:
@@ -2297,6 +2365,10 @@ definitions:
       avatar:
         type: string
         x-nullable: true
+      company:
+        allOf:
+        - $ref: '#/definitions/CompanyPublicResponse'
+        x-nullable: true
       email:
         example: john.doe@gmail.com
         type: string
@@ -2353,13 +2425,16 @@ definitions:
     properties:
       created_at:
         type: string
+      depart_price:
+        example: 100000
+        type: number
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
       name:
         example: John Doe
         type: string
-      price:
+      return_price:
         example: 100000
         type: number
       type:
@@ -2448,7 +2523,6 @@ definitions:
     - company_id
     - facility
     - name
-    - type
     type: object
   VesselFetchRequest:
     properties:
@@ -2737,7 +2811,6 @@ definitions:
     required:
     - facility
     - name
-    - type
     type: object
   data_type.HourTime:
     type: object
@@ -3643,6 +3716,30 @@ paths:
       summary: Get Order (Dashboard)
       tags:
       - Orders
+  /dash/orders/{id}/invoice/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.OrderDownloadInvoiceRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderDownloadInvoiceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'content-type: application/pdf'
+      summary: Download Order Invoice (Dashboard)
+      tags:
+      - Orders
   /dash/orders/filter:
     post:
       consumes:
@@ -3829,6 +3926,39 @@ paths:
       summary: Filter Place (Dashboard)
       tags:
       - Places
+  /dash/roles:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.RoleFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RoleFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/RoleResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Fetch Roles (Dashboard)
+      tags:
+      - Roles
   /dash/roles/options/user-form:
     post:
       consumes:
@@ -4696,6 +4826,32 @@ paths:
       summary: Option for Route Pricing Search (Landing)
       tags:
       - Docks
+  /landing/payments:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.PaymentLandingCreateOrderPaymentRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentLandingCreateOrderPaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Create Payment Request (Dashboard)
+      tags:
+      - Payments
   /landing/places/filter:
     post:
       consumes:
