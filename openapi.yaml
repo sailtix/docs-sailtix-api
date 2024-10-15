@@ -468,6 +468,10 @@ definitions:
     - refund_policy
     - reschedule_policy
     type: object
+  CurrencyEnum:
+    enum:
+    - IDR
+    type: string
   CustomerFetchRequest:
     properties:
       customer_tier:
@@ -1645,6 +1649,10 @@ definitions:
         type: number
       updated_at:
         type: string
+      xendit_payment:
+        allOf:
+        - $ref: '#/definitions/XenditPaymentResponse'
+        x-nullable: true
     type: object
   OrderStatusEnum:
     enum:
@@ -1695,6 +1703,26 @@ definitions:
     - LINKAJA
     - JENIUSPAY
     type: string
+  PaymentMethodEnum:
+    enum:
+    - VIRTUAL_ACCOUNT
+    - EWALLET
+    - QR_CODE
+    - CARD
+    type: string
+  PaymentStatusEnum:
+    enum:
+    - PENDING
+    - REQUIRES_ACTION
+    - CANCELED
+    - SUCCEEDED
+    - FAILED
+    - VOIDED
+    - UNKNOWN
+    - AWAITING_CAPTURE
+    - EXPIRED
+    - UNKNOWN_ENUM_VALUE
+    type: string
   PermissionEnum:
     enum:
     - CALENDAR_FETCH
@@ -1734,10 +1762,12 @@ definitions:
     - ROLE_FETCH
     - ROLE_OPTION_FOR_USER_FORM
     - ROUTE_CREATE
+    - ROUTE_CREATE_BATCH
     - ROUTE_FETCH
     - ROUTE_GET
     - ROUTE_UPDATE
     - ROUTE_DELETE
+    - ROUTE_OPTION_FOR_ROUTE_PRICING_FORM
     - ROUTE_PRICING_CREATE
     - ROUTE_PRICING_FETCH
     - ROUTE_PRICING_GET
@@ -1961,6 +1991,33 @@ definitions:
       name:
         $ref: '#/definitions/RoleEnum'
     type: object
+  RouteCreateBatchRequest:
+    properties:
+      routes:
+        items:
+          $ref: '#/definitions/RouteCreateBatchRequestRoute'
+        type: array
+      vessel_id:
+        type: string
+    required:
+    - vessel_id
+    type: object
+  RouteCreateBatchRequestRoute:
+    properties:
+      arrival_dock_id:
+        type: string
+      arrival_time:
+        $ref: '#/definitions/data_type.HourTime'
+      departure_dock_id:
+        type: string
+      departure_time:
+        $ref: '#/definitions/data_type.HourTime'
+      is_active:
+        type: boolean
+    required:
+    - arrival_dock_id
+    - departure_dock_id
+    type: object
   RouteCreateRequest:
     properties:
       arrival_dock_id:
@@ -2024,6 +2081,41 @@ definitions:
       vessel_id:
         type: string
         x-nullable: true
+    type: object
+  RouteOptionForRoutePricingFormRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
     type: object
   RoutePricingCreateRequest:
     properties:
@@ -2812,7 +2904,65 @@ definitions:
     - facility
     - name
     type: object
+  XenditPaymentResponse:
+    properties:
+      amount:
+        type: number
+      card:
+        allOf:
+        - $ref: '#/definitions/dto_response.XenditPaymentResponseCard'
+        x-nullable: true
+      created_at:
+        type: string
+      currency_code:
+        $ref: '#/definitions/CurrencyEnum'
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      order_id:
+        example: fab6cc39-6903-4bd6-84fc-c7c7fdaca98e
+        type: string
+      payment_method:
+        $ref: '#/definitions/PaymentMethodEnum'
+      payment_method_channel:
+        $ref: '#/definitions/PaymentMethodChannelEnum'
+      qr_code:
+        allOf:
+        - $ref: '#/definitions/dto_response.XenditPaymentResponseQrCode'
+        x-nullable: true
+      status:
+        $ref: '#/definitions/PaymentStatusEnum'
+      status_description:
+        type: string
+      updated_at:
+        type: string
+      virtual_account:
+        allOf:
+        - $ref: '#/definitions/dto_response.XenditPaymentResponseVirtualAccount'
+        x-nullable: true
+    type: object
   data_type.HourTime:
+    type: object
+  dto_response.XenditPaymentResponseCard:
+    properties:
+      payment_url:
+        type: string
+    type: object
+  dto_response.XenditPaymentResponseQrCode:
+    properties:
+      expires_at:
+        type: string
+      qr_string:
+        type: string
+    type: object
+  dto_response.XenditPaymentResponseVirtualAccount:
+    properties:
+      customer_name:
+        type: string
+      expires_at:
+        type: string
+      virtual_account_number:
+        type: string
     type: object
 host: api.sailtix.com
 info:
@@ -4267,6 +4417,37 @@ paths:
       summary: Update route by Id (dashboard)
       tags:
       - Routes
+  /dash/routes/batch:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.RouteCreateBatchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RouteCreateBatchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      route:
+                        $ref: '#/definitions/RouteResponse'
+                    type: object
+              type: object
+      summary: Create MultipleRoute (Dashboard)
+      tags:
+      - Routes
   /dash/routes/filter:
     post:
       consumes:
@@ -4298,6 +4479,39 @@ paths:
                     type: object
               type: object
       summary: Filter Routes (Dashboard)
+      tags:
+      - Routes
+  /dash/routes/options/route-pricing-form:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.RouteOptionForRoutePricingFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RouteOptionForRoutePricingFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/RouteResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for Route Pricing Form (Dashboard)
       tags:
       - Routes
   /dash/uploads:
