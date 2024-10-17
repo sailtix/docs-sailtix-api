@@ -1656,6 +1656,52 @@ definitions:
     required:
     - name
     type: object
+  OrderLandingFetchRequest:
+    properties:
+      issued_by:
+        allOf:
+        - $ref: '#/definitions/OrderIssuedByEnum'
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+      status:
+        allOf:
+        - $ref: '#/definitions/OrderStatusEnum'
+        x-nullable: true
+    type: object
+  OrderLandingGetRequest:
+    type: object
   OrderResponse:
     properties:
       created_at:
@@ -5117,6 +5163,75 @@ paths:
                     type: object
               type: object
       summary: Create Orders (Landing Page)
+      tags:
+      - Orders
+  /landing/orders/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.OrderLandingGetRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderLandingGetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      order:
+                        $ref: '#/definitions/OrderResponse'
+                    type: object
+              type: object
+      summary: Get Order History of current logged in user (Landing Page)
+      tags:
+      - Orders
+  /landing/orders/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.OrderLandingFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderLandingFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/OrderResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Fetch Order Histories of current logged in user (Landing Page)
       tags:
       - Orders
   /landing/payments:
