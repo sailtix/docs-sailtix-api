@@ -1608,6 +1608,54 @@ definitions:
         - $ref: '#/definitions/VesselBookingResponse'
         x-nullable: true
     type: object
+  OrderLandingCreateRequest:
+    properties:
+      guest_email:
+        maxLength: 255
+        type: string
+      guest_name:
+        example: John Doe
+        maxLength: 255
+        type: string
+      guest_phone:
+        type: string
+      vessel_bookings:
+        items:
+          $ref: '#/definitions/OrderLandingCreateRequestVesselBooking'
+        minItems: 1
+        type: array
+    type: object
+  OrderLandingCreateRequestVesselBooking:
+    properties:
+      depart_route_id:
+        example: dcf9a815-21b5-4a97-b953-7e34dfccf5b4
+        type: string
+      depart_travel_date:
+        type: string
+      passengers:
+        items:
+          $ref: '#/definitions/OrderLandingCreateRequestVesselBookingPassenger'
+        minItems: 1
+        type: array
+      return_route_id:
+        example: a92f3235-7470-4ceb-8b61-ba32db060c9c
+        type: string
+      return_travel_date:
+        example: 41762dda-b61e-474b-bb0e-25902538af21
+        type: string
+    required:
+    - depart_route_id
+    type: object
+  OrderLandingCreateRequestVesselBookingPassenger:
+    properties:
+      name:
+        maxLength: 255
+        type: string
+      type:
+        $ref: '#/definitions/VesselBookingPassengerTypeEnum'
+    required:
+    - name
+    type: object
   OrderResponse:
     properties:
       created_at:
@@ -5040,6 +5088,37 @@ paths:
       summary: Option for Route Pricing Search (Landing)
       tags:
       - Docks
+  /landing/orders:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.OrderLandingCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderLandingCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      order:
+                        $ref: '#/definitions/OrderResponse'
+                    type: object
+              type: object
+      summary: Create Orders (Landing Page)
+      tags:
+      - Orders
   /landing/payments:
     post:
       consumes:
