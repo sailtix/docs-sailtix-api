@@ -1862,6 +1862,7 @@ definitions:
     - ROUTE_UPDATE
     - ROUTE_DELETE
     - ROUTE_OPTION_FOR_ROUTE_PRICING_FORM
+    - ROUTE_OPTION_FOR_ORDER_FORM
     - ROUTE_PRICING_CREATE
     - ROUTE_PRICING_FETCH
     - ROUTE_PRICING_GET
@@ -2175,6 +2176,41 @@ definitions:
       vessel_id:
         type: string
         x-nullable: true
+    type: object
+  RouteOptionForOrderFormRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
     type: object
   RouteOptionForRoutePricingFormRequest:
     properties:
@@ -4573,6 +4609,39 @@ paths:
                     type: object
               type: object
       summary: Filter Routes (Dashboard)
+      tags:
+      - Routes
+  /dash/routes/options/order-form:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.RouteOptionForOrderFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RouteOptionForOrderFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/RouteResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for Order Form (Dashboard)
       tags:
       - Routes
   /dash/routes/options/route-pricing-form:
