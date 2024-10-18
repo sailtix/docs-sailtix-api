@@ -517,6 +517,44 @@ definitions:
         type: array
         uniqueItems: true
     type: object
+  CustomerOptionForOrderFormRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - fullname
+              - email
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
   CustomerResponse:
     properties:
       customer_tier:
@@ -1751,6 +1789,7 @@ definitions:
   OrderStatusEnum:
     enum:
     - PENDING
+    - AWAITING_PAYMENT
     - PAID
     - CANCELLED
     - FAILED
@@ -1831,6 +1870,7 @@ definitions:
     - CUSTOMER_TIER_OPTION_FOR_ROUTE_PRICING_FILTER
     - CUSTOMER_FETCH
     - CUSTOMER_GET
+    - CUSTOMER_OPTION_FOR_ORDER_FORM
     - DOCK_CREATE
     - DOCK_FETCH
     - DOCK_GET
@@ -3451,6 +3491,39 @@ paths:
                     type: object
               type: object
       summary: Fetch Customers (Dashboard)
+      tags:
+      - Customers
+  /dash/customers/options/order-form:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CustomerOptionForOrderFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CustomerOptionForOrderFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CustomerResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option For Order Form (Dashboard)
       tags:
       - Customers
   /dash/docks:
