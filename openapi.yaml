@@ -158,8 +158,6 @@ definitions:
         type: string
       infant_policy:
         type: string
-      is_active:
-        type: boolean
       legal_name:
         maxLength: 255
         type: string
@@ -205,9 +203,6 @@ definitions:
     type: object
   CompanyFetchRequest:
     properties:
-      is_active:
-        type: boolean
-        x-nullable: true
       limit:
         example: 100
         maximum: 100
@@ -246,7 +241,46 @@ definitions:
       type:
         allOf:
         - $ref: '#/definitions/CompanyTypeEnum'
+        description: IsActive *bool                  `json:"is_active" extensions:"x-nullable"`
         x-nullable: true
+    type: object
+  CompanyLandingOptionForRoutePricingSearchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - branch_name
+              - legal_name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
     type: object
   CompanyOptionForUserFormRequest:
     properties:
@@ -323,6 +357,33 @@ definitions:
           type: object
         type: array
         uniqueItems: true
+    type: object
+  CompanyPublicPreviewResponse:
+    properties:
+      address:
+        example: Address
+        type: string
+      branch_name:
+        example: Ekajaya
+        type: string
+      description:
+        example: Desc
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      legal_name:
+        example: Ekajaya
+        type: string
+      logo:
+        example: https://link.image.com or base64
+        type: string
+      phone:
+        example: "+6285275758484"
+        type: string
+      photo:
+        example: https://link.image.com or base64
+        type: string
     type: object
   CompanyPublicResponse:
     properties:
@@ -440,8 +501,6 @@ definitions:
         type: string
       infant_policy:
         type: string
-      is_active:
-        type: boolean
       legal_name:
         maxLength: 255
         type: string
@@ -2358,6 +2417,11 @@ definitions:
         x-nullable: true
       child:
         type: integer
+      company_ids:
+        items:
+          type: string
+        type: array
+        x-nullable: true
       departure_date:
         type: string
       departure_dock_id:
@@ -2374,6 +2438,11 @@ definitions:
         example: 1
         minimum: 1
         type: integer
+      vessel_types:
+        items:
+          $ref: '#/definitions/VesselTypeEnum'
+        type: array
+        x-nullable: true
     required:
     - arrival_dock_id
     - departure_dock_id
@@ -5217,6 +5286,39 @@ paths:
       summary: Option list for Route Pricing Filter (Dashboard)
       tags:
       - Vessels
+  /landing/companies/options/route-pricing-search:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CompanyLandingOptionForRoutePricingSearchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyLandingOptionForRoutePricingSearchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CompanyPublicPreviewResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for Route Pricing Search (Landing)
+      tags:
+      - Companies
   /landing/customers/me:
     get:
       consumes:
