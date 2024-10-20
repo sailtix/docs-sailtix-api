@@ -171,6 +171,9 @@ definitions:
         type: string
       reschedule_policy:
         type: string
+      slug:
+        maxLength: 255
+        type: string
       type:
         $ref: '#/definitions/CompanyTypeEnum'
       user_email:
@@ -196,6 +199,7 @@ definitions:
     - photo
     - refund_policy
     - reschedule_policy
+    - slug
     - user_email
     - user_name
     - user_password
@@ -514,6 +518,9 @@ definitions:
         type: string
       reschedule_policy:
         type: string
+      slug:
+        maxLength: 255
+        type: string
       type:
         $ref: '#/definitions/CompanyTypeEnum'
     required:
@@ -528,6 +535,7 @@ definitions:
     - photo
     - refund_policy
     - reschedule_policy
+    - slug
     type: object
   CurrencyEnum:
     enum:
