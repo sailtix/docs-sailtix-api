@@ -5345,6 +5345,36 @@ paths:
       summary: Option list for Route Pricing Filter (Dashboard)
       tags:
       - Vessels
+  /landing/companies/{slug}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      company:
+                        $ref: '#/definitions/CompanyPublicResponse'
+                    type: object
+              type: object
+      summary: Get company by slug (landing)
+      tags:
+      - Companies
   /landing/companies/options/route-pricing-search:
     post:
       consumes:
