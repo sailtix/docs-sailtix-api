@@ -514,6 +514,8 @@ definitions:
         type: string
       reschedule_policy:
         type: string
+      type:
+        $ref: '#/definitions/CompanyTypeEnum'
     required:
     - address
     - branch_name
@@ -659,6 +661,13 @@ definitions:
         type: boolean
       name:
         $ref: '#/definitions/CustomerTierNameEnum'
+    type: object
+  CustomerUpdateRequest:
+    properties:
+      customer_tier:
+        $ref: '#/definitions/CustomerTierNameEnum'
+      is_active:
+        type: boolean
     type: object
   DataResponse:
     additionalProperties: true
@@ -1929,6 +1938,7 @@ definitions:
     - CUSTOMER_TIER_OPTION_FOR_ROUTE_PRICING_FILTER
     - CUSTOMER_FETCH
     - CUSTOMER_GET
+    - CUSTOMER_UPDATE
     - CUSTOMER_OPTION_FOR_ORDER_FORM
     - DOCK_CREATE
     - DOCK_FETCH
@@ -2353,6 +2363,7 @@ definitions:
       child_fee:
         type: number
       infant_fee:
+        minimum: 0
         type: number
       route_id:
         type: string
@@ -2485,6 +2496,7 @@ definitions:
       child_fee:
         type: number
       infant_fee:
+        minimum: 0
         type: number
     type: object
   RoutePublicResponse:
@@ -2802,6 +2814,8 @@ definitions:
       depart_route_pricing_id:
         example: 3c42a939-931d-46bb-ad50-9d297dcdc5f7
         type: string
+      depart_travel_date:
+        type: string
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
@@ -2825,6 +2839,8 @@ definitions:
         example: 6675c33b-f92d-4892-b0db-9b6e5b88b2a7
         type: string
         x-nullable: true
+      return_travel_date:
+        type: string
       updated_at:
         type: string
       vessel_booking_passengers:
@@ -3527,6 +3543,41 @@ paths:
                     type: object
               type: object
       summary: Get Customer (Dashboard)
+      tags:
+      - Customers
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.CustomerUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CustomerUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      customer:
+                        $ref: '#/definitions/CustomerResponse'
+                    type: object
+              type: object
+      summary: Update Customer (Dashboard)
       tags:
       - Customers
   /dash/customers/filter:
