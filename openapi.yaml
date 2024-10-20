@@ -388,6 +388,9 @@ definitions:
       photo:
         example: https://link.image.com or base64
         type: string
+      slug:
+        example: example-slug-123
+        type: string
     type: object
   CompanyPublicResponse:
     properties:
@@ -426,6 +429,9 @@ definitions:
         type: string
       reschedule_policy:
         example: Policy
+        type: string
+      slug:
+        example: example-slug-123
         type: string
       type:
         $ref: '#/definitions/CompanyTypeEnum'
@@ -475,6 +481,9 @@ definitions:
         type: string
       reschedule_policy:
         example: Policy
+        type: string
+      slug:
+        example: example-slug-123
         type: string
       type:
         $ref: '#/definitions/CompanyTypeEnum'
