@@ -150,6 +150,9 @@ definitions:
       route_id:
         example: a8588717-b106-46aa-b9bb-56ab5ccf9f24
         type: string
+      total_seats:
+        minimum: 0
+        type: integer
     required:
     - route_id
     type: object
@@ -157,7 +160,7 @@ definitions:
     properties:
       address:
         type: string
-      branch_name:
+      brand_name:
         maxLength: 255
         type: string
       child_age_policy:
@@ -197,7 +200,7 @@ definitions:
         type: string
     required:
     - address
-    - branch_name
+    - brand_name
     - child_age_policy
     - description
     - infant_policy
@@ -238,7 +241,7 @@ definitions:
               type: string
             field:
               enum:
-              - branch_name
+              - brand_name
               - legal_name
               - created_at
               - updated_at
@@ -319,7 +322,7 @@ definitions:
               type: string
             field:
               enum:
-              - branch_name
+              - brand_name
               - legal_name
               - created_at
               - updated_at
@@ -357,7 +360,7 @@ definitions:
               type: string
             field:
               enum:
-              - branch_name
+              - brand_name
               - legal_name
               - created_at
               - updated_at
@@ -395,7 +398,7 @@ definitions:
               type: string
             field:
               enum:
-              - branch_name
+              - brand_name
               - legal_name
               - created_at
               - updated_at
@@ -413,7 +416,7 @@ definitions:
       address:
         example: Address
         type: string
-      branch_name:
+      brand_name:
         example: Ekajaya
         type: string
       description:
@@ -443,7 +446,7 @@ definitions:
       address:
         example: Address
         type: string
-      branch_name:
+      brand_name:
         example: Ekajaya
         type: string
       child_age_policy:
@@ -487,7 +490,7 @@ definitions:
       address:
         example: Address
         type: string
-      branch_name:
+      brand_name:
         example: Ekajaya
         type: string
       child_age_policy:
@@ -551,7 +554,7 @@ definitions:
     properties:
       address:
         type: string
-      branch_name:
+      brand_name:
         maxLength: 255
         type: string
       child_age_policy:
@@ -580,7 +583,7 @@ definitions:
         $ref: '#/definitions/CompanyTypeEnum'
     required:
     - address
-    - branch_name
+    - brand_name
     - child_age_policy
     - description
     - infant_policy
@@ -3351,8 +3354,8 @@ paths:
                   allOf:
                   - $ref: '#/definitions/DataResponse'
                   - properties:
-                      calendar:
-                        $ref: '#/definitions/CalendarResponse'
+                      calendar_seat_available:
+                        $ref: '#/definitions/CalendarSeatAvailabilityResponse'
                     type: object
               type: object
       summary: Update calendar available seat (Dashboard)
