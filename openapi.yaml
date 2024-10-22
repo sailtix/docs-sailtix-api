@@ -82,8 +82,6 @@ definitions:
     properties:
       arrival_dock_id:
         type: string
-      customer_tier:
-        $ref: '#/definitions/CustomerTierNameEnum'
       departure_dock_id:
         type: string
       end_date:
@@ -128,9 +126,9 @@ definitions:
     type: object
   CalendarResponse:
     properties:
-      route_pricing:
+      route:
         allOf:
-        - $ref: '#/definitions/RoutePricingResponse'
+        - $ref: '#/definitions/RouteResponse'
         x-nullable: true
       seat_availabilities:
         items:
@@ -144,6 +142,16 @@ definitions:
         type: string
       seat_left:
         type: integer
+    type: object
+  CalendarUpdateAvailableSeatRequest:
+    properties:
+      date:
+        type: string
+      route_id:
+        example: a8588717-b106-46aa-b9bb-56ab5ccf9f24
+        type: string
+    required:
+    - route_id
     type: object
   CompanyCreateRequest:
     properties:
@@ -247,6 +255,44 @@ definitions:
         - $ref: '#/definitions/CompanyTypeEnum'
         description: IsActive *bool                  `json:"is_active" extensions:"x-nullable"`
         x-nullable: true
+    type: object
+  CompanyLandingFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - branch_name
+              - legal_name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
     type: object
   CompanyLandingOptionForRoutePricingSearchRequest:
     properties:
@@ -1944,6 +1990,7 @@ definitions:
   PermissionEnum:
     enum:
     - CALENDAR_FETCH
+    - CALENDAR_UPDATE_AVAILABLE_SEAT
     - COMPANY_CREATE
     - COMPANY_FETCH
     - COMPANY_GET
@@ -3280,6 +3327,37 @@ paths:
       summary: Logout (Dashboard)
       tags:
       - Auth
+  /dash/calendars/available-seat:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CalendarUpdateAvailableSeatRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CalendarUpdateAvailableSeatRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      calendar:
+                        $ref: '#/definitions/CalendarResponse'
+                    type: object
+              type: object
+      summary: Update calendar available seat (Dashboard)
+      tags:
+      - Calendars
   /dash/calendars/filter:
     post:
       consumes:
@@ -5382,6 +5460,39 @@ paths:
                     type: object
               type: object
       summary: Get company by slug (landing)
+      tags:
+      - Companies
+  /landing/companies/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CompanyLandingFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyLandingFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CompanyResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Companies (Landing Page)
       tags:
       - Companies
   /landing/companies/options/route-pricing-search:
