@@ -160,7 +160,7 @@ definitions:
     properties:
       address:
         type: string
-      brand_name:
+      branch_name:
         maxLength: 255
         type: string
       child_age_policy:
@@ -200,7 +200,7 @@ definitions:
         type: string
     required:
     - address
-    - brand_name
+    - branch_name
     - child_age_policy
     - description
     - infant_policy
@@ -241,7 +241,7 @@ definitions:
               type: string
             field:
               enum:
-              - brand_name
+              - branch_name
               - legal_name
               - created_at
               - updated_at
@@ -322,7 +322,7 @@ definitions:
               type: string
             field:
               enum:
-              - brand_name
+              - branch_name
               - legal_name
               - created_at
               - updated_at
@@ -360,7 +360,7 @@ definitions:
               type: string
             field:
               enum:
-              - brand_name
+              - branch_name
               - legal_name
               - created_at
               - updated_at
@@ -398,7 +398,7 @@ definitions:
               type: string
             field:
               enum:
-              - brand_name
+              - branch_name
               - legal_name
               - created_at
               - updated_at
@@ -416,7 +416,7 @@ definitions:
       address:
         example: Address
         type: string
-      brand_name:
+      branch_name:
         example: Ekajaya
         type: string
       description:
@@ -446,7 +446,7 @@ definitions:
       address:
         example: Address
         type: string
-      brand_name:
+      branch_name:
         example: Ekajaya
         type: string
       child_age_policy:
@@ -490,7 +490,7 @@ definitions:
       address:
         example: Address
         type: string
-      brand_name:
+      branch_name:
         example: Ekajaya
         type: string
       child_age_policy:
@@ -554,7 +554,7 @@ definitions:
     properties:
       address:
         type: string
-      brand_name:
+      branch_name:
         maxLength: 255
         type: string
       child_age_policy:
@@ -583,7 +583,7 @@ definitions:
         $ref: '#/definitions/CompanyTypeEnum'
     required:
     - address
-    - brand_name
+    - branch_name
     - child_age_policy
     - description
     - infant_policy
@@ -2028,6 +2028,7 @@ definitions:
     - PLACE_FETCH
     - PLACE_GET
     - PLACE_UPDATE
+    - PLACE_UPDATE_MOVE
     - PLACE_DELETE
     - ROLE_FETCH
     - ROLE_OPTION_FOR_USER_FORM
@@ -2062,8 +2063,6 @@ definitions:
     properties:
       image_link:
         type: string
-      is_active:
-        type: boolean
       name:
         maxLength: 255
         type: string
@@ -2077,9 +2076,6 @@ definitions:
     type: object
   PlaceFetchRequest:
     properties:
-      is_active:
-        type: boolean
-        x-nullable: true
       limit:
         example: 100
         maximum: 100
@@ -2092,28 +2088,6 @@ definitions:
       phrase:
         type: string
         x-nullable: true
-      sorts:
-        items:
-          properties:
-            direction:
-              enum:
-              - asc
-              - desc
-              example: desc
-              type: string
-            field:
-              enum:
-              - name
-              - created_at
-              - updated_at
-              example: updated_at
-              type: string
-          required:
-          - direction
-          - field
-          type: object
-        type: array
-        uniqueItems: true
     type: object
   PlaceLandingFetchRequest:
     properties:
@@ -2136,8 +2110,6 @@ definitions:
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
-      is_active:
-        type: boolean
       name:
         example: Nusa Perida
         type: string
@@ -2151,20 +2123,9 @@ definitions:
     type: object
   PlaceUpdateRequest:
     properties:
-      image_link:
-        type: string
-      is_active:
-        type: boolean
-      name:
-        maxLength: 255
-        type: string
-      subtitle:
-        maxLength: 255
-        type: string
-    required:
-    - image_link
-    - name
-    - subtitle
+      position:
+        minimum: 1
+        type: integer
     type: object
   Response:
     properties:
@@ -4464,6 +4425,42 @@ paths:
       summary: Update place by Id (dashboard)
       tags:
       - Places
+  /dash/places/{id}/move:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.PlaceUpdateMoveRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      place:
+                        $ref: '#/definitions/PlaceResponse'
+                    type: object
+              type: object
+      summary: Update position of place by Id (dashboard)
+      tags:
+      - Places
   /dash/places/filter:
     post:
       consumes:
@@ -5749,6 +5746,32 @@ paths:
       summary: Filter Place (Landing)
       tags:
       - Places
+  /landing/route-pricings/best-for-you:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      route_pricings:
+                        items:
+                          $ref: '#/definitions/LandingRoutePricingResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Best for you list (Landing)
+      tags:
+      - Route Pricings
   /landing/route-pricings/search:
     post:
       consumes:
@@ -5775,7 +5798,7 @@ paths:
                   - properties:
                       route_pricings:
                         items:
-                          $ref: '#/definitions/LandingRoutePricingResponse'
+                          $ref: '#/definitions/RoutePricingResponse'
                         type: array
                     type: object
               type: object
