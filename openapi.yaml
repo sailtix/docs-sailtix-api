@@ -165,9 +165,13 @@ definitions:
         type: string
       child_age_policy:
         type: string
+      child_age_policy_description:
+        type: string
       description:
         type: string
       infant_policy:
+        type: string
+      infant_policy_description:
         type: string
       legal_name:
         maxLength: 255
@@ -179,8 +183,12 @@ definitions:
       photo:
         type: string
       refund_policy:
+        $ref: '#/definitions/CompanyRefundPolicyEnum'
+      refund_policy_description:
         type: string
       reschedule_policy:
+        $ref: '#/definitions/CompanyReschedulePolicyEnum'
+      reschedule_policy_description:
         type: string
       slug:
         maxLength: 255
@@ -190,15 +198,11 @@ definitions:
     required:
     - address
     - branch_name
-    - child_age_policy
     - description
-    - infant_policy
     - legal_name
     - logo
     - phone
     - photo
-    - refund_policy
-    - reschedule_policy
     - slug
     type: object
   CompanyFetchRequest:
@@ -437,6 +441,9 @@ definitions:
       child_age_policy:
         example: Policy
         type: string
+      child_age_policy_description:
+        example: Policy Description
+        type: string
       description:
         example: Desc
         type: string
@@ -445,6 +452,9 @@ definitions:
         type: string
       infant_policy:
         example: Policy
+        type: string
+      infant_policy_description:
+        example: Policy Description
         type: string
       legal_name:
         example: Ekajaya
@@ -459,9 +469,13 @@ definitions:
         example: https://link.image.com or base64
         type: string
       refund_policy:
+        $ref: '#/definitions/CompanyRefundPolicyEnum'
+      refund_policy_description:
         example: Policy
         type: string
       reschedule_policy:
+        $ref: '#/definitions/CompanyReschedulePolicyEnum'
+      reschedule_policy_description:
         example: Policy
         type: string
       slug:
@@ -470,6 +484,16 @@ definitions:
       type:
         $ref: '#/definitions/CompanyTypeEnum'
     type: object
+  CompanyRefundPolicyEnum:
+    enum:
+    - Flexible
+    - Non-refundable
+    type: string
+  CompanyReschedulePolicyEnum:
+    enum:
+    - Flexible
+    - Reschedule not allowed
+    type: string
   CompanyResponse:
     properties:
       address:
@@ -480,6 +504,9 @@ definitions:
         type: string
       child_age_policy:
         example: Policy
+        type: string
+      child_age_policy_description:
+        example: Policy Description
         type: string
       created_at:
         type: string
@@ -498,6 +525,9 @@ definitions:
       infant_policy:
         example: Policy
         type: string
+      infant_policy_description:
+        example: Policy Description
+        type: string
       legal_name:
         example: Ekajaya
         type: string
@@ -511,9 +541,13 @@ definitions:
         example: https://link.image.com or base64
         type: string
       refund_policy:
+        $ref: '#/definitions/CompanyRefundPolicyEnum'
+      refund_policy_description:
         example: Policy
         type: string
       reschedule_policy:
+        $ref: '#/definitions/CompanyReschedulePolicyEnum'
+      reschedule_policy_description:
         example: Policy
         type: string
       slug:
@@ -544,9 +578,13 @@ definitions:
         type: string
       child_age_policy:
         type: string
+      child_age_policy_description:
+        type: string
       description:
         type: string
       infant_policy:
+        type: string
+      infant_policy_description:
         type: string
       legal_name:
         maxLength: 255
@@ -558,8 +596,12 @@ definitions:
       photo:
         type: string
       refund_policy:
+        $ref: '#/definitions/CompanyRefundPolicyEnum'
+      refund_policy_description:
         type: string
       reschedule_policy:
+        $ref: '#/definitions/CompanyReschedulePolicyEnum'
+      reschedule_policy_description:
         type: string
       slug:
         maxLength: 255
@@ -569,15 +611,11 @@ definitions:
     required:
     - address
     - branch_name
-    - child_age_policy
     - description
-    - infant_policy
     - legal_name
     - logo
     - phone
     - photo
-    - refund_policy
-    - reschedule_policy
     - slug
     type: object
   CurrencyEnum:
