@@ -1776,6 +1776,11 @@ definitions:
         type: string
       guest_phone:
         type: string
+      payment_method_channel:
+        $ref: '#/definitions/PaymentMethodChannelEnum'
+      payment_method_id:
+        type: string
+        x-nullable: true
       vessel_bookings:
         items:
           $ref: '#/definitions/OrderLandingCreateRequestVesselBooking'
