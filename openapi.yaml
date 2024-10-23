@@ -187,17 +187,6 @@ definitions:
         type: string
       type:
         $ref: '#/definitions/CompanyTypeEnum'
-      user_email:
-        maxLength: 100
-        type: string
-      user_name:
-        maxLength: 255
-        type: string
-      user_password:
-        type: string
-      user_person_in_charge:
-        maxLength: 100
-        type: string
     required:
     - address
     - branch_name
@@ -211,10 +200,6 @@ definitions:
     - refund_policy
     - reschedule_policy
     - slug
-    - user_email
-    - user_name
-    - user_password
-    - user_person_in_charge
     type: object
   CompanyFetchRequest:
     properties:
@@ -2074,21 +2059,6 @@ definitions:
     - name
     - subtitle
     type: object
-  PlaceFetchRequest:
-    properties:
-      limit:
-        example: 100
-        maximum: 100
-        minimum: 1
-        type: integer
-      page:
-        example: 1
-        minimum: 1
-        type: integer
-      phrase:
-        type: string
-        x-nullable: true
-    type: object
   PlaceLandingFetchRequest:
     properties:
       limit:
@@ -2109,6 +2079,8 @@ definitions:
         type: string
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      image_link:
         type: string
       name:
         example: Nusa Perida
@@ -4465,13 +4437,6 @@ paths:
     post:
       consumes:
       - application/json
-      parameters:
-      - description: Body Request
-        in: body
-        name: dto_request.PlaceFetchRequest
-        required: true
-        schema:
-          $ref: '#/definitions/PlaceFetchRequest'
       produces:
       - application/json
       responses:
@@ -4483,9 +4448,9 @@ paths:
             - properties:
                 data:
                   allOf:
-                  - $ref: '#/definitions/PaginationResponse'
+                  - $ref: '#/definitions/DataResponse'
                   - properties:
-                      nodes:
+                      places:
                         items:
                           $ref: '#/definitions/PlaceResponse'
                         type: array
