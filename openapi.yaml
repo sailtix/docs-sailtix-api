@@ -1900,6 +1900,8 @@ definitions:
         - $ref: '#/definitions/OrderStatusEnum'
         x-nullable: true
     type: object
+  OrderLandingGetByInvoiceNumberRequest:
+    type: object
   OrderLandingGetRequest:
     type: object
   OrderResponse:
@@ -5693,6 +5695,42 @@ paths:
                     type: object
               type: object
       summary: Fetch Order Histories of current logged in user (Landing Page)
+      tags:
+      - Orders
+  /landing/orders/invoice-number/{invoice_number}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Invoice number
+        in: path
+        name: invoice_number
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.OrderLandingGetByInvoiceNumberRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderLandingGetByInvoiceNumberRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      order:
+                        $ref: '#/definitions/OrderResponse'
+                    type: object
+              type: object
+      summary: Get Order History by Invoice Number (Landing Page)
       tags:
       - Orders
   /landing/payments:
