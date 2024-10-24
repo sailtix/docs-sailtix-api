@@ -11,6 +11,14 @@ definitions:
     - email
     - password
     type: object
+  AuthLandingCheckEmailRequest:
+    properties:
+      email:
+        maxLength: 100
+        type: string
+    required:
+    - email
+    type: object
   AuthLandingEmailVerificationRequest:
     properties:
       date_of_birth:
@@ -150,6 +158,9 @@ definitions:
       route_id:
         example: a8588717-b106-46aa-b9bb-56ab5ccf9f24
         type: string
+      total_seats:
+        minimum: 0
+        type: integer
     required:
     - route_id
     type: object
@@ -162,9 +173,13 @@ definitions:
         type: string
       child_age_policy:
         type: string
+      child_age_policy_description:
+        type: string
       description:
         type: string
       infant_policy:
+        type: string
+      infant_policy_description:
         type: string
       legal_name:
         maxLength: 255
@@ -176,42 +191,27 @@ definitions:
       photo:
         type: string
       refund_policy:
+        $ref: '#/definitions/CompanyRefundPolicyEnum'
+      refund_policy_description:
         type: string
       reschedule_policy:
+        $ref: '#/definitions/CompanyReschedulePolicyEnum'
+      reschedule_policy_description:
         type: string
       slug:
         maxLength: 255
         type: string
       type:
         $ref: '#/definitions/CompanyTypeEnum'
-      user_email:
-        maxLength: 100
-        type: string
-      user_name:
-        maxLength: 255
-        type: string
-      user_password:
-        type: string
-      user_person_in_charge:
-        maxLength: 100
-        type: string
     required:
     - address
     - branch_name
-    - child_age_policy
     - description
-    - infant_policy
     - legal_name
     - logo
     - phone
     - photo
-    - refund_policy
-    - reschedule_policy
     - slug
-    - user_email
-    - user_name
-    - user_password
-    - user_person_in_charge
     type: object
   CompanyFetchRequest:
     properties:
@@ -255,6 +255,44 @@ definitions:
         - $ref: '#/definitions/CompanyTypeEnum'
         description: IsActive *bool                  `json:"is_active" extensions:"x-nullable"`
         x-nullable: true
+    type: object
+  CompanyLandingFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - branch_name
+              - legal_name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
     type: object
   CompanyLandingOptionForRoutePricingSearchRequest:
     properties:
@@ -411,6 +449,9 @@ definitions:
       child_age_policy:
         example: Policy
         type: string
+      child_age_policy_description:
+        example: Policy Description
+        type: string
       description:
         example: Desc
         type: string
@@ -419,6 +460,9 @@ definitions:
         type: string
       infant_policy:
         example: Policy
+        type: string
+      infant_policy_description:
+        example: Policy Description
         type: string
       legal_name:
         example: Ekajaya
@@ -433,9 +477,13 @@ definitions:
         example: https://link.image.com or base64
         type: string
       refund_policy:
+        $ref: '#/definitions/CompanyRefundPolicyEnum'
+      refund_policy_description:
         example: Policy
         type: string
       reschedule_policy:
+        $ref: '#/definitions/CompanyReschedulePolicyEnum'
+      reschedule_policy_description:
         example: Policy
         type: string
       slug:
@@ -444,6 +492,16 @@ definitions:
       type:
         $ref: '#/definitions/CompanyTypeEnum'
     type: object
+  CompanyRefundPolicyEnum:
+    enum:
+    - Flexible
+    - Non-refundable
+    type: string
+  CompanyReschedulePolicyEnum:
+    enum:
+    - Flexible
+    - Reschedule not allowed
+    type: string
   CompanyResponse:
     properties:
       address:
@@ -454,6 +512,9 @@ definitions:
         type: string
       child_age_policy:
         example: Policy
+        type: string
+      child_age_policy_description:
+        example: Policy Description
         type: string
       created_at:
         type: string
@@ -472,6 +533,9 @@ definitions:
       infant_policy:
         example: Policy
         type: string
+      infant_policy_description:
+        example: Policy Description
+        type: string
       legal_name:
         example: Ekajaya
         type: string
@@ -485,9 +549,13 @@ definitions:
         example: https://link.image.com or base64
         type: string
       refund_policy:
+        $ref: '#/definitions/CompanyRefundPolicyEnum'
+      refund_policy_description:
         example: Policy
         type: string
       reschedule_policy:
+        $ref: '#/definitions/CompanyReschedulePolicyEnum'
+      reschedule_policy_description:
         example: Policy
         type: string
       slug:
@@ -518,9 +586,13 @@ definitions:
         type: string
       child_age_policy:
         type: string
+      child_age_policy_description:
+        type: string
       description:
         type: string
       infant_policy:
+        type: string
+      infant_policy_description:
         type: string
       legal_name:
         maxLength: 255
@@ -532,8 +604,12 @@ definitions:
       photo:
         type: string
       refund_policy:
+        $ref: '#/definitions/CompanyRefundPolicyEnum'
+      refund_policy_description:
         type: string
       reschedule_policy:
+        $ref: '#/definitions/CompanyReschedulePolicyEnum'
+      reschedule_policy_description:
         type: string
       slug:
         maxLength: 255
@@ -543,15 +619,11 @@ definitions:
     required:
     - address
     - branch_name
-    - child_age_policy
     - description
-    - infant_policy
     - legal_name
     - logo
     - phone
     - photo
-    - refund_policy
-    - reschedule_policy
     - slug
     type: object
   CurrencyEnum:
@@ -1750,6 +1822,11 @@ definitions:
         type: string
       guest_phone:
         type: string
+      payment_method_channel:
+        $ref: '#/definitions/PaymentMethodChannelEnum'
+      payment_method_id:
+        type: string
+        x-nullable: true
       vessel_bookings:
         items:
           $ref: '#/definitions/OrderLandingCreateRequestVesselBooking'
@@ -1830,6 +1907,8 @@ definitions:
         allOf:
         - $ref: '#/definitions/OrderStatusEnum'
         x-nullable: true
+    type: object
+  OrderLandingGetByInvoiceNumberRequest:
     type: object
   OrderLandingGetRequest:
     type: object
@@ -1987,6 +2066,7 @@ definitions:
     - PLACE_FETCH
     - PLACE_GET
     - PLACE_UPDATE
+    - PLACE_UPDATE_MOVE
     - PLACE_DELETE
     - ROLE_FETCH
     - ROLE_OPTION_FOR_USER_FORM
@@ -2021,8 +2101,6 @@ definitions:
     properties:
       image_link:
         type: string
-      is_active:
-        type: boolean
       name:
         maxLength: 255
         type: string
@@ -2033,46 +2111,6 @@ definitions:
     - image_link
     - name
     - subtitle
-    type: object
-  PlaceFetchRequest:
-    properties:
-      is_active:
-        type: boolean
-        x-nullable: true
-      limit:
-        example: 100
-        maximum: 100
-        minimum: 1
-        type: integer
-      page:
-        example: 1
-        minimum: 1
-        type: integer
-      phrase:
-        type: string
-        x-nullable: true
-      sorts:
-        items:
-          properties:
-            direction:
-              enum:
-              - asc
-              - desc
-              example: desc
-              type: string
-            field:
-              enum:
-              - name
-              - created_at
-              - updated_at
-              example: updated_at
-              type: string
-          required:
-          - direction
-          - field
-          type: object
-        type: array
-        uniqueItems: true
     type: object
   PlaceLandingFetchRequest:
     properties:
@@ -2095,8 +2133,8 @@ definitions:
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
-      is_active:
-        type: boolean
+      image_link:
+        type: string
       name:
         example: Nusa Perida
         type: string
@@ -2110,20 +2148,9 @@ definitions:
     type: object
   PlaceUpdateRequest:
     properties:
-      image_link:
-        type: string
-      is_active:
-        type: boolean
-      name:
-        maxLength: 255
-        type: string
-      subtitle:
-        maxLength: 255
-        type: string
-    required:
-    - image_link
-    - name
-    - subtitle
+      position:
+        minimum: 1
+        type: integer
     type: object
   Response:
     properties:
@@ -3313,8 +3340,8 @@ paths:
                   allOf:
                   - $ref: '#/definitions/DataResponse'
                   - properties:
-                      calendar:
-                        $ref: '#/definitions/CalendarResponse'
+                      calendar_seat_available:
+                        $ref: '#/definitions/CalendarSeatAvailabilityResponse'
                     type: object
               type: object
       summary: Update calendar available seat (Dashboard)
@@ -4345,17 +4372,22 @@ paths:
       summary: Update place by Id (dashboard)
       tags:
       - Places
-  /dash/places/filter:
-    post:
+  /dash/places/{id}/move:
+    patch:
       consumes:
       - application/json
       parameters:
-      - description: Body Request
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
         in: body
-        name: dto_request.PlaceFetchRequest
+        name: dto_request.PlaceUpdateMoveRequest
         required: true
         schema:
-          $ref: '#/definitions/PlaceFetchRequest'
+          $ref: '#/definitions/PlaceUpdateRequest'
       produces:
       - application/json
       responses:
@@ -4367,9 +4399,33 @@ paths:
             - properties:
                 data:
                   allOf:
-                  - $ref: '#/definitions/PaginationResponse'
+                  - $ref: '#/definitions/DataResponse'
                   - properties:
-                      nodes:
+                      place:
+                        $ref: '#/definitions/PlaceResponse'
+                    type: object
+              type: object
+      summary: Update position of place by Id (dashboard)
+      tags:
+      - Places
+  /dash/places/filter:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      places:
                         items:
                           $ref: '#/definitions/PlaceResponse'
                         type: array
@@ -5316,6 +5372,37 @@ paths:
       summary: Option list for Route Pricing Filter (Dashboard)
       tags:
       - Vessels
+  /landing/auth/check-email:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.AuthLandingCheckEmailRequest
+        required: true
+        schema:
+          $ref: '#/definitions/AuthLandingCheckEmailRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      is_registered:
+                        type: boolean
+                    type: object
+              type: object
+      summary: Customer Check Email (Landing)
+      tags:
+      - Auth
   /landing/auth/login:
     post:
       consumes:
@@ -5436,6 +5523,39 @@ paths:
                     type: object
               type: object
       summary: Get company by slug (landing)
+      tags:
+      - Companies
+  /landing/companies/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CompanyLandingFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyLandingFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CompanyResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Companies (Landing Page)
       tags:
       - Companies
   /landing/companies/options/route-pricing-search:
@@ -5630,6 +5750,42 @@ paths:
       summary: Fetch Order Histories of current logged in user (Landing Page)
       tags:
       - Orders
+  /landing/orders/invoice-number/{invoice_number}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Invoice number
+        in: path
+        name: invoice_number
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.OrderLandingGetByInvoiceNumberRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderLandingGetByInvoiceNumberRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      order:
+                        $ref: '#/definitions/OrderResponse'
+                    type: object
+              type: object
+      summary: Get Order History by Invoice Number (Landing Page)
+      tags:
+      - Orders
   /landing/payments:
     post:
       consumes:
@@ -5689,6 +5845,32 @@ paths:
       summary: Filter Place (Landing)
       tags:
       - Places
+  /landing/route-pricings/best-for-you:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      route_pricings:
+                        items:
+                          $ref: '#/definitions/LandingRoutePricingResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Best for you list (Landing)
+      tags:
+      - Route Pricings
   /landing/route-pricings/search:
     post:
       consumes:
@@ -5715,7 +5897,7 @@ paths:
                   - properties:
                       route_pricings:
                         items:
-                          $ref: '#/definitions/LandingRoutePricingResponse'
+                          $ref: '#/definitions/RoutePricingResponse'
                         type: array
                     type: object
               type: object
