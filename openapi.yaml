@@ -1737,6 +1737,8 @@ definitions:
     required:
     - name
     type: object
+  OrderDownloadEticketRequest:
+    type: object
   OrderDownloadInvoiceRequest:
     type: object
   OrderFetchRequest:
@@ -2575,6 +2577,9 @@ definitions:
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
+      sailing_time:
+        type: string
+        x-nullable: true
       vessel:
         allOf:
         - $ref: '#/definitions/VesselPublicResponse'
@@ -2608,6 +2613,9 @@ definitions:
         type: string
       is_active:
         type: boolean
+      sailing_time:
+        type: string
+        x-nullable: true
       vessel:
         allOf:
         - $ref: '#/definitions/VesselPublicResponse'
@@ -4193,6 +4201,30 @@ paths:
                     type: object
               type: object
       summary: Get Order (Dashboard)
+      tags:
+      - Orders
+  /dash/orders/{id}/eticket/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.OrderDownloadEticketRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderDownloadEticketRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'content-type: application/pdf'
+      summary: Download Order Eticket (Dashboard)
       tags:
       - Orders
   /dash/orders/{id}/invoice/download:
