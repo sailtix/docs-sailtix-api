@@ -5981,7 +5981,7 @@ paths:
                   - properties:
                       route_pricings:
                         items:
-                          $ref: '#/definitions/RoutePricingResponse'
+                          $ref: '#/definitions/LandingRoutePricingResponse'
                         type: array
                     type: object
               type: object
