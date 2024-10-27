@@ -1866,6 +1866,10 @@ definitions:
     required:
     - name
     type: object
+  OrderLandingDownloadEticketByIdRequest:
+    type: object
+  OrderLandingDownloadEticketByInvoiceNumberRequest:
+    type: object
   OrderLandingFetchRequest:
     properties:
       issued_by:
@@ -5749,6 +5753,30 @@ paths:
       summary: Get Order History of current logged in user (Landing Page)
       tags:
       - Orders
+  /landing/orders/{id}/eticket/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.OrderLandingDownloadEticketByIdRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderLandingDownloadEticketByIdRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'content-type: application/pdf'
+      summary: Download Eticket of 'Paid' order, Required Login (Landing Page)
+      tags:
+      - Orders
   /landing/orders/filter:
     post:
       consumes:
@@ -5816,6 +5844,30 @@ paths:
                     type: object
               type: object
       summary: Get Order History by Invoice Number (Landing Page)
+      tags:
+      - Orders
+  /landing/orders/invoice-number/{invoice_number}/eticket/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order Invoice Number
+        in: path
+        name: invoice_number
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.OrderLandingDownloadEticketByInvoiceNumberRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderLandingDownloadEticketByInvoiceNumberRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'content-type: application/pdf'
+      summary: Download Eticket of 'Paid' order by invoice number (Landing Page)
       tags:
       - Orders
   /landing/payments:
