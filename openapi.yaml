@@ -1647,35 +1647,32 @@ definitions:
     properties:
       adult_fee:
         type: number
-        x-nullable: true
       arrival_dock:
         allOf:
         - $ref: '#/definitions/DockPublicResponse'
         x-nullable: true
       arrival_time:
-        allOf:
-        - $ref: '#/definitions/data_type.HourTime'
-        x-nullable: true
+        $ref: '#/definitions/data_type.HourTime'
       child_fee:
         type: number
-        x-nullable: true
       departure_dock:
         allOf:
         - $ref: '#/definitions/DockPublicResponse'
         x-nullable: true
       departure_time:
-        allOf:
-        - $ref: '#/definitions/data_type.HourTime'
-        x-nullable: true
+        $ref: '#/definitions/data_type.HourTime'
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
       infant_fee:
         type: number
-        x-nullable: true
       route_id:
         example: 8b7e25b2-ed29-4ca1-a3fe-d4f4d1230d24
         type: string
+      sailing_time:
+        example: 2h 1m
+        type: string
+        x-nullable: true
       seat_left:
         type: integer
         x-nullable: true
