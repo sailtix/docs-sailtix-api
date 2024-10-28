@@ -1967,6 +1967,7 @@ definitions:
     - AWAITING_PAYMENT
     - PAID
     - CANCELLED
+    - EXPIRED
     - FAILED
     - REFUNDED
     - RESCHEDULED
