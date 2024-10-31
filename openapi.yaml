@@ -46,6 +46,14 @@ definitions:
     - phone_number
     - verification_code
     type: object
+  AuthLandingForgotPasswordRequest:
+    properties:
+      email:
+        maxLength: 100
+        type: string
+    required:
+    - email
+    type: object
   AuthLandingLoginEmailRequest:
     properties:
       email:
@@ -1647,35 +1655,32 @@ definitions:
     properties:
       adult_fee:
         type: number
-        x-nullable: true
       arrival_dock:
         allOf:
         - $ref: '#/definitions/DockPublicResponse'
         x-nullable: true
       arrival_time:
-        allOf:
-        - $ref: '#/definitions/data_type.HourTime'
-        x-nullable: true
+        $ref: '#/definitions/data_type.HourTime'
       child_fee:
         type: number
-        x-nullable: true
       departure_dock:
         allOf:
         - $ref: '#/definitions/DockPublicResponse'
         x-nullable: true
       departure_time:
-        allOf:
-        - $ref: '#/definitions/data_type.HourTime'
-        x-nullable: true
+        $ref: '#/definitions/data_type.HourTime'
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
       infant_fee:
         type: number
-        x-nullable: true
       route_id:
         example: 8b7e25b2-ed29-4ca1-a3fe-d4f4d1230d24
         type: string
+      sailing_time:
+        example: 2h 1m
+        type: string
+        x-nullable: true
       seat_left:
         type: integer
         x-nullable: true
@@ -1736,6 +1741,8 @@ definitions:
         $ref: '#/definitions/VesselBookingPassengerTypeEnum'
     required:
     - name
+    type: object
+  OrderDownloadEticketRequest:
     type: object
   OrderDownloadInvoiceRequest:
     type: object
@@ -1864,6 +1871,10 @@ definitions:
     required:
     - name
     type: object
+  OrderLandingDownloadEticketByIdRequest:
+    type: object
+  OrderLandingDownloadEticketByInvoiceNumberRequest:
+    type: object
   OrderLandingFetchRequest:
     properties:
       issued_by:
@@ -1939,6 +1950,9 @@ definitions:
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
+      invoice_number:
+        example: AS2858
+        type: string
       issued_by:
         $ref: '#/definitions/OrderIssuedByEnum'
       order_items:
@@ -1964,6 +1978,7 @@ definitions:
     - AWAITING_PAYMENT
     - PAID
     - CANCELLED
+    - EXPIRED
     - FAILED
     - REFUNDED
     - RESCHEDULED
@@ -2009,6 +2024,32 @@ definitions:
     - name
     - phone_number
     - photo_url
+    type: object
+  PartnerWithUsResponse:
+    properties:
+      company_name:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      have_website:
+        type: boolean
+      id:
+        example: 6f86b0c1-a0f0-4446-81ce-75784c8b3fe8
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      photo_url:
+        type: string
+      updated_at:
+        type: string
+      vessel_types:
+        items:
+          $ref: '#/definitions/VesselTypeEnum'
+        type: array
     type: object
   PaymentLandingCreateOrderPaymentRequest:
     properties:
@@ -2091,6 +2132,8 @@ definitions:
     - ORDER_CREATE
     - ORDER_FETCH
     - ORDER_GET
+    - ORDER_DOWNLOAD_INVOICE
+    - ORDER_DOWNLOAD_ETICKET
     - PLACE_CREATE
     - PLACE_FETCH
     - PLACE_GET
@@ -4230,6 +4273,30 @@ paths:
       summary: Get Order (Dashboard)
       tags:
       - Orders
+  /dash/orders/{id}/eticket/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.OrderDownloadEticketRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderDownloadEticketRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'content-type: application/pdf'
+      summary: Download Order Eticket (Dashboard)
+      tags:
+      - Orders
   /dash/orders/{id}/invoice/download:
     get:
       consumes:
@@ -5438,6 +5505,32 @@ paths:
       summary: Customer Check Email (Landing)
       tags:
       - Auth
+  /landing/auth/forgot-password:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.AuthLandingForgotPasswordRequest
+        required: true
+        schema:
+          $ref: '#/definitions/AuthLandingForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Customer Forgot Password By Email (Landing)
+      tags:
+      - Auth
   /landing/auth/login:
     post:
       consumes:
@@ -5752,6 +5845,30 @@ paths:
       summary: Get Order History of current logged in user (Landing Page)
       tags:
       - Orders
+  /landing/orders/{id}/eticket/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.OrderLandingDownloadEticketByIdRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderLandingDownloadEticketByIdRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'content-type: application/pdf'
+      summary: Download Eticket of 'Paid' order, Required Login (Landing Page)
+      tags:
+      - Orders
   /landing/orders/filter:
     post:
       consumes:
@@ -5821,6 +5938,30 @@ paths:
       summary: Get Order History by Invoice Number (Landing Page)
       tags:
       - Orders
+  /landing/orders/invoice-number/{invoice_number}/eticket/download:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order Invoice Number
+        in: path
+        name: invoice_number
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.OrderLandingDownloadEticketByInvoiceNumberRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderLandingDownloadEticketByInvoiceNumberRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'content-type: application/pdf'
+      summary: Download Eticket of 'Paid' order by invoice number (Landing Page)
+      tags:
+      - Orders
   /landing/partner-with-us:
     post:
       consumes:
@@ -5842,7 +5983,12 @@ paths:
             - $ref: '#/definitions/Response'
             - properties:
                 data:
-                  $ref: '#/definitions/SuccessResponse'
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      partner_with_us:
+                        $ref: '#/definitions/PartnerWithUsResponse'
+                    type: object
               type: object
       summary: Submit  Partner With Us (Landing)
       tags:
@@ -5958,7 +6104,7 @@ paths:
                   - properties:
                       route_pricings:
                         items:
-                          $ref: '#/definitions/RoutePricingResponse'
+                          $ref: '#/definitions/LandingRoutePricingResponse'
                         type: array
                     type: object
               type: object
