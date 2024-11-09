@@ -54,6 +54,23 @@ definitions:
     required:
     - email
     type: object
+  AuthLandingForgotPasswordResetTokenGetRequest:
+    properties:
+      reset_token:
+        type: string
+    required:
+    - reset_token
+    type: object
+  AuthLandingForgotPasswordResetTokenUpdateRequest:
+    properties:
+      new_password:
+        type: string
+      reset_token:
+        type: string
+    required:
+    - new_password
+    - reset_token
+    type: object
   AuthLandingLoginEmailRequest:
     properties:
       email:
@@ -5556,6 +5573,62 @@ paths:
                   $ref: '#/definitions/SuccessResponse'
               type: object
       summary: Customer Forgot Password By Email (Landing)
+      tags:
+      - Auth
+  /landing/auth/forgot-password/reset-token:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.AuthLandingForgotPasswordResetTokenUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/AuthLandingForgotPasswordResetTokenUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Change password by token (Landing)
+      tags:
+      - Auth
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.AuthLandingForgotPasswordResetTokenGetRequest
+        required: true
+        schema:
+          $ref: '#/definitions/AuthLandingForgotPasswordResetTokenGetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      email:
+                        type: string
+                    type: object
+              type: object
+      summary: Check reset token and get data (Landing)
       tags:
       - Auth
   /landing/auth/login:
