@@ -683,6 +683,33 @@ definitions:
         type: array
         uniqueItems: true
     type: object
+  CustomerLandingUpdateMePasswordRequest:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
+  CustomerLandingUpdateMeRequest:
+    properties:
+      date_of_birth:
+        type: string
+      first_name:
+        maxLength: 255
+        type: string
+      last_name:
+        maxLength: 255
+        type: string
+      phone_number:
+        type: string
+    required:
+    - first_name
+    - last_name
+    - phone_number
+    type: object
   CustomerOptionForOrderFormRequest:
     properties:
       limit:
@@ -5741,6 +5768,62 @@ paths:
                     type: object
               type: object
       summary: Get Me Customer (Landing)
+      tags:
+      - Customers
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CustomerLandingUpdateMeRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CustomerLandingUpdateMeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      customer:
+                        $ref: '#/definitions/CustomerResponse'
+                    type: object
+              type: object
+      summary: Update Current Logged in Customer (Landing)
+      tags:
+      - Customers
+  /landing/customers/me/password:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CustomerLandingUpdateMePasswordRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CustomerLandingUpdateMePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Update Password of Current Logged in Customer (Landing)
       tags:
       - Customers
   /landing/docks/options/route-pricing-search:
