@@ -82,6 +82,14 @@ definitions:
     - email
     - password
     type: object
+  AuthLandingLoginGoogleRequest:
+    properties:
+      code:
+        maxLength: 1000
+        type: string
+    required:
+    - code
+    type: object
   AuthLandingRegisterEmailRequest:
     properties:
       email:
@@ -189,6 +197,260 @@ definitions:
     required:
     - route_id
     type: object
+  CareerFetchRequest:
+    properties:
+      career_position_id:
+        type: string
+        x-nullable: true
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  CareerLandingCreateRequest:
+    properties:
+      career_position_id:
+        type: string
+      email:
+        maxLength: 255
+        type: string
+      file_link:
+        type: string
+      name:
+        maxLength: 255
+        type: string
+    required:
+    - career_position_id
+    - email
+    - file_link
+    - name
+    type: object
+  CareerLandingUploadFileRequest:
+    properties:
+      file:
+        $ref: '#/definitions/multipart.FileHeader'
+    required:
+    - file
+    type: object
+  CareerPositionCreateRequest:
+    properties:
+      description:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+    required:
+    - name
+    type: object
+  CareerPositionFetchRequest:
+    properties:
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  CareerPositionLandingOptionForCareerFormRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  CareerPositionOptionForCareerFilterRequest:
+    properties:
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  CareerPositionResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        example: Desc
+        type: string
+        x-nullable: true
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      is_active:
+        type: boolean
+      name:
+        example: Accounting
+        type: string
+      updated_at:
+        type: string
+    type: object
+  CareerPositionUpdateRequest:
+    properties:
+      description:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+    required:
+    - name
+    type: object
+  CareerResponse:
+    properties:
+      career_position:
+        allOf:
+        - $ref: '#/definitions/CareerPositionResponse'
+        x-nullable: true
+      career_position_id:
+        example: 5526dd8a-9315-40b1-be30-ec0147a26074
+        type: string
+      created_at:
+        type: string
+      email:
+        example: john.doe@gmail.com
+        type: string
+      file_link:
+        example: https://path/to/file
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      name:
+        example: John Doe
+        type: string
+      updated_at:
+        type: string
+    type: object
   CompanyCreateRequest:
     properties:
       address:
@@ -199,6 +461,10 @@ definitions:
       child_age_policy:
         type: string
       child_age_policy_description:
+        type: string
+      default_arrival_dock_id:
+        type: string
+      default_departure_dock_id:
         type: string
       description:
         type: string
@@ -477,6 +743,12 @@ definitions:
       child_age_policy_description:
         example: Policy Description
         type: string
+      default_arrival_dock_id:
+        example: a12522e6-82b1-4b4a-9b36-38b9be609840
+        type: string
+      default_departure_dock_id:
+        example: a12522e6-82b1-4b4a-9b36-38b9be609840
+        type: string
       description:
         example: Desc
         type: string
@@ -532,6 +804,10 @@ definitions:
       address:
         example: Address
         type: string
+      arrival_dock:
+        allOf:
+        - $ref: '#/definitions/DockResponse'
+        x-nullable: true
       branch_name:
         example: Ekajaya
         type: string
@@ -548,6 +824,16 @@ definitions:
       created_by_user:
         allOf:
         - $ref: '#/definitions/UserPreviewResponse'
+        x-nullable: true
+      default_arrival_dock_id:
+        example: a12522e6-82b1-4b4a-9b36-38b9be609840
+        type: string
+      default_departure_dock_id:
+        example: a12522e6-82b1-4b4a-9b36-38b9be609840
+        type: string
+      departure_dock:
+        allOf:
+        - $ref: '#/definitions/DockResponse'
         x-nullable: true
       description:
         example: Desc
@@ -613,6 +899,10 @@ definitions:
         type: string
       child_age_policy_description:
         type: string
+      default_arrival_dock_id:
+        type: string
+      default_departure_dock_id:
+        type: string
       description:
         type: string
       infant_policy:
@@ -650,6 +940,41 @@ definitions:
     - phone
     - photo
     - slug
+    type: object
+  CruiseRegionCreateRequest:
+    properties:
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+    required:
+    - name
+    type: object
+  CruiseRegionResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      is_active:
+        type: boolean
+      name:
+        example: Asia & Pacific
+        type: string
+      updated_at:
+        type: string
+    type: object
+  CruiseRegionUpdateRequest:
+    properties:
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+    required:
+    - name
     type: object
   CurrencyEnum:
     enum:
@@ -834,10 +1159,37 @@ definitions:
     - name
     type: object
   DockFetchRequest:
+    type: object
+  DockLandingOptionForRoutePricingSearchDefaultRequest:
     properties:
-      is_active:
-        type: boolean
+      company_id:
+        type: string
         x-nullable: true
+      vessel_id:
+        type: string
+        x-nullable: true
+    type: object
+  DockLandingOptionForRoutePricingSearchRequest:
+    properties:
+      arrival_dock_id:
+        type: string
+      departure_dock_id:
+        type: string
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+    type: object
+  DockOptionForCompanyFormRequest:
+    properties:
       limit:
         example: 100
         maximum: 100
@@ -873,12 +1225,45 @@ definitions:
         type: array
         uniqueItems: true
     type: object
-  DockLandingOptionForRoutePricingSearchRequest:
+  DockOptionForPlaceFormRequest:
     properties:
-      arrival_dock_id:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
         type: string
-      departure_dock_id:
-        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  DockOptionForPlaceTicketRecommendationFormRequest:
+    properties:
       limit:
         example: 100
         maximum: 100
@@ -1033,6 +1418,43 @@ definitions:
         type: array
         uniqueItems: true
     type: object
+  DockOptionForVesselFormRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
   DockPublicResponse:
     properties:
       created_at:
@@ -1063,6 +1485,12 @@ definitions:
       updated_at:
         type: string
     type: object
+  DockUpdateMoveRequest:
+    properties:
+      position:
+        minimum: 1
+        type: integer
+    type: object
   DockUpdateRequest:
     properties:
       iana_timezone:
@@ -1074,6 +1502,47 @@ definitions:
         type: string
     required:
     - name
+    type: object
+  DokuPaymentMethodChannelEnum:
+    enum:
+    - VIRTUAL_ACCOUNT_BCA
+    - VIRTUAL_ACCOUNT_BANK_MANDIRI
+    - VIRTUAL_ACCOUNT_BANK_SYARIAH_MANDIRI
+    - VIRTUAL_ACCOUNT_BRI
+    - VIRTUAL_ACCOUNT_BNI
+    - VIRTUAL_ACCOUNT_DOKU
+    - VIRTUAL_ACCOUNT_BANK_PERMATA
+    - VIRTUAL_ACCOUNT_BANK_CIMB
+    - VIRTUAL_ACCOUNT_BANK_DANAMON
+    - QRIS
+    - CREDIT_CARD
+    - EMONEY_OVO
+    - EMONEY_SHOPEE_PAY
+    - EMONEY_DOKU
+    - EMONEY_LINKAJA
+    - EMONEY_DANA
+    - JENIUS_PAY
+    type: string
+  DokuPaymentResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      is_paid:
+        type: boolean
+      order_id:
+        example: fab6cc39-6903-4bd6-84fc-c7c7fdaca98e
+        type: string
+      paid_at:
+        type: string
+      payment_method_channel:
+        $ref: '#/definitions/DokuPaymentMethodChannelEnum'
+      payment_url:
+        type: string
+      updated_at:
+        type: string
     type: object
   GlobalSettingFetchRequest:
     properties:
@@ -1117,6 +1586,7 @@ definitions:
     - AWS
     - ZEPTOMAIL
     - XENDIT
+    - DOKU
     type: string
   GlobalSettingKeyEnum:
     enum:
@@ -1129,11 +1599,15 @@ definitions:
     - ZEPTOMAIL_API_KEY
     - ZEPTOMAIL_SENDER_EMAIL
     - ZEPTOMAIL_SENDER_NAME
+    - XENDIT_PUBLIC_API_KEY
     - XENDIT_API_KEY
     - XENDIT_WEBHOOK_AUTH_HEADER
     - XENDIT_WEBHOOK_AUTH_TOKEN
     - XENDIT_VIRTUAL_ACCOUNT_EXPIRY
     - XENDIT_QR_CODE_EXPIRY
+    - DOKU_PAYMENT_EXPIRY
+    - DOKU_CLIENT_ID
+    - DOKU_CLIENT_SECRET
     type: string
   GlobalSettingResponse:
     properties:
@@ -1713,6 +2187,12 @@ definitions:
         x-nullable: true
       departure_time:
         $ref: '#/definitions/data_type.HourTime'
+      foreigner_adult_fee:
+        type: number
+      foreigner_child_fee:
+        type: number
+      foreigner_infant_fee:
+        type: number
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
@@ -1781,10 +2261,14 @@ definitions:
       name:
         maxLength: 255
         type: string
+      nationality:
+        maxLength: 255
+        type: string
       type:
         $ref: '#/definitions/VesselBookingPassengerTypeEnum'
     required:
     - name
+    - nationality
     type: object
   OrderDownloadEticketRequest:
     type: object
@@ -1864,6 +2348,9 @@ definitions:
     type: object
   OrderLandingCreateRequest:
     properties:
+      callback_url:
+        example: https://path/to/frontend/redirect
+        type: string
       guest_email:
         maxLength: 255
         type: string
@@ -1873,16 +2360,13 @@ definitions:
         type: string
       guest_phone:
         type: string
-      payment_method_channel:
-        $ref: '#/definitions/PaymentMethodChannelEnum'
-      payment_method_id:
-        type: string
-        x-nullable: true
       vessel_bookings:
         items:
           $ref: '#/definitions/OrderLandingCreateRequestVesselBooking'
         minItems: 1
         type: array
+    required:
+    - callback_url
     type: object
   OrderLandingCreateRequestVesselBooking:
     properties:
@@ -1910,10 +2394,14 @@ definitions:
       name:
         maxLength: 255
         type: string
+      nationality:
+        maxLength: 255
+        type: string
       type:
         $ref: '#/definitions/VesselBookingPassengerTypeEnum'
     required:
     - name
+    - nationality
     type: object
   OrderLandingDownloadEticketByIdRequest:
     type: object
@@ -1978,6 +2466,10 @@ definitions:
       customer_id:
         example: 7fc5d047-582b-45e3-a294-0c8eeff0c47e
         type: string
+        x-nullable: true
+      doku_payment:
+        allOf:
+        - $ref: '#/definitions/DokuPaymentResponse'
         x-nullable: true
       guest_email:
         example: john.doe@gmail.com
@@ -2099,29 +2591,75 @@ definitions:
     properties:
       order_id:
         type: string
-      payment_method_channel:
-        $ref: '#/definitions/PaymentMethodChannelEnum'
-      payment_method_id:
-        type: string
-        x-nullable: true
     required:
     - order_id
     type: object
-  PaymentMethodChannelEnum:
-    enum:
-    - BCA
-    - MANDIRI
-    - BRI
-    - BNI
-    - CIMB
-    - QR_CODE
-    - CARD
-    - SHOPEEPAY
-    - OVO
-    - DANA
-    - LINKAJA
-    - JENIUSPAY
-    type: string
+  PaymentMethodChannelFetchRequest:
+    properties:
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  PaymentMethodChannelResponse:
+    properties:
+      created_at:
+        type: string
+      displayed_name:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      image_link:
+        type: string
+        x-nullable: true
+      is_active:
+        type: boolean
+      name:
+        $ref: '#/definitions/XenditPaymentMethodChannelEnum'
+      updated_at:
+        type: string
+    type: object
+  PaymentMethodChannelUpdateRequest:
+    properties:
+      image_link:
+        type: string
+      is_active:
+        type: boolean
+    type: object
   PaymentMethodEnum:
     enum:
     - VIRTUAL_ACCOUNT
@@ -2129,6 +2667,83 @@ definitions:
     - QR_CODE
     - CARD
     type: string
+  PaymentMethodFetchRequest:
+    properties:
+      is_active:
+        type: boolean
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  PaymentMethodLandingGetAvailableRequest:
+    properties:
+      amount:
+        minimum: 0
+        type: number
+    type: object
+  PaymentMethodResponse:
+    properties:
+      created_at:
+        type: string
+      displayed_name:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      image_link:
+        type: string
+        x-nullable: true
+      is_active:
+        type: boolean
+      name:
+        $ref: '#/definitions/PaymentMethodEnum'
+      payment_method_channels:
+        items:
+          $ref: '#/definitions/PaymentMethodChannelResponse'
+        type: array
+        x-nullable: true
+      updated_at:
+        type: string
+    type: object
+  PaymentMethodUpdateRequest:
+    properties:
+      image_link:
+        type: string
+      is_active:
+        type: boolean
+    type: object
   PaymentStatusEnum:
     enum:
     - PENDING
@@ -2146,6 +2761,16 @@ definitions:
     enum:
     - CALENDAR_FETCH
     - CALENDAR_UPDATE_AVAILABLE_SEAT
+    - CAREER_FETCH
+    - CAREER_GET
+    - CAREER_DELETE
+    - CAREER_POSITION_CREATE
+    - CAREER_POSITION_FETCH
+    - CAREER_POSITION_GET
+    - CAREER_POSITION_UPDATE
+    - CAREER_POSITION_DELETE
+    - CAREER_POSITION_OPTION_FOR_CAREER_FILTER
+    - CAREER_POSITION_OPTION_FOR_CAREER_FORM
     - COMPANY_CREATE
     - COMPANY_FETCH
     - COMPANY_GET
@@ -2153,6 +2778,12 @@ definitions:
     - COMPANY_DELETE
     - COMPANY_OPTION_FOR_VESSEL_FORM
     - COMPANY_OPTION_FOR_USER_FORM
+    - CRUISE_REGION_CREATE
+    - CRUISE_REGION_FETCH
+    - CRUISE_REGION_GET
+    - CRUISE_REGION_UPDATE
+    - CRUISE_REGION_UPDATE_MOVE
+    - CRUISE_REGION_DELETE
     - CUSTOMER_TIER_OPTION_FOR_CUSTOMER_FORM
     - CUSTOMER_TIER_OPTION_FOR_ROUTE_PRICING_FILTER
     - CUSTOMER_FETCH
@@ -2163,10 +2794,15 @@ definitions:
     - DOCK_FETCH
     - DOCK_GET
     - DOCK_UPDATE
+    - DOCK_UPDATE_MOVE
     - DOCK_DELETE
+    - DOCK_OPTION_FOR_VESSEL_FORM
+    - DOCK_OPTION_FOR_COMPANY_FORM
     - DOCK_OPTION_FOR_ROUTE_FORM
     - DOCK_OPTION_FOR_ROUTE_FILTER
     - DOCK_OPTION_FOR_ROUTE_PRICING_FILTER
+    - DOCK_OPTION_FOR_PLACE_FORM
+    - DOCK_OPTION_FOR_PLACE_TICKET_RECOMMENDATION_FORM
     - GLOBAL_SETTING_CREATE
     - GLOBAL_SETTING_FETCH
     - GLOBAL_SETTING_GET
@@ -2178,12 +2814,23 @@ definitions:
     - ORDER_GET
     - ORDER_DOWNLOAD_INVOICE
     - ORDER_DOWNLOAD_ETICKET
+    - PAYMENT_METHOD_FETCH
+    - PAYMENT_METHOD_GET
+    - PAYMENT_METHOD_UPDATE
+    - PAYMENT_METHOD_CHANNEL_FETCH
+    - PAYMENT_METHOD_CHANNEL_GET
+    - PAYMENT_METHOD_CHANNEL_UPDATE
     - PLACE_CREATE
     - PLACE_FETCH
     - PLACE_GET
     - PLACE_UPDATE
     - PLACE_UPDATE_MOVE
     - PLACE_DELETE
+    - PLACE_TICKET_RECOMMENDATION_CREATE
+    - PLACE_TICKET_RECOMMENDATION_FETCH
+    - PLACE_TICKET_RECOMMENDATION_GET
+    - PLACE_TICKET_RECOMMENDATION_UPDATE
+    - PLACE_TICKET_RECOMMENDATION_DELETE
     - ROLE_FETCH
     - ROLE_OPTION_FOR_USER_FORM
     - ROUTE_CREATE
@@ -2199,6 +2846,11 @@ definitions:
     - ROUTE_PRICING_GET
     - ROUTE_PRICING_UPDATE
     - ROUTE_PRICING_DELETE
+    - SUB_PLACE_CREATE
+    - SUB_PLACE_FETCH
+    - SUB_PLACE_GET
+    - SUB_PLACE_UPDATE
+    - SUB_PLACE_DELETE
     - USER_CREATE
     - USER_FETCH
     - USER_GET
@@ -2215,7 +2867,11 @@ definitions:
     type: string
   PlaceCreateRequest:
     properties:
+      cover_image_link:
+        type: string
       image_link:
+        type: string
+      linked_dock_id:
         type: string
       name:
         maxLength: 255
@@ -2224,6 +2880,7 @@ definitions:
         maxLength: 255
         type: string
     required:
+    - cover_image_link
     - image_link
     - name
     - subtitle
@@ -2242,6 +2899,14 @@ definitions:
     type: object
   PlaceResponse:
     properties:
+      content:
+        type: string
+        x-nullable: true
+      content_2:
+        type: string
+        x-nullable: true
+      cover_image_link:
+        type: string
       created_at:
         type: string
       created_by:
@@ -2251,9 +2916,26 @@ definitions:
         type: string
       image_link:
         type: string
+      linked_dock:
+        allOf:
+        - $ref: '#/definitions/DockResponse'
+        x-nullable: true
+      linked_dock_id:
+        example: df315aaf-9fd4-4d24-bf86-08b690fb15cb
+        type: string
       name:
         example: Nusa Perida
         type: string
+      position:
+        type: integer
+      slug:
+        example: nusa-perida
+        type: string
+      sub_places:
+        items:
+          $ref: '#/definitions/SubPlaceResponse'
+        type: array
+        x-nullable: true
       subtitle:
         example: Bali, Indonesia
         type: string
@@ -2262,11 +2944,124 @@ definitions:
       updated_by:
         type: string
     type: object
-  PlaceUpdateRequest:
+  PlaceTicketRecommendationCreateRequest:
+    properties:
+      departure_dock_id:
+        type: string
+      description:
+        type: string
+      image_link:
+        type: string
+      place_id:
+        type: string
+      subtitle:
+        type: string
+      title:
+        maxLength: 255
+        type: string
+    required:
+    - departure_dock_id
+    - image_link
+    - place_id
+    - subtitle
+    - title
+    type: object
+  PlaceTicketRecommendationFetchRequest:
+    properties:
+      place_id:
+        type: string
+    required:
+    - place_id
+    type: object
+  PlaceTicketRecommendationResponse:
+    properties:
+      created_at:
+        type: string
+      departure_dock:
+        allOf:
+        - $ref: '#/definitions/DockResponse'
+        x-nullable: true
+      departure_dock_id:
+        example: c48a7b1a-cd7d-4658-972a-e90787445847
+        type: string
+      description:
+        example: desc
+        type: string
+        x-nullable: true
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      image_link:
+        type: string
+      place_id:
+        example: 48d86800-ddfe-4ac7-a1ef-19596afef65e
+        type: string
+      subtitle:
+        example: Nusa Penida
+        type: string
+      title:
+        example: Nusa Penida
+        type: string
+      updated_at:
+        type: string
+    type: object
+  PlaceTicketRecommendationUpdateRequest:
+    properties:
+      departure_dock_id:
+        type: string
+      description:
+        type: string
+      image_link:
+        type: string
+      subtitle:
+        type: string
+      title:
+        maxLength: 255
+        type: string
+    required:
+    - departure_dock_id
+    - image_link
+    - subtitle
+    - title
+    type: object
+  PlaceUpdateContent2Request:
+    properties:
+      content_2:
+        type: string
+    type: object
+  PlaceUpdateContentRequest:
+    properties:
+      content:
+        type: string
+    type: object
+  PlaceUpdateMoveRequest:
     properties:
       position:
         minimum: 1
         type: integer
+    type: object
+  PlaceUpdateRequest:
+    properties:
+      cover_image_link:
+        type: string
+      image_link:
+        type: string
+      linked_dock_id:
+        type: string
+      name:
+        maxLength: 255
+        type: string
+      slug:
+        type: string
+      subtitle:
+        maxLength: 255
+        type: string
+    required:
+    - cover_image_link
+    - image_link
+    - name
+    - slug
+    - subtitle
     type: object
   Response:
     properties:
@@ -2528,8 +3323,19 @@ definitions:
   RoutePricingCreateRequest:
     properties:
       adult_fee:
+        minimum: 0
         type: number
       child_fee:
+        minimum: 0
+        type: number
+      foreigner_adult_fee:
+        minimum: 0
+        type: number
+      foreigner_child_fee:
+        minimum: 0
+        type: number
+      foreigner_infant_fee:
+        minimum: 0
         type: number
       infant_fee:
         minimum: 0
@@ -2588,6 +3394,14 @@ definitions:
         type: string
         x-nullable: true
     type: object
+  RoutePricingLandingDockTicketRecommendationRequest:
+    properties:
+      place_id:
+        type: string
+        x-nullable: true
+    required:
+    - place_id
+    type: object
   RoutePricingLandingSearchRequest:
     properties:
       adult:
@@ -2642,6 +3456,15 @@ definitions:
       customer_tier_id:
         example: 98c13377-e93f-4f29-b101-a0c79e02b2d8
         type: string
+      foreigner_adult_fee:
+        example: 100000
+        type: number
+      foreigner_child_fee:
+        example: 100000
+        type: number
+      foreigner_infant_fee:
+        example: 100000
+        type: number
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
@@ -2658,11 +3481,50 @@ definitions:
         example: 12de2751-f2bf-4db8-8177-64a96340331e
         type: string
     type: object
+  RoutePricingTicketRecommendationResponse:
+    properties:
+      arrival_dock_id:
+        example: e707be9e-8450-46f4-bb72-76649c12bcc1
+        type: string
+      departure_dock_id:
+        example: 3b36e1eb-2440-4a3b-b1e9-7d971c401016
+        type: string
+      description:
+        example: lorem ipsum
+        type: string
+      fee_start_from:
+        example: 100000
+        type: number
+      image_link:
+        example: http://path/to/file
+        type: string
+      route:
+        allOf:
+        - $ref: '#/definitions/RouteResponse'
+        x-nullable: true
+      subtitle:
+        example: subtitle
+        type: string
+      title:
+        example: Title
+        type: string
+    type: object
   RoutePricingUpdateRequest:
     properties:
       adult_fee:
+        minimum: 0
         type: number
       child_fee:
+        minimum: 0
+        type: number
+      foreigner_adult_fee:
+        minimum: 0
+        type: number
+      foreigner_child_fee:
+        minimum: 0
+        type: number
+      foreigner_infant_fee:
+        minimum: 0
         type: number
       infant_fee:
         minimum: 0
@@ -2746,6 +3608,92 @@ definitions:
         $ref: '#/definitions/data_type.HourTime'
       is_active:
         type: boolean
+    type: object
+  SubPlaceCreateRequest:
+    properties:
+      description:
+        type: string
+      image_link:
+        type: string
+      name:
+        maxLength: 255
+        type: string
+      place_id:
+        type: string
+      subtitle:
+        maxLength: 255
+        type: string
+    required:
+    - image_link
+    - name
+    - place_id
+    - subtitle
+    type: object
+  SubPlaceFetchRequest:
+    properties:
+      place_id:
+        type: string
+    required:
+    - place_id
+    type: object
+  SubPlaceResponse:
+    properties:
+      content:
+        type: string
+        x-nullable: true
+      created_at:
+        type: string
+      created_by:
+        type: string
+      description:
+        example: desc
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      image_link:
+        type: string
+      name:
+        example: Nusa Penida
+        type: string
+      place_id:
+        example: 48d86800-ddfe-4ac7-a1ef-19596afef65e
+        type: string
+      slug:
+        example: nusa-penida
+        type: string
+      subtitle:
+        example: Bali, Indonesia
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  SubPlaceUpdateContentRequest:
+    properties:
+      content:
+        type: string
+    type: object
+  SubPlaceUpdateRequest:
+    properties:
+      description:
+        type: string
+      image_link:
+        type: string
+      name:
+        maxLength: 255
+        type: string
+      slug:
+        type: string
+      subtitle:
+        maxLength: 255
+        type: string
+    required:
+    - image_link
+    - name
+    - slug
+    - subtitle
     type: object
   SuccessResponse:
     properties:
@@ -2941,17 +3889,31 @@ definitions:
     type: object
   VesselBookingPassengerResponse:
     properties:
+      applied_depart_price:
+        type: number
+      applied_return_price:
+        type: number
       created_at:
         type: string
+      depart_foreigner_price:
+        example: 100000
+        type: number
       depart_price:
         example: 100000
         type: number
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
+      is_foreigner:
+        type: boolean
       name:
         example: John Doe
         type: string
+      nationality:
+        type: string
+      return_foreigner_price:
+        example: 100000
+        type: number
       return_price:
         example: 100000
         type: number
@@ -2979,6 +3941,15 @@ definitions:
       depart_child_fee:
         example: 100000
         type: number
+      depart_foreigner_adult_fee:
+        example: 100000
+        type: number
+      depart_foreigner_child_fee:
+        example: 100000
+        type: number
+      depart_foreigner_infant_fee:
+        example: 100000
+        type: number
       depart_infant_fee:
         example: 100000
         type: number
@@ -2999,6 +3970,18 @@ definitions:
         type: number
         x-nullable: true
       return_child_fee:
+        example: 100000
+        type: number
+        x-nullable: true
+      return_foreigner_adult_fee:
+        example: 100000
+        type: number
+        x-nullable: true
+      return_foreigner_child_fee:
+        example: 100000
+        type: number
+        x-nullable: true
+      return_foreigner_infant_fee:
         example: 100000
         type: number
         x-nullable: true
@@ -3029,6 +4012,10 @@ definitions:
       active_since:
         type: string
       company_id:
+        type: string
+      default_arrival_dock_id:
+        type: string
+      default_departure_dock_id:
         type: string
       facility:
         type: string
@@ -3092,6 +4079,53 @@ definitions:
     type: object
   VesselLandingFetchRequest:
     properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: asc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: username
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+      type:
+        allOf:
+        - $ref: '#/definitions/VesselTypeEnum'
+        x-nullable: true
+    type: object
+  VesselLandingOptionForRoutePricingFilterRequest:
+    properties:
+      arrival_dock_id:
+        type: string
+        x-nullable: true
+      departure_dock_id:
+        type: string
+        x-nullable: true
       limit:
         example: 100
         maximum: 100
@@ -3275,9 +4309,18 @@ definitions:
       name:
         example: Vessel A
         type: string
+      privacy_policy:
+        type: string
+        x-nullable: true
+      refund_policy:
+        type: string
+        x-nullable: true
       seat:
         example: 200
         type: integer
+      slug:
+        example: vessel-a
+        type: string
       type:
         $ref: '#/definitions/VesselTypeEnum'
     type: object
@@ -3286,6 +4329,10 @@ definitions:
       active_since:
         example: "2020-01-01"
         type: string
+      arrival_dock:
+        allOf:
+        - $ref: '#/definitions/DockResponse'
+        x-nullable: true
       company:
         allOf:
         - $ref: '#/definitions/CompanyPublicResponse'
@@ -3293,6 +4340,16 @@ definitions:
       company_id:
         example: e38da19b-36c6-4732-8677-3780e4562e43
         type: string
+      default_arrival_dock_id:
+        example: a12522e6-82b1-4b4a-9b36-38b9be609840
+        type: string
+      default_departure_dock_id:
+        example: a12522e6-82b1-4b4a-9b36-38b9be609840
+        type: string
+      departure_dock:
+        allOf:
+        - $ref: '#/definitions/DockResponse'
+        x-nullable: true
       facility:
         example: Facility List
         type: string
@@ -3304,9 +4361,18 @@ definitions:
       name:
         example: Vessel A
         type: string
+      privacy_policy:
+        type: string
+        x-nullable: true
+      refund_policy:
+        type: string
+        x-nullable: true
       seat:
         example: 200
         type: integer
+      slug:
+        example: vessel-a
+        type: string
       type:
         $ref: '#/definitions/VesselTypeEnum'
     type: object
@@ -3315,9 +4381,23 @@ definitions:
     - FERRY
     - FASTBOAT
     type: string
+  VesselUpdatePrivacyPolicyRequest:
+    properties:
+      privacy_policy:
+        type: string
+    type: object
+  VesselUpdateRefundPolicyRequest:
+    properties:
+      refund_policy:
+        type: string
+    type: object
   VesselUpdateRequest:
     properties:
       active_since:
+        type: string
+      default_arrival_dock_id:
+        type: string
+      default_departure_dock_id:
         type: string
       facility:
         type: string
@@ -3328,12 +4408,30 @@ definitions:
         type: string
       seat:
         type: integer
+      slug:
+        type: string
       type:
         $ref: '#/definitions/VesselTypeEnum'
     required:
     - facility
     - name
+    - slug
     type: object
+  XenditPaymentMethodChannelEnum:
+    enum:
+    - BCA
+    - MANDIRI
+    - BRI
+    - BNI
+    - CIMB
+    - QR_CODE
+    - CARD
+    - SHOPEEPAY
+    - OVO
+    - DANA
+    - LINKAJA
+    - JENIUSPAY
+    type: string
   XenditPaymentResponse:
     properties:
       amount:
@@ -3346,6 +4444,10 @@ definitions:
         type: string
       currency_code:
         $ref: '#/definitions/CurrencyEnum'
+      ewallet:
+        allOf:
+        - $ref: '#/definitions/dto_response.XenditPaymentResponseEWallet'
+        x-nullable: true
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
@@ -3355,7 +4457,7 @@ definitions:
       payment_method:
         $ref: '#/definitions/PaymentMethodEnum'
       payment_method_channel:
-        $ref: '#/definitions/PaymentMethodChannelEnum'
+        $ref: '#/definitions/XenditPaymentMethodChannelEnum'
       qr_code:
         allOf:
         - $ref: '#/definitions/dto_response.XenditPaymentResponseQrCode'
@@ -3378,6 +4480,26 @@ definitions:
       payment_url:
         type: string
     type: object
+  dto_response.XenditPaymentResponseEWallet:
+    properties:
+      actions:
+        items:
+          $ref: '#/definitions/dto_response.XenditPaymentResponseEWalletAction'
+        type: array
+    type: object
+  dto_response.XenditPaymentResponseEWalletAction:
+    properties:
+      action:
+        type: string
+      method:
+        type: string
+      qr_code:
+        type: string
+      url:
+        type: string
+      url_type:
+        type: string
+    type: object
   dto_response.XenditPaymentResponseQrCode:
     properties:
       expires_at:
@@ -3393,6 +4515,21 @@ definitions:
         type: string
       virtual_account_number:
         type: string
+    type: object
+  multipart.FileHeader:
+    properties:
+      filename:
+        type: string
+      header:
+        $ref: '#/definitions/textproto.MIMEHeader'
+      size:
+        type: integer
+    type: object
+  textproto.MIMEHeader:
+    additionalProperties:
+      items:
+        type: string
+      type: array
     type: object
 host: api.sailtix.com
 info:
@@ -3502,6 +4639,279 @@ paths:
       summary: Fetch route pricing seat availabilities for selected date range (Dashboard)
       tags:
       - Calendars
+  /dash/career-positions:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CareerPositionCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CareerPositionCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      career_position:
+                        $ref: '#/definitions/CareerPositionResponse'
+                    type: object
+              type: object
+      summary: Create CareerPosition (Dashboard)
+      tags:
+      - Career Positions
+  /dash/career-positions/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete careerPosition by Id (dashboard)
+      tags:
+      - Career Positions
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      career_position:
+                        $ref: '#/definitions/CareerPositionResponse'
+                    type: object
+              type: object
+      summary: Get careerPosition by Id (dashboard)
+      tags:
+      - Career Positions
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.CareerPositionUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CareerPositionUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      career_position:
+                        $ref: '#/definitions/CareerPositionResponse'
+                    type: object
+              type: object
+      summary: Update careerPosition by Id (dashboard)
+      tags:
+      - Career Positions
+  /dash/career-positions/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CareerPositionFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CareerPositionFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CareerPositionResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Career Positions (Dashboard)
+      tags:
+      - Career Positions
+  /dash/career-positions/options/career-filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CareerPositionOptionForCareerFilterRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CareerPositionOptionForCareerFilterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CareerPositionResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option For Career Filter (Dashboard)
+      tags:
+      - Career Positions
+  /dash/careers/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete career by Id (dashboard)
+      tags:
+      - Careers
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      career:
+                        $ref: '#/definitions/CareerResponse'
+                    type: object
+              type: object
+      summary: Get career by Id (dashboard)
+      tags:
+      - Careers
+  /dash/careers/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CareerFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CareerFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CareerResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Careers (Dashboard)
+      tags:
+      - Careers
   /dash/companies:
     post:
       consumes:
@@ -3721,6 +5131,152 @@ paths:
       summary: Option for Vessel Form (Dashboard)
       tags:
       - Companies
+  /dash/cruise-regions:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CruiseRegionCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CruiseRegionCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      cruise_region:
+                        $ref: '#/definitions/CruiseRegionResponse'
+                    type: object
+              type: object
+      summary: Create Cruise Region (Dashboard)
+      tags:
+      - Cruise Regions
+  /dash/cruise-regions/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete cruiseRegion by Id (dashboard)
+      tags:
+      - Cruise Regions
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      cruise_region:
+                        $ref: '#/definitions/CruiseRegionResponse'
+                    type: object
+              type: object
+      summary: Get cruiseRegion by Id (dashboard)
+      tags:
+      - Cruise Regions
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.CruiseRegionUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CruiseRegionUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      cruise_region:
+                        $ref: '#/definitions/CruiseRegionResponse'
+                    type: object
+              type: object
+      summary: Update cruiseRegion by Id (dashboard)
+      tags:
+      - Cruise Regions
+  /dash/cruise-regions/filter:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CruiseRegionResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Cruise Region (Dashboard)
+      tags:
+      - Cruise Regions
   /dash/customers/{id}:
     get:
       consumes:
@@ -3972,6 +5528,42 @@ paths:
       summary: Update dock by Id (dashboard)
       tags:
       - Docks
+  /dash/docks/{id}/move:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.DockUpdateMoveRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DockUpdateMoveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      dock:
+                        $ref: '#/definitions/DockResponse'
+                    type: object
+              type: object
+      summary: Update position dock by Id (dashboard)
+      tags:
+      - Docks
   /dash/docks/filter:
     post:
       consumes:
@@ -3994,6 +5586,41 @@ paths:
             - properties:
                 data:
                   allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      docks:
+                        items:
+                          $ref: '#/definitions/DockResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Dock (Dashboard)
+      tags:
+      - Docks
+  /dash/docks/options/company-form:
+    post:
+      consumes:
+      - application/json
+      description: Return list of docks for company form, this return only active
+        dock
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.DockOptionForCompanyFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DockOptionForCompanyFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
                   - $ref: '#/definitions/PaginationResponse'
                   - properties:
                       nodes:
@@ -4002,7 +5629,73 @@ paths:
                         type: array
                     type: object
               type: object
-      summary: Filter Dock (Dashboard)
+      summary: Option for Company Form (Dashboard)
+      tags:
+      - Docks
+  /dash/docks/options/place-form:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.DockOptionForPlaceFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DockOptionForPlaceFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/DockResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for Place Form (Dashboard)
+      tags:
+      - Docks
+  /dash/docks/options/place-ticket-recommendation-form:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.DockOptionForPlaceTicketRecommendationFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DockOptionForPlaceTicketRecommendationFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/DockResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for Place Ticket Recommendation Form (Dashboard)
       tags:
       - Docks
   /dash/docks/options/route-filter:
@@ -4045,7 +5738,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Return list of docks for route form, this return only active route
+      description: Return list of docks for route form, this return only active dock
       parameters:
       - description: Body Request
         in: body
@@ -4109,6 +5802,40 @@ paths:
                     type: object
               type: object
       summary: Option for Route Pricing Filter (Dashboard)
+      tags:
+      - Docks
+  /dash/docks/options/vessel-form:
+    post:
+      consumes:
+      - application/json
+      description: Return list of docks for vessel form, this return only active dock
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.DockOptionForVesselFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DockOptionForVesselFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/DockResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for Vessel Form (Dashboard)
       tags:
       - Docks
   /dash/global-settings/{id}:
@@ -4398,6 +6125,355 @@ paths:
       summary: Fetch Orders (Dashboard)
       tags:
       - Orders
+  /dash/payment-method-channels/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      payment_method_channel:
+                        $ref: '#/definitions/PaymentMethodChannelResponse'
+                    type: object
+              type: object
+      summary: Get Payment Method Channel by Id (dashboard)
+      tags:
+      - PaymentMethodChannels
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.PaymentMethodChannelUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentMethodChannelUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      payment_method_channel:
+                        $ref: '#/definitions/PaymentMethodChannelResponse'
+                    type: object
+              type: object
+      summary: Update Payment Method Channel by Id (dashboard)
+      tags:
+      - PaymentMethodChannels
+  /dash/payment-method-channels/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.PaymentMethodChannelFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentMethodChannelFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/PaymentMethodChannelResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Payment Method Channel (Dashboard)
+      tags:
+      - PaymentMethodChannels
+  /dash/payment-methods/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      payment_method:
+                        $ref: '#/definitions/PaymentMethodResponse'
+                    type: object
+              type: object
+      summary: Get paymentMethod by Id (dashboard)
+      tags:
+      - PaymentMethods
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.PaymentMethodUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentMethodUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      payment_method:
+                        $ref: '#/definitions/PaymentMethodResponse'
+                    type: object
+              type: object
+      summary: Update paymentMethod by Id (dashboard)
+      tags:
+      - PaymentMethods
+  /dash/payment-methods/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.PaymentMethodFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentMethodFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/PaymentMethodResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter PaymentMethod (Dashboard)
+      tags:
+      - PaymentMethods
+  /dash/place-ticket-recommendations:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.PlaceTicketRecommendationCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceTicketRecommendationCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      place_ticket_recommendation:
+                        $ref: '#/definitions/PlaceTicketRecommendationResponse'
+                    type: object
+              type: object
+      summary: Create Place (Dashboard)
+      tags:
+      - Place Ticket Recommendations
+  /dash/place-ticket-recommendations/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Delete place by Id (dashboard)
+      tags:
+      - Place Ticket Recommendations
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      place_ticket_recommendation:
+                        $ref: '#/definitions/PlaceTicketRecommendationResponse'
+                    type: object
+              type: object
+      summary: Get place by Id (dashboard)
+      tags:
+      - Place Ticket Recommendations
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.PlaceTicketRecommendationUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceTicketRecommendationUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      place_ticket_recommendation:
+                        $ref: '#/definitions/PlaceTicketRecommendationResponse'
+                    type: object
+              type: object
+      summary: Update place by Id (dashboard)
+      tags:
+      - Place Ticket Recommendations
+  /dash/place-ticket-recommendations/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.PlaceTicketRecommendationFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceTicketRecommendationFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      sub_places:
+                        items:
+                          $ref: '#/definitions/PlaceTicketRecommendationResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Place (Dashboard)
+      tags:
+      - Place Ticket Recommendations
   /dash/places:
     post:
       consumes:
@@ -4518,6 +6594,78 @@ paths:
       summary: Update place by Id (dashboard)
       tags:
       - Places
+  /dash/places/{id}/content:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.PlaceUpdateContentRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceUpdateContentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      place:
+                        $ref: '#/definitions/PlaceResponse'
+                    type: object
+              type: object
+      summary: Update place content by Id (dashboard)
+      tags:
+      - Places
+  /dash/places/{id}/content_2:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.PlaceUpdateContent2Request
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceUpdateContent2Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      place:
+                        $ref: '#/definitions/PlaceResponse'
+                    type: object
+              type: object
+      summary: Update place content 2 by Id (dashboard)
+      tags:
+      - Places
   /dash/places/{id}/move:
     patch:
       consumes:
@@ -4533,7 +6681,7 @@ paths:
         name: dto_request.PlaceUpdateMoveRequest
         required: true
         schema:
-          $ref: '#/definitions/PlaceUpdateRequest'
+          $ref: '#/definitions/PlaceUpdateMoveRequest'
       produces:
       - application/json
       responses:
@@ -5051,6 +7199,195 @@ paths:
       summary: Option for Route Pricing Form (Dashboard)
       tags:
       - Routes
+  /dash/sub-places:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.SubPlaceCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/SubPlaceCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      sub_place:
+                        $ref: '#/definitions/SubPlaceResponse'
+                    type: object
+              type: object
+      summary: Create Place (Dashboard)
+      tags:
+      - Sub Places
+  /dash/sub-places/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete place by Id (dashboard)
+      tags:
+      - Sub Places
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      sub_place:
+                        $ref: '#/definitions/SubPlaceResponse'
+                    type: object
+              type: object
+      summary: Get place by Id (dashboard)
+      tags:
+      - Sub Places
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.SubPlaceUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/SubPlaceUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      sub_place:
+                        $ref: '#/definitions/SubPlaceResponse'
+                    type: object
+              type: object
+      summary: Update place by Id (dashboard)
+      tags:
+      - Sub Places
+  /dash/sub-places/{id}/content:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.SubPlaceUpdateContentRequest
+        required: true
+        schema:
+          $ref: '#/definitions/SubPlaceUpdateContentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      sub_place:
+                        $ref: '#/definitions/SubPlaceResponse'
+                    type: object
+              type: object
+      summary: Update place content by Id (dashboard)
+      tags:
+      - Sub Places
+  /dash/sub-places/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.SubPlaceFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/SubPlaceFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      sub_places:
+                        items:
+                          $ref: '#/definitions/SubPlaceResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Place (Dashboard)
+      tags:
+      - Sub Places
   /dash/uploads:
     post:
       consumes:
@@ -5381,6 +7718,78 @@ paths:
       summary: Update Vessel (Dashboard)
       tags:
       - Vessels
+  /dash/vessels/{id}/privacy-policy:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Bpdy Request
+        in: body
+        name: dto_request.VesselUpdatePrivacyPolicyRequest
+        required: true
+        schema:
+          $ref: '#/definitions/VesselUpdatePrivacyPolicyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      vessel:
+                        $ref: '#/definitions/VesselResponse'
+                    type: object
+              type: object
+      summary: Update Vessel Privacy Policy (Dashboard)
+      tags:
+      - Vessels
+  /dash/vessels/{id}/refund-policy:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Bpdy Request
+        in: body
+        name: dto_request.VesselUpdateRefundPolicyRequest
+        required: true
+        schema:
+          $ref: '#/definitions/VesselUpdateRefundPolicyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      vessel:
+                        $ref: '#/definitions/VesselResponse'
+                    type: object
+              type: object
+      summary: Update Vessel Refund Policy (Dashboard)
+      tags:
+      - Vessels
   /dash/vessels/filter:
     post:
       consumes:
@@ -5657,6 +8066,58 @@ paths:
       summary: Customer Login Via Email (Landing)
       tags:
       - Auth
+  /landing/auth/login-facebook:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.AuthLandingLoginFacebookRequest
+        required: true
+        schema:
+          $ref: '#/definitions/AuthLandingLoginGoogleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/AuthTokenResponse'
+              type: object
+      summary: Customer Login Via Facebook Code Redirect (Landing)
+      tags:
+      - Auth
+  /landing/auth/login-google:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.AuthLandingLoginGoogleRequest
+        required: true
+        schema:
+          $ref: '#/definitions/AuthLandingLoginGoogleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/AuthTokenResponse'
+              type: object
+      summary: Customer Login Via Google Code Redirect (Landing)
+      tags:
+      - Auth
   /landing/auth/logout:
     post:
       consumes:
@@ -5723,6 +8184,101 @@ paths:
       summary: Customer Verification Via OTP Email (Landing)
       tags:
       - Auth
+  /landing/career-positions/options/career-form:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CareerPositionLandingOptionForCareerFormRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CareerPositionLandingOptionForCareerFormRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CareerPositionResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Option for Career Form (Landing)
+      tags:
+      - Career Positions
+  /landing/careers:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CareerLandingCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CareerLandingCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      career:
+                        $ref: '#/definitions/CareerResponse'
+                    type: object
+              type: object
+      summary: Create Career (Landing)
+      tags:
+      - Careers
+  /landing/careers/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CareerLandingUploadFileRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CareerLandingUploadFileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      link:
+                        type: string
+                    type: object
+              type: object
+      summary: Upload Career Pdf (Landing)
+      tags:
+      - Careers
   /landing/companies/{slug}:
     get:
       consumes:
@@ -5932,6 +8488,39 @@ paths:
                     type: object
               type: object
       summary: Option for Route Pricing Search (Landing)
+      tags:
+      - Docks
+  /landing/docks/options/route-pricing-search-default:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.DockLandingOptionForRoutePricingSearchDefaultRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DockLandingOptionForRoutePricingSearchDefaultRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      arrival_dock:
+                        $ref: '#/definitions/DockPublicResponse'
+                      departure_dock:
+                        $ref: '#/definitions/DockPublicResponse'
+                    type: object
+              type: object
+      summary: Option for Route Pricing Search Default (Landing)
       tags:
       - Docks
   /landing/orders:
@@ -6149,6 +8738,65 @@ paths:
       summary: Submit  Partner With Us (Landing)
       tags:
       - PartnerWithUs
+  /landing/payment-methods/available:
+    post:
+      consumes:
+      - application/json
+      description: Amount is optional, but it will displayed only payment method that
+        matched the minimum amount if supplied (Landing)
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.PaymentMethodLandingGetAvailableRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentMethodLandingGetAvailableRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      payment_methods:
+                        items:
+                          $ref: '#/definitions/PaymentMethodResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Get Available List of Payment Method & Payment Channels (Landing)
+      tags:
+      - PaymentMethods
+  /landing/payment-methods/xendit-public-key:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      xendit_public_key:
+                        type: string
+                    type: object
+              type: object
+      summary: Get xendit public api key for Card Payment (Landing)
+      tags:
+      - PaymentMethods
   /landing/payments:
     post:
       consumes:
@@ -6175,6 +8823,36 @@ paths:
       summary: Create Payment Request (Dashboard)
       tags:
       - Payments
+  /landing/places/{slug}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      place:
+                        $ref: '#/definitions/PlaceResponse'
+                    type: object
+              type: object
+      summary: Get By Slug (Landing)
+      tags:
+      - Places
   /landing/places/filter:
     post:
       consumes:
@@ -6267,8 +8945,71 @@ paths:
       summary: Search Route Pricing (Landing)
       tags:
       - Route Pricings
-  /landing/vessels/{id}:
+  /landing/route-pricings/ticket-recommendation:
     post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.RoutePricingLandingDockTicketRecommendationRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RoutePricingLandingDockTicketRecommendationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      recommendations:
+                        items:
+                          $ref: '#/definitions/RoutePricingTicketRecommendationResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Ticket Recommendation Route Pricing (Landing)
+      tags:
+      - Route Pricings
+  /landing/sub-places/{slug}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      sub_place:
+                        $ref: '#/definitions/SubPlaceResponse'
+                    type: object
+              type: object
+      summary: Get By Slug (landing)
+      tags:
+      - Sub Places
+  /landing/vessels/{id}:
+    get:
       consumes:
       - application/json
       parameters:
@@ -6330,6 +9071,39 @@ paths:
       summary: List Vessels (Landing Page)
       tags:
       - Vessels
+  /landing/vessels/options/route-pricing-filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.VesselLandingOptionForRoutePricingFilterRequest
+        required: true
+        schema:
+          $ref: '#/definitions/VesselLandingOptionForRoutePricingFilterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/VesselPublicResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: List Vessel Option for route pricing filter (Landing Page)
+      tags:
+      - Vessels
   /landing/vessels/popular:
     get:
       consumes:
@@ -6354,6 +9128,36 @@ paths:
                     type: object
               type: object
       summary: List Popular Vessels (Landing Page)
+      tags:
+      - Vessels
+  /landing/vessels/slug/{slug}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      vessel:
+                        $ref: '#/definitions/VesselPublicResponse'
+                    type: object
+              type: object
+      summary: Get vessel by slug (Landing Page)
       tags:
       - Vessels
 swagger: "2.0"
