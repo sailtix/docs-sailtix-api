@@ -623,6 +623,95 @@ definitions:
         type: array
         uniqueItems: true
     type: object
+  CompanyOfficeCreateRequest:
+    properties:
+      address:
+        type: string
+      company_id:
+        type: string
+      dock_id:
+        type: string
+      google_maps:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        maxLength: 255
+        type: string
+      photo:
+        type: string
+    required:
+    - address
+    - company_id
+    - dock_id
+    - google_maps
+    - latitude
+    - longitude
+    - name
+    - photo
+    type: object
+  CompanyOfficeResponse:
+    properties:
+      address:
+        type: string
+      company_id:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      dock_id:
+        type: string
+      google_maps:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        example: Asia & Pacific
+        type: string
+      photo:
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  CompanyOfficeUpdateRequest:
+    properties:
+      address:
+        type: string
+      company_id:
+        type: string
+      dock_id:
+        type: string
+      google_maps:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        maxLength: 255
+        type: string
+      photo:
+        type: string
+    required:
+    - address
+    - company_id
+    - dock_id
+    - google_maps
+    - latitude
+    - longitude
+    - name
+    - photo
+    type: object
   CompanyOptionForUserFormRequest:
     properties:
       limit:
@@ -1608,6 +1697,7 @@ definitions:
     - DOKU_PAYMENT_EXPIRY
     - DOKU_CLIENT_ID
     - DOKU_CLIENT_SECRET
+    - DOKU_IS_PRODUCTION
     type: string
   GlobalSettingResponse:
     properties:
@@ -2778,6 +2868,11 @@ definitions:
     - COMPANY_DELETE
     - COMPANY_OPTION_FOR_VESSEL_FORM
     - COMPANY_OPTION_FOR_USER_FORM
+    - COMPANY_OFFICE_CREATE
+    - COMPANY_OFFICE_FETCH
+    - COMPANY_OFFICE_GET
+    - COMPANY_OFFICE_UPDATE
+    - COMPANY_OFFICE_DELETE
     - CRUISE_REGION_CREATE
     - CRUISE_REGION_FETCH
     - CRUISE_REGION_GET
@@ -5131,6 +5226,152 @@ paths:
       summary: Option for Vessel Form (Dashboard)
       tags:
       - Companies
+  /dash/company-offices:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CompanyOfficeCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyOfficeCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      company_office:
+                        $ref: '#/definitions/CompanyOfficeResponse'
+                    type: object
+              type: object
+      summary: Create Cruise Region (Dashboard)
+      tags:
+      - Cruise Regions
+  /dash/company-offices/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete companyOffice by Id (dashboard)
+      tags:
+      - Cruise Regions
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      company_office:
+                        $ref: '#/definitions/CompanyOfficeResponse'
+                    type: object
+              type: object
+      summary: Get companyOffice by Id (dashboard)
+      tags:
+      - Cruise Regions
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.CompanyOfficeUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyOfficeUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      company_office:
+                        $ref: '#/definitions/CompanyOfficeResponse'
+                    type: object
+              type: object
+      summary: Update companyOffice by Id (dashboard)
+      tags:
+      - Cruise Regions
+  /dash/company-offices/filter:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/CompanyOfficeResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Cruise Region (Dashboard)
+      tags:
+      - Cruise Regions
   /dash/cruise-regions:
     post:
       consumes:
