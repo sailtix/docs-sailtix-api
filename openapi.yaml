@@ -652,6 +652,40 @@ definitions:
     - name
     - photo
     type: object
+  CompanyOfficeFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
   CompanyOfficeResponse:
     properties:
       address:
@@ -5350,6 +5384,13 @@ paths:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CompanyOfficeFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CompanyOfficeFetchRequest'
       produces:
       - application/json
       responses:
