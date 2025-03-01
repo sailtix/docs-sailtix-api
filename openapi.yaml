@@ -663,6 +663,9 @@ definitions:
         example: 1
         minimum: 1
         type: integer
+      phrase:
+        type: string
+        x-nullable: true
       sorts:
         items:
           properties:
@@ -690,12 +693,20 @@ definitions:
     properties:
       address:
         type: string
+      company:
+        allOf:
+        - $ref: '#/definitions/CompanyResponse'
+        x-nullable: true
       company_id:
         type: string
       created_at:
         type: string
       created_by:
         type: string
+      dock:
+        allOf:
+        - $ref: '#/definitions/DockResponse'
+        x-nullable: true
       dock_id:
         type: string
       google_maps:
