@@ -5299,9 +5299,9 @@ paths:
                         $ref: '#/definitions/CompanyOfficeResponse'
                     type: object
               type: object
-      summary: Create Cruise Region (Dashboard)
+      summary: Create Company Office (Dashboard)
       tags:
-      - Cruise Regions
+      - Company Offices
   /dash/company-offices/{id}:
     delete:
       consumes:
@@ -5324,9 +5324,9 @@ paths:
                 data:
                   $ref: '#/definitions/SuccessResponse'
               type: object
-      summary: Soft Delete companyOffice by Id (dashboard)
+      summary: Soft Delete Company Office by Id (dashboard)
       tags:
-      - Cruise Regions
+      - Company Offices
     get:
       consumes:
       - application/json
@@ -5353,9 +5353,9 @@ paths:
                         $ref: '#/definitions/CompanyOfficeResponse'
                     type: object
               type: object
-      summary: Get companyOffice by Id (dashboard)
+      summary: Get Company Office by Id (dashboard)
       tags:
-      - Cruise Regions
+      - Company Offices
     put:
       consumes:
       - application/json
@@ -5388,9 +5388,9 @@ paths:
                         $ref: '#/definitions/CompanyOfficeResponse'
                     type: object
               type: object
-      summary: Update companyOffice by Id (dashboard)
+      summary: Update Company Office by Id (dashboard)
       tags:
-      - Cruise Regions
+      - Company Offices
   /dash/company-offices/filter:
     post:
       consumes:
@@ -5421,9 +5421,9 @@ paths:
                         type: array
                     type: object
               type: object
-      summary: Filter Cruise Region (Dashboard)
+      summary: Filter  Company Office  (Dashboard)
       tags:
-      - Cruise Regions
+      - Company Offices
   /dash/cruise-regions:
     post:
       consumes:
