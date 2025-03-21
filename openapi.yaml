@@ -119,6 +119,81 @@ definitions:
         example: Bearer
         type: string
     type: object
+  BestForYouCreateRequest:
+    properties:
+      route_id:
+        type: string
+      route_pricing_id:
+        type: string
+        x-nullable: true
+    required:
+    - route_id
+    type: object
+  BestForYouFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  BestForYouResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      route_id:
+        type: string
+      route_pricing_id:
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  BestForYouUpdateRequest:
+    properties:
+      route_id:
+        type: string
+      route_pricing_id:
+        type: string
+        x-nullable: true
+    required:
+    - route_id
+    type: object
   CalendarFetchRequest:
     properties:
       arrival_dock_id:
@@ -747,6 +822,8 @@ definitions:
         type: number
       longitude:
         type: number
+      map_image:
+        type: string
       name:
         maxLength: 255
         type: string
@@ -759,6 +836,7 @@ definitions:
     - google_maps
     - latitude
     - longitude
+    - map_image
     - name
     - photo
     type: object
@@ -3022,6 +3100,11 @@ definitions:
     type: string
   PermissionEnum:
     enum:
+    - BEST_FOR_YOU_CREATE
+    - BEST_FOR_YOU_FETCH
+    - BEST_FOR_YOU_GET
+    - BEST_FOR_YOU_UPDATE
+    - BEST_FOR_YOU_DELETE
     - CALENDAR_FETCH
     - CALENDAR_UPDATE_AVAILABLE_SEAT
     - CAREER_FETCH
@@ -4865,6 +4948,159 @@ paths:
       summary: Logout (Dashboard)
       tags:
       - Auth
+  /dash/best-for-you:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.BestForYouCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/BestForYouCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      best_for_you:
+                        $ref: '#/definitions/BestForYouResponse'
+                    type: object
+              type: object
+      summary: Create BestForYou (Dashboard)
+      tags:
+      - Best For Yous
+  /dash/best-for-you/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete BestForYou by Id (Dashboard)
+      tags:
+      - Best For Yous
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      best_for_you:
+                        $ref: '#/definitions/BestForYouResponse'
+                    type: object
+              type: object
+      summary: Get BestForYou by Id (Dashboard)
+      tags:
+      - Best For Yous
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.BestForYouUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/BestForYouUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      best_for_you:
+                        $ref: '#/definitions/BestForYouResponse'
+                    type: object
+              type: object
+      summary: Update BestForYou by Id (Dashboard)
+      tags:
+      - Best For Yous
+  /dash/best-for-you/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.BestForYouFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/BestForYouFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/BestForYouResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter BestForYou (Dashboard)
+      tags:
+      - Best For Yous
   /dash/calendars/available-seat:
     patch:
       consumes:
