@@ -2556,6 +2556,107 @@ definitions:
         - $ref: '#/definitions/VesselPublicResponse'
         x-nullable: true
     type: object
+  LandingSeoCreateRequest:
+    properties:
+      description:
+        type: string
+      image:
+        maxLength: 255
+        type: string
+      page:
+        maxLength: 255
+        type: string
+      title:
+        maxLength: 255
+        type: string
+    required:
+    - description
+    - image
+    - page
+    - title
+    type: object
+  LandingSeoFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  LandingSeoResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      description:
+        example: Description
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      image:
+        example: image.jpg
+        type: string
+      page:
+        example: /page
+        type: string
+      title:
+        example: Title
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  LandingSeoUpdateRequest:
+    properties:
+      description:
+        type: string
+      image:
+        maxLength: 255
+        type: string
+      page:
+        maxLength: 255
+        type: string
+      title:
+        maxLength: 255
+        type: string
+    required:
+    - description
+    - image
+    - page
+    - title
+    type: object
   OrderCreateRequest:
     properties:
       customer_id:
@@ -3165,6 +3266,11 @@ definitions:
     - GLOBAL_SETTING_UPDATE
     - GLOBAL_SETTING_UPDATE_BATCH
     - GLOBAL_SETTING_DELETE
+    - LANDING_SEO_CREATE
+    - LANDING_SEO_FETCH
+    - LANDING_SEO_GET
+    - LANDING_SEO_UPDATE
+    - LANDING_SEO_DELETE
     - ORDER_CREATE
     - ORDER_FETCH
     - ORDER_GET
@@ -6656,6 +6762,159 @@ paths:
       summary: Filter GlobalSetting (Dashboard)
       tags:
       - GlobalSettings
+  /dash/landing-seo:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.LandingSeoCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/LandingSeoCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      landingSeo:
+                        $ref: '#/definitions/LandingSeoResponse'
+                    type: object
+              type: object
+      summary: Create LandingSeo (Dashboard)
+      tags:
+      - Landing Seos
+  /dash/landing-seo/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete LandingSeo by Id (Dashboard)
+      tags:
+      - Landing Seos
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      landingSeo:
+                        $ref: '#/definitions/LandingSeoResponse'
+                    type: object
+              type: object
+      summary: Get LandingSeo by Id (Dashboard)
+      tags:
+      - Landing Seos
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.LandingSeoUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/LandingSeoUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      landingSeo:
+                        $ref: '#/definitions/LandingSeoResponse'
+                    type: object
+              type: object
+      summary: Update LandingSeo by Id (Dashboard)
+      tags:
+      - Landing Seos
+  /dash/landing-seo/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.LandingSeoFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/LandingSeoFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/LandingSeoResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter LandingSeo (Dashboard)
+      tags:
+      - Landing Seos
   /dash/orders:
     post:
       consumes:
