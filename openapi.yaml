@@ -2577,40 +2577,11 @@ definitions:
     type: object
   LandingSeoFetchRequest:
     properties:
-      limit:
-        example: 100
-        maximum: 100
-        minimum: 1
-        type: integer
       page:
-        example: 1
-        minimum: 1
-        type: integer
-      phrase:
+        maxLength: 255
         type: string
-        x-nullable: true
-      sorts:
-        items:
-          properties:
-            direction:
-              enum:
-              - asc
-              - desc
-              example: desc
-              type: string
-            field:
-              enum:
-              - name
-              - created_at
-              - updated_at
-              example: updated_at
-              type: string
-          required:
-          - direction
-          - field
-          type: object
-        type: array
-        uniqueItems: true
+    required:
+    - page
     type: object
   LandingSeoResponse:
     properties:
@@ -5770,10 +5741,10 @@ paths:
       parameters:
       - description: Body Request
         in: body
-        name: dto_request.DiscountCreateRequest
+        name: dto_request.CompanyOfficeCreateRequest
         required: true
         schema:
-          $ref: '#/definitions/DiscountCreateRequest'
+          $ref: '#/definitions/CompanyOfficeCreateRequest'
       produces:
       - application/json
       responses:
@@ -5788,7 +5759,7 @@ paths:
                   - $ref: '#/definitions/DataResponse'
                   - properties:
                       company_office:
-                        $ref: '#/definitions/DiscountResponse'
+                        $ref: '#/definitions/CompanyOfficeResponse'
                     type: object
               type: object
       summary: Create Company Office (Dashboard)
@@ -5842,7 +5813,7 @@ paths:
                   - $ref: '#/definitions/DataResponse'
                   - properties:
                       company_office:
-                        $ref: '#/definitions/DiscountResponse'
+                        $ref: '#/definitions/CompanyOfficeResponse'
                     type: object
               type: object
       summary: Get Company Office by Id (dashboard)
@@ -5859,10 +5830,10 @@ paths:
         type: string
       - description: Id
         in: body
-        name: dto_request.DiscountUpdateRequest
+        name: dto_request.CompanyOfficeUpdateRequest
         required: true
         schema:
-          $ref: '#/definitions/DiscountUpdateRequest'
+          $ref: '#/definitions/CompanyOfficeUpdateRequest'
       produces:
       - application/json
       responses:
@@ -5877,7 +5848,7 @@ paths:
                   - $ref: '#/definitions/DataResponse'
                   - properties:
                       company_office:
-                        $ref: '#/definitions/DiscountResponse'
+                        $ref: '#/definitions/CompanyOfficeResponse'
                     type: object
               type: object
       summary: Update Company Office by Id (dashboard)
@@ -5890,10 +5861,10 @@ paths:
       parameters:
       - description: Body Request
         in: body
-        name: dto_request.DiscountFetchRequest
+        name: dto_request.CompanyOfficeFetchRequest
         required: true
         schema:
-          $ref: '#/definitions/DiscountFetchRequest'
+          $ref: '#/definitions/CompanyOfficeFetchRequest'
       produces:
       - application/json
       responses:
@@ -5909,7 +5880,7 @@ paths:
                   - properties:
                       nodes:
                         items:
-                          $ref: '#/definitions/DiscountResponse'
+                          $ref: '#/definitions/CompanyOfficeResponse'
                         type: array
                     type: object
               type: object
@@ -6193,6 +6164,159 @@ paths:
       summary: Option For Order Form (Dashboard)
       tags:
       - Customers
+  /dash/discounts:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.DiscountCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DiscountCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      company_office:
+                        $ref: '#/definitions/DiscountResponse'
+                    type: object
+              type: object
+      summary: Create Company Office (Dashboard)
+      tags:
+      - Company Offices
+  /dash/discounts/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete Company Office by Id (dashboard)
+      tags:
+      - Company Offices
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      company_office:
+                        $ref: '#/definitions/DiscountResponse'
+                    type: object
+              type: object
+      summary: Get Company Office by Id (dashboard)
+      tags:
+      - Company Offices
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.DiscountUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DiscountUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      company_office:
+                        $ref: '#/definitions/DiscountResponse'
+                    type: object
+              type: object
+      summary: Update Company Office by Id (dashboard)
+      tags:
+      - Company Offices
+  /dash/discounts/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.DiscountFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/DiscountFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/DiscountResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter  Company Office  (Dashboard)
+      tags:
+      - Company Offices
   /dash/docks:
     post:
       consumes:
@@ -9461,6 +9585,37 @@ paths:
       summary: Option for Route Pricing Search Default (Landing)
       tags:
       - Docks
+  /landing/landing-seo/get-by-page:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.LandingSeoLandingGetByPageRequest
+        required: true
+        schema:
+          $ref: '#/definitions/LandingSeoFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        $ref: '#/definitions/LandingSeoResponse'
+                    type: object
+              type: object
+      summary: Filter LandingSeo (Dashboard)
+      tags:
+      - Landing Seos
   /landing/orders:
     post:
       consumes:
