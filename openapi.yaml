@@ -1220,6 +1220,14 @@ definitions:
         type: array
         uniqueItems: true
     type: object
+  ContentManagementLandingGetByPageRequest:
+    properties:
+      page:
+        maxLength: 255
+        type: string
+    required:
+    - page
+    type: object
   ContentManagementResponse:
     properties:
       content:
@@ -2696,6 +2704,43 @@ definitions:
     - title
     type: object
   LandingSeoFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  LandingSeoLandingGetByPageRequest:
     properties:
       page:
         maxLength: 255
@@ -9715,6 +9760,37 @@ paths:
       summary: Option for Route Pricing Search (Landing)
       tags:
       - Companies
+  /landing/content-management:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.ContentManagementLandingGetByPageRequest
+        required: true
+        schema:
+          $ref: '#/definitions/ContentManagementLandingGetByPageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      contentManagement:
+                        $ref: '#/definitions/ContentManagementResponse'
+                    type: object
+              type: object
+      summary: Get Content Management by Id (Landing)
+      tags:
+      - Content Managements
   /landing/customers/me:
     get:
       consumes:
@@ -9873,7 +9949,7 @@ paths:
         name: dto_request.LandingSeoLandingGetByPageRequest
         required: true
         schema:
-          $ref: '#/definitions/LandingSeoFetchRequest'
+          $ref: '#/definitions/LandingSeoLandingGetByPageRequest'
       produces:
       - application/json
       responses:
