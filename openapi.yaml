@@ -1158,6 +1158,126 @@ definitions:
     - photo
     - slug
     type: object
+  ContentManagementCreateRequest:
+    properties:
+      content:
+        maxLength: 255
+        type: string
+      image:
+        maxLength: 255
+        type: string
+      page:
+        maxLength: 255
+        type: string
+      title:
+        maxLength: 255
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/ContentManagementTypeEnum'
+        maximum: 255
+    required:
+    - content
+    - image
+    - page
+    - title
+    - type
+    type: object
+  ContentManagementFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  ContentManagementResponse:
+    properties:
+      content:
+        example: Experience the best sailing journey with us
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      image:
+        example: https://example.com/banner.jpg
+        type: string
+      page:
+        example: home
+        type: string
+      title:
+        example: Welcome to Sailtix
+        type: string
+      type:
+        $ref: '#/definitions/ContentManagementTypeEnum'
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  ContentManagementTypeEnum:
+    enum:
+    - ARTICLE
+    - HERO
+    type: string
+  ContentManagementUpdateRequest:
+    properties:
+      content:
+        maxLength: 255
+        type: string
+      image:
+        maxLength: 255
+        type: string
+      page:
+        maxLength: 255
+        type: string
+      title:
+        maxLength: 255
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/ContentManagementTypeEnum'
+        maximum: 255
+    required:
+    - content
+    - image
+    - page
+    - title
+    - type
+    type: object
   CruiseRegionCreateRequest:
     properties:
       is_active:
@@ -3201,6 +3321,11 @@ definitions:
     - COMPANY_OFFICE_GET
     - COMPANY_OFFICE_UPDATE
     - COMPANY_OFFICE_DELETE
+    - CONTENT_MANAGEMENT_CREATE
+    - CONTENT_MANAGEMENT_FETCH
+    - CONTENT_MANAGEMENT_GET
+    - CONTENT_MANAGEMENT_UPDATE
+    - CONTENT_MANAGEMENT_DELETE
     - CRUISE_REGION_CREATE
     - CRUISE_REGION_FETCH
     - CRUISE_REGION_GET
@@ -5887,6 +6012,159 @@ paths:
       summary: Filter  Company Office  (Dashboard)
       tags:
       - Company Offices
+  /dash/content-management:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.ContentManagementCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/ContentManagementCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      contentManagement:
+                        $ref: '#/definitions/ContentManagementResponse'
+                    type: object
+              type: object
+      summary: Create Content Management (Dashboard)
+      tags:
+      - Content Managements
+  /dash/content-management/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete Content Management by Id (Dashboard)
+      tags:
+      - Content Managements
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      contentManagement:
+                        $ref: '#/definitions/ContentManagementResponse'
+                    type: object
+              type: object
+      summary: Get Content Management by Id (Dashboard)
+      tags:
+      - Content Managements
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.ContentManagementUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/ContentManagementUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      contentManagement:
+                        $ref: '#/definitions/ContentManagementResponse'
+                    type: object
+              type: object
+      summary: Update Content Management by Id (Dashboard)
+      tags:
+      - Content Managements
+  /dash/content-management/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.ContentManagementFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/ContentManagementFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/ContentManagementResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Content Management (Dashboard)
+      tags:
+      - Content Managements
   /dash/cruise-regions:
     post:
       consumes:
