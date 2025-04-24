@@ -123,13 +123,13 @@ definitions:
     properties:
       image:
         type: string
-      order:
-        minimum: 0
-        type: integer
       route_id:
         type: string
       route_pricing_id:
         type: string
+      sequence:
+        minimum: 0
+        type: integer
     required:
     - image
     - route_id
@@ -194,13 +194,13 @@ definitions:
     properties:
       image:
         type: string
-      order:
-        minimum: 0
-        type: integer
       route_id:
         type: string
       route_pricing_id:
         type: string
+      sequence:
+        minimum: 0
+        type: integer
     required:
     - image
     - route_id
@@ -2024,6 +2024,105 @@ definitions:
       updated_at:
         type: string
     type: object
+  FacilityCreateRequest:
+    properties:
+      description:
+        type: string
+      icon:
+        maxLength: 255
+        type: string
+        x-nullable: true
+      name:
+        maxLength: 255
+        type: string
+      type:
+        $ref: '#/definitions/FacilityType'
+    required:
+    - description
+    - name
+    type: object
+  FacilityFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  FacilityResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      name:
+        example: Asia & Pacific
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  FacilityType:
+    enum:
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      FacilityCommon: COMMON
+      FacilityHighlight: HIGHLIGHT
+    x-enum-varnames:
+    - FacilityHighlight
+    - FacilityCommon
+  FacilityUpdateRequest:
+    properties:
+      description:
+        type: string
+      icon:
+        maxLength: 255
+        type: string
+        x-nullable: true
+      name:
+        maxLength: 255
+        type: string
+      type:
+        $ref: '#/definitions/FacilityType'
+    required:
+    - description
+    - name
+    type: object
   GlobalSettingFetchRequest:
     properties:
       group:
@@ -3413,6 +3512,11 @@ definitions:
     - DOCK_OPTION_FOR_ROUTE_PRICING_FILTER
     - DOCK_OPTION_FOR_PLACE_FORM
     - DOCK_OPTION_FOR_PLACE_TICKET_RECOMMENDATION_FORM
+    - FACILITY_CREATE
+    - FACILITY_FETCH
+    - FACILITY_GET
+    - FACILITY_UPDATE
+    - FACILITY_DELETE
     - GLOBAL_SETTING_CREATE
     - GLOBAL_SETTING_FETCH
     - GLOBAL_SETTING_GET
@@ -4650,8 +4754,14 @@ definitions:
         type: string
       default_departure_dock_id:
         type: string
-      facility:
-        type: string
+      facility_ids:
+        items:
+          type: string
+        type: array
+      image_ids:
+        items:
+          type: string
+        type: array
       is_active:
         type: boolean
       name:
@@ -4663,7 +4773,6 @@ definitions:
         $ref: '#/definitions/VesselTypeEnum'
     required:
     - company_id
-    - facility
     - name
     type: object
   VesselFetchRequest:
@@ -7085,6 +7194,159 @@ paths:
       summary: Option for Vessel Form (Dashboard)
       tags:
       - Docks
+  /dash/facility:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.FacilityCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/FacilityCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      facility:
+                        $ref: '#/definitions/FacilityResponse'
+                    type: object
+              type: object
+      summary: Create Facility (Dashboard)
+      tags:
+      - Facilities
+  /dash/facility/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete Facility by Id (Dashboard)
+      tags:
+      - Facilities
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      facility:
+                        $ref: '#/definitions/FacilityResponse'
+                    type: object
+              type: object
+      summary: Get Facility by Id (Dashboard)
+      tags:
+      - Facilities
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.FacilityUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/FacilityUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      facility:
+                        $ref: '#/definitions/FacilityResponse'
+                    type: object
+              type: object
+      summary: Update Facility by Id (Dashboard)
+      tags:
+      - Facilities
+  /dash/facility/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.FacilityFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/FacilityFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/FacilityResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Facility (Dashboard)
+      tags:
+      - Facilities
   /dash/global-settings/{id}:
     get:
       consumes:
@@ -8816,6 +9078,36 @@ paths:
                     type: object
               type: object
       summary: Upload file
+      tags:
+      - Uploads
+  /dash/uploads/image:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Body with image file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      link:
+                        type: string
+                    type: object
+              type: object
+      summary: Upload image
       tags:
       - Uploads
   /dash/users:
