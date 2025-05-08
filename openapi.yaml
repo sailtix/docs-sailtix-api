@@ -181,10 +181,14 @@ definitions:
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
+      image:
+        type: string
       route_id:
         type: string
       route_pricing_id:
         type: string
+      sequence:
+        type: integer
       updated_at:
         type: string
       updated_by:
@@ -555,6 +559,16 @@ definitions:
         type: string
       description:
         type: string
+      facility_ids:
+        items:
+          type: string
+        type: array
+        x-nullable: true
+      image_ids:
+        items:
+          type: string
+        type: array
+        x-nullable: true
       infant_policy:
         type: string
       infant_policy_description:
@@ -939,9 +953,19 @@ definitions:
       description:
         example: Desc
         type: string
+      facilities:
+        items:
+          $ref: '#/definitions/FacilityResponse'
+        type: array
+        x-nullable: true
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
+      images:
+        items:
+          $ref: '#/definitions/FacilityResponse'
+        type: array
+        x-nullable: true
       legal_name:
         example: Ekajaya
         type: string
@@ -981,9 +1005,19 @@ definitions:
       description:
         example: Desc
         type: string
+      facilities:
+        items:
+          $ref: '#/definitions/FacilityResponse'
+        type: array
+        x-nullable: true
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
+      images:
+        items:
+          $ref: '#/definitions/FacilityResponse'
+        type: array
+        x-nullable: true
       infant_policy:
         example: Policy
         type: string
@@ -1067,9 +1101,19 @@ definitions:
       description:
         example: Desc
         type: string
+      facilities:
+        items:
+          $ref: '#/definitions/FacilityResponse'
+        type: array
+        x-nullable: true
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
+      images:
+        items:
+          $ref: '#/definitions/FacilityResponse'
+        type: array
+        x-nullable: true
       infant_policy:
         example: Policy
         type: string
@@ -1134,6 +1178,16 @@ definitions:
         type: string
       description:
         type: string
+      facility_ids:
+        items:
+          type: string
+        type: array
+        x-nullable: true
+      image_ids:
+        items:
+          type: string
+        type: array
+        x-nullable: true
       infant_policy:
         type: string
       infant_policy_description:
@@ -2026,6 +2080,10 @@ definitions:
     type: object
   FacilityCreateRequest:
     properties:
+      color:
+        maxLength: 255
+        type: string
+        x-nullable: true
       description:
         type: string
       icon:
@@ -2080,9 +2138,15 @@ definitions:
     type: object
   FacilityResponse:
     properties:
+      color:
+        type: string
       created_at:
         type: string
       created_by:
+        type: string
+      description:
+        type: string
+      icon:
         type: string
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
@@ -2090,6 +2154,8 @@ definitions:
       name:
         example: Asia & Pacific
         type: string
+      type:
+        $ref: '#/definitions/FacilityType'
       updated_at:
         type: string
       updated_by:
@@ -2108,6 +2174,10 @@ definitions:
     - FacilityCommon
   FacilityUpdateRequest:
     properties:
+      color:
+        maxLength: 255
+        type: string
+        x-nullable: true
       description:
         type: string
       icon:
@@ -4158,6 +4228,16 @@ definitions:
       departure_dock_id:
         type: string
         x-nullable: true
+      departure_times:
+        items:
+          $ref: '#/definitions/data_type.HourTime'
+        type: array
+        x-nullable: true
+      facility_ids:
+        items:
+          type: string
+        type: array
+        x-nullable: true
       infant:
         type: integer
       limit:
@@ -4169,6 +4249,10 @@ definitions:
         example: 1
         minimum: 1
         type: integer
+      sort_type:
+        allOf:
+        - $ref: '#/definitions/RoutePricingSortTypeEnum'
+        x-nullable: true
       vessel_types:
         items:
           $ref: '#/definitions/VesselTypeEnum'
@@ -4218,6 +4302,13 @@ definitions:
         example: 12de2751-f2bf-4db8-8177-64a96340331e
         type: string
     type: object
+  RoutePricingSortTypeEnum:
+    enum:
+    - LOWEST PRICE
+    - EARLIEST DEPARTURE
+    - LATEST DEPARTURE
+    - SHORTEST DURATION
+    type: string
   RoutePricingTicketRecommendationResponse:
     properties:
       arrival_dock_id:
