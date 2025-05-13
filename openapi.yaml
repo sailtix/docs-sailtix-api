@@ -2138,24 +2138,17 @@ definitions:
     type: object
   FacilityResponse:
     properties:
-      color:
-        type: string
       created_at:
         type: string
       created_by:
         type: string
-      description:
-        type: string
-      icon:
-        type: string
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
-      name:
-        example: Asia & Pacific
+      image:
         type: string
-      type:
-        $ref: '#/definitions/FacilityType'
+      image_blur:
+        type: string
       updated_at:
         type: string
       updated_by:
@@ -9178,6 +9171,11 @@ paths:
       parameters:
       - description: Body with image file
         in: formData
+        name: id
+        required: true
+        type: file
+      - description: Body with image file
+        in: formData
         name: file
         required: true
         type: file
@@ -10337,6 +10335,39 @@ paths:
       summary: Option for Route Pricing Search Default (Landing)
       tags:
       - Docks
+  /landing/facility/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.FacilityFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/FacilityFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/FacilityResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Facility (Landing)
+      tags:
+      - Facilities
   /landing/landing-seo/get-by-page:
     post:
       consumes:
