@@ -2138,17 +2138,24 @@ definitions:
     type: object
   FacilityResponse:
     properties:
+      color:
+        type: string
       created_at:
         type: string
       created_by:
         type: string
+      description:
+        type: string
+      icon:
+        type: string
       id:
         example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
         type: string
-      image:
+      name:
+        example: Asia & Pacific
         type: string
-      image_blur:
-        type: string
+      type:
+        $ref: '#/definitions/FacilityType'
       updated_at:
         type: string
       updated_by:
@@ -4224,6 +4231,8 @@ definitions:
       departure_times:
         items:
           $ref: '#/definitions/data_type.HourTime'
+        maxItems: 2
+        minItems: 2
         type: array
         x-nullable: true
       facility_ids:
@@ -5302,6 +5311,13 @@ definitions:
   data_type.HourTime:
     type: object
   data_type.NullHourTime:
+    type: object
+  dto_request.OrderStatusCheckRequest:
+    properties:
+      invoice_number:
+        type: string
+    required:
+    - invoice_number
     type: object
   dto_response.XenditPaymentResponseCard:
     properties:
@@ -10581,6 +10597,39 @@ paths:
         "200":
           description: 'content-type: application/pdf'
       summary: Download Eticket of 'Paid' order by invoice number (Landing Page)
+      tags:
+      - Orders
+  /landing/orders/status:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.OrderStatusCheckRequest
+        required: true
+        schema:
+          $ref: '#/definitions/dto_request.OrderStatusCheckRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      expired_at:
+                        type: string
+                      order_status:
+                        $ref: '#/definitions/OrderStatusEnum'
+                    type: object
+              type: object
+      summary: Check Order Status (Landing Page)
       tags:
       - Orders
   /landing/partner-with-us:
