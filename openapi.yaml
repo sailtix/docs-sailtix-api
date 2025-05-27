@@ -963,7 +963,7 @@ definitions:
         type: string
       images:
         items:
-          $ref: '#/definitions/FacilityResponse'
+          $ref: '#/definitions/ImageResponse'
         type: array
         x-nullable: true
       legal_name:
@@ -1015,7 +1015,7 @@ definitions:
         type: string
       images:
         items:
-          $ref: '#/definitions/FacilityResponse'
+          $ref: '#/definitions/ImageResponse'
         type: array
         x-nullable: true
       infant_policy:
@@ -1111,7 +1111,7 @@ definitions:
         type: string
       images:
         items:
-          $ref: '#/definitions/FacilityResponse'
+          $ref: '#/definitions/ImageResponse'
         type: array
         x-nullable: true
       infant_policy:
@@ -2819,6 +2819,24 @@ definitions:
     - W-SU
     - Zulu
     type: string
+  ImageResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      image:
+        type: string
+      image_blur:
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
   LandingRoutePricingResponse:
     properties:
       adult_fee:
