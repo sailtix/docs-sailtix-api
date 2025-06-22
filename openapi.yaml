@@ -4307,6 +4307,8 @@ definitions:
         type: array
         x-nullable: true
     type: object
+  RoutePricingLowestPriceByDockIdRequest:
+    type: object
   RoutePricingResponse:
     properties:
       adult_fee:
@@ -10911,6 +10913,37 @@ paths:
                     type: object
               type: object
       summary: Best for you list (Landing)
+      tags:
+      - Route Pricings
+  /landing/route-pricings/lowest-price-by-dock-id/{dock_id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.RoutePricingLowestPriceByDockIdRequest
+        required: true
+        schema:
+          $ref: '#/definitions/RoutePricingLowestPriceByDockIdRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      lowest_price:
+                        type: number
+                    type: object
+              type: object
+      summary: Get Lowest Price Route Pricing by Dock (Landing)
       tags:
       - Route Pricings
   /landing/route-pricings/search:
