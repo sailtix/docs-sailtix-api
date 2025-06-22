@@ -8467,7 +8467,7 @@ paths:
                         $ref: '#/definitions/PlaceResponse'
                     type: object
               type: object
-      summary: Update place content by Id (dashboard)
+      summary: Update place content 1 by Id (dashboard)
       tags:
       - Places
   /dash/places/{id}/content_2:
