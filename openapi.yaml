@@ -3723,6 +3723,9 @@ definitions:
       content:
         type: string
         x-nullable: true
+      content_1:
+        type: string
+        x-nullable: true
       content_2:
         type: string
         x-nullable: true
@@ -3844,6 +3847,11 @@ definitions:
     - image_link
     - subtitle
     - title
+    type: object
+  PlaceUpdateContent1Request:
+    properties:
+      content_1:
+        type: string
     type: object
   PlaceUpdateContent2Request:
     properties:
@@ -8404,6 +8412,42 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/PlaceUpdateContentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      place:
+                        $ref: '#/definitions/PlaceResponse'
+                    type: object
+              type: object
+      summary: Update place content by Id (dashboard)
+      tags:
+      - Places
+  /dash/places/{id}/content_1:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.PlaceUpdateContent1Request
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceUpdateContent1Request'
       produces:
       - application/json
       responses:
