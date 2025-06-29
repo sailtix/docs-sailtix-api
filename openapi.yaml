@@ -1352,6 +1352,107 @@ definitions:
     - title
     - type
     type: object
+  CreatePaymentIntentRequest:
+    properties:
+      amount:
+        type: number
+      currency:
+        $ref: '#/definitions/CurrencyEnum'
+      customer_id:
+        type: string
+      description:
+        type: string
+      metadata:
+        additionalProperties:
+          type: string
+        type: object
+      order_data:
+        additionalProperties: true
+        type: object
+    required:
+    - amount
+    - currency
+    type: object
+  CreatePaymentIntentResponse:
+    properties:
+      amount:
+        type: integer
+      client_secret:
+        type: string
+      currency:
+        type: string
+      payment_intent_id:
+        type: string
+      status:
+        type: string
+    type: object
+  CreatePaymentMethodFromTokenRequest:
+    properties:
+      card_token:
+        type: string
+      customer:
+        $ref: '#/definitions/PaymentCustomer'
+    required:
+    - card_token
+    - customer
+    type: object
+  CreatePaymentSessionRequest:
+    properties:
+      amount:
+        type: number
+      currency:
+        enum:
+        - IDR
+        type: string
+      customer:
+        $ref: '#/definitions/PaymentCustomer'
+      failure_return_url:
+        type: string
+      metadata:
+        additionalProperties: true
+        type: object
+      reference_id:
+        type: string
+      success_return_url:
+        type: string
+    required:
+    - amount
+    - currency
+    - customer
+    - failure_return_url
+    - reference_id
+    - success_return_url
+    type: object
+  CreatePaymentWithMethodIdRequest:
+    properties:
+      amount:
+        type: number
+      currency:
+        enum:
+        - IDR
+        type: string
+      customer:
+        $ref: '#/definitions/PaymentCustomer'
+      failure_return_url:
+        type: string
+      metadata:
+        additionalProperties: true
+        type: object
+      payment_method_id:
+        type: string
+      reference_id:
+        type: string
+      success_return_url:
+        type: string
+    required:
+    - amount
+    - currency
+    - customer
+    - failure_return_url
+    - payment_method_id
+    - reference_id
+    - success_return_url
+    type: object
   CruiseRegionCreateRequest:
     properties:
       is_active:
@@ -1390,6 +1491,16 @@ definitions:
   CurrencyEnum:
     enum:
     - IDR
+    - USD
+    - EUR
+    - GBP
+    - JPY
+    - SGD
+    - AUD
+    - THB
+    - MYR
+    - PHP
+    - VND
     type: string
   CustomerFetchRequest:
     properties:
@@ -2092,6 +2203,24 @@ definitions:
       updated_at:
         type: string
     type: object
+  Error:
+    properties:
+      domain:
+        type: string
+      message:
+        type: string
+    type: object
+  ErrorResponse:
+    properties:
+      code:
+        type: integer
+      errors:
+        items:
+          $ref: '#/definitions/Error'
+        type: array
+      message:
+        type: string
+    type: object
   FacilityCreateRequest:
     properties:
       color:
@@ -2250,6 +2379,8 @@ definitions:
     - ZEPTOMAIL
     - XENDIT
     - DOKU
+    - WISE
+    - STRIPE
     type: string
   GlobalSettingKeyEnum:
     enum:
@@ -2272,6 +2403,14 @@ definitions:
     - DOKU_CLIENT_ID
     - DOKU_CLIENT_SECRET
     - DOKU_IS_PRODUCTION
+    - WISE_API_KEY
+    - WISE_BASE_URL
+    - STRIPE_PUBLISHABLE_KEY
+    - STRIPE_SECRET_KEY
+    - STRIPE_WEBHOOK_SECRET
+    - STRIPE_WEBHOOK_URL
+    - STRIPE_RETURN_URL
+    - STRIPE_IS_PRODUCTION
     type: string
   GlobalSettingResponse:
     properties:
@@ -2291,8 +2430,6 @@ definitions:
     properties:
       value:
         type: string
-    required:
-    - value
     type: object
   IANATimeZoneIdentifierEnum:
     enum:
@@ -3006,6 +3143,32 @@ definitions:
     - page
     - title
     type: object
+  OrderAnalyticsRequest:
+    type: object
+  OrderAnalyticsResponse:
+    properties:
+      average_order_value:
+        example: 850000
+        type: number
+      orders_count_this_month:
+        example: 342
+        type: integer
+      orders_count_this_year:
+        example: 2847
+        type: integer
+      orders_count_today:
+        example: 15
+        type: integer
+      total_sales_this_month:
+        example: 3250000
+        type: number
+      total_sales_this_year:
+        example: 24800000
+        type: number
+      total_sales_today:
+        example: 125000
+        type: number
+    type: object
   OrderCreateRequest:
     properties:
       customer_id:
@@ -3378,12 +3541,110 @@ definitions:
           $ref: '#/definitions/VesselTypeEnum'
         type: array
     type: object
+  PaymentCardTokenInfo:
+    properties:
+      card_token:
+        type: string
+      channel_properties:
+        $ref: '#/definitions/PaymentChannelProperties'
+      currency:
+        enum:
+        - IDR
+        type: string
+    required:
+    - card_token
+    - channel_properties
+    - currency
+    type: object
+  PaymentChannelProperties:
+    properties:
+      failure_return_url:
+        type: string
+      success_return_url:
+        type: string
+    required:
+    - failure_return_url
+    - success_return_url
+    type: object
+  PaymentCustomer:
+    properties:
+      email:
+        type: string
+      given_names:
+        type: string
+      mobile_number:
+        type: string
+      surname:
+        type: string
+    required:
+    - email
+    - given_names
+    - mobile_number
+    type: object
+  PaymentGatewayEnum:
+    enum:
+    - 1
+    - 2
+    - 3
+    - 4
+    type: integer
+    x-enum-comments:
+      PaymentGatewayEnumDoku: DOKU
+      PaymentGatewayEnumS3: S3
+      PaymentGatewayEnumStripe: STRIPE
+      PaymentGatewayEnumXendit: XENDIT
+    x-enum-varnames:
+    - PaymentGatewayEnumDoku
+    - PaymentGatewayEnumStripe
+    - PaymentGatewayEnumXendit
+    - PaymentGatewayEnumS3
+  PaymentGatewayTestResponse:
+    properties:
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
   PaymentLandingCreateOrderPaymentRequest:
     properties:
       order_id:
         type: string
     required:
     - order_id
+    type: object
+  PaymentLandingCreateXenditCardTokenRequest:
+    properties:
+      amount:
+        type: number
+      currency:
+        enum:
+        - IDR
+        type: string
+      customer:
+        $ref: '#/definitions/PaymentCustomer'
+      metadata:
+        additionalProperties: true
+        type: object
+      payment_method:
+        $ref: '#/definitions/PaymentMethodCardToken'
+      reference_id:
+        type: string
+    required:
+    - amount
+    - currency
+    - customer
+    - payment_method
+    - reference_id
+    type: object
+  PaymentMethodCardToken:
+    properties:
+      card:
+        $ref: '#/definitions/PaymentCardTokenInfo'
+      type:
+        type: string
+    required:
+    - card
+    - type
     type: object
   PaymentMethodChannelFetchRequest:
     properties:
@@ -3548,6 +3809,23 @@ definitions:
     - EXPIRED
     - UNKNOWN_ENUM_VALUE
     type: string
+  PaymentStatusResponse:
+    properties:
+      amount:
+        type: integer
+      currency:
+        $ref: '#/definitions/CurrencyEnum'
+      failure_code:
+        type: string
+      failure_message:
+        type: string
+      payment_intent_id:
+        type: string
+      processed_at:
+        type: string
+      status:
+        $ref: '#/definitions/data_type.StripePaymentStatus'
+    type: object
   PermissionEnum:
     enum:
     - BEST_FOR_YOU_CREATE
@@ -3685,6 +3963,21 @@ definitions:
     - VESSEL_OPTION_FOR_ROUTE_FORM
     - VESSEL_OPTION_FOR_ROUTE_FILTER
     - VESSEL_OPTION_FOR_ROUTE_PRICING_FILTER
+    - BLOG_POST_CREATE
+    - BLOG_POST_FETCH
+    - BLOG_POST_GET
+    - BLOG_POST_UPDATE
+    - BLOG_POST_DELETE
+    - BLOG_CATEGORY_CREATE
+    - BLOG_CATEGORY_FETCH
+    - BLOG_CATEGORY_GET
+    - BLOG_CATEGORY_UPDATE
+    - BLOG_CATEGORY_DELETE
+    - BLOG_TAG_CREATE
+    - BLOG_TAG_FETCH
+    - BLOG_TAG_GET
+    - BLOG_TAG_UPDATE
+    - BLOG_TAG_DELETE
     type: string
   PlaceCreateRequest:
     properties:
@@ -3891,6 +4184,20 @@ definitions:
     - name
     - slug
     - subtitle
+    type: object
+  ProcessWebhookRequest:
+    properties:
+      data:
+        additionalProperties: true
+        type: object
+      event_id:
+        type: string
+      event_type:
+        type: string
+    required:
+    - data
+    - event_id
+    - event_type
     type: object
   Response:
     properties:
@@ -4169,9 +4476,16 @@ definitions:
       adult_fee:
         minimum: 0
         type: number
+      base_currency:
+        allOf:
+        - $ref: '#/definitions/CurrencyEnum'
+        x-nullable: true
       child_fee:
         minimum: 0
         type: number
+      display_currencies:
+        type: string
+        x-nullable: true
       foreigner_adult_fee:
         minimum: 0
         type: number
@@ -4193,6 +4507,10 @@ definitions:
     properties:
       arrival_dock_id:
         type: string
+        x-nullable: true
+      currency:
+        allOf:
+        - $ref: '#/definitions/CurrencyEnum'
         x-nullable: true
       customer_tier:
         allOf:
@@ -4314,6 +4632,10 @@ definitions:
       adult_fee:
         example: 100000
         type: number
+      base_currency:
+        allOf:
+        - $ref: '#/definitions/CurrencyEnum'
+        example: 1
       child_fee:
         example: 100000
         type: number
@@ -4323,6 +4645,9 @@ definitions:
         x-nullable: true
       customer_tier_id:
         example: 98c13377-e93f-4f29-b101-a0c79e02b2d8
+        type: string
+      display_currencies:
+        example: '["IDR","USD","SGD"]'
         type: string
       foreigner_adult_fee:
         example: 100000
@@ -4389,9 +4714,16 @@ definitions:
       adult_fee:
         minimum: 0
         type: number
+      base_currency:
+        allOf:
+        - $ref: '#/definitions/CurrencyEnum'
+        x-nullable: true
       child_fee:
         minimum: 0
         type: number
+      display_currencies:
+        type: string
+        x-nullable: true
       foreigner_adult_fee:
         minimum: 0
         type: number
@@ -4484,6 +4816,36 @@ definitions:
       is_active:
         type: boolean
     type: object
+  StripeConfigRequest:
+    properties:
+      is_production:
+        type: boolean
+      return_url:
+        type: string
+      stripe_publishable_key:
+        type: string
+      stripe_secret_key:
+        type: string
+      stripe_webhook_secret:
+        type: string
+      webhook_url:
+        type: string
+    type: object
+  StripeConfigResponse:
+    properties:
+      is_production:
+        type: boolean
+      return_url:
+        type: string
+      stripe_publishable_key:
+        type: string
+      stripe_secret_key:
+        type: string
+      stripe_webhook_secret:
+        type: string
+      webhook_url:
+        type: string
+    type: object
   SubPlaceCreateRequest:
     properties:
       description:
@@ -4575,6 +4937,158 @@ definitions:
       message:
         example: OK
         type: string
+    type: object
+  UrlRedirectAnalyticsResponse:
+    properties:
+      clicks_this_month:
+        example: 156
+        type: integer
+      clicks_today:
+        example: 24
+        type: integer
+      top_redirects:
+        items:
+          $ref: '#/definitions/UrlRedirectTopResponse'
+        type: array
+      total_clicks:
+        example: 1024
+        type: integer
+    type: object
+  UrlRedirectCreateRequest:
+    properties:
+      description:
+        type: string
+      destination_url:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+      redirect_type:
+        enum:
+        - 301
+        - 302
+        type: integer
+      source_path:
+        maxLength: 255
+        type: string
+      use_dynamic_date:
+        type: boolean
+    required:
+    - destination_url
+    - name
+    - source_path
+    type: object
+  UrlRedirectFetchRequest:
+    properties:
+      is_active:
+        type: boolean
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+    type: object
+  UrlRedirectResponse:
+    properties:
+      click_count:
+        example: 245
+        type: integer
+      created_at:
+        type: string
+      created_by:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      description:
+        type: string
+        x-nullable: true
+      destination_url:
+        example: https://sailtix.com/search?...
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      last_used_at:
+        type: string
+        x-nullable: true
+      name:
+        example: Sanur to Lembongan
+        type: string
+      redirect_type:
+        example: 302
+        type: integer
+      source_path:
+        example: /sanur-lembongan
+        type: string
+      updated_at:
+        type: string
+      use_dynamic_date:
+        example: true
+        type: boolean
+    type: object
+  UrlRedirectTestRequest:
+    properties:
+      source_path:
+        type: string
+    required:
+    - source_path
+    type: object
+  UrlRedirectTestResponse:
+    properties:
+      destination_url:
+        example: https://sailtix.com/search?departure_date=2024-01-21&...
+        type: string
+    type: object
+  UrlRedirectTopResponse:
+    properties:
+      click_count:
+        example: 245
+        type: integer
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      name:
+        example: Sanur to Lembongan
+        type: string
+      source_path:
+        example: /sanur-lembongan
+        type: string
+    type: object
+  UrlRedirectUpdateRequest:
+    properties:
+      description:
+        type: string
+      destination_url:
+        type: string
+      is_active:
+        type: boolean
+      name:
+        maxLength: 255
+        type: string
+      redirect_type:
+        enum:
+        - 301
+        - 302
+        type: integer
+      source_path:
+        maxLength: 255
+        type: string
+      use_dynamic_date:
+        type: boolean
+    required:
+    - destination_url
+    - name
+    - source_path
     type: object
   UserCreateRequest:
     properties:
@@ -5354,12 +5868,185 @@ definitions:
     type: object
   data_type.NullHourTime:
     type: object
+  data_type.StripePaymentStatus:
+    enum:
+    - requires_payment_method
+    - requires_confirmation
+    - requires_action
+    - processing
+    - requires_capture
+    - canceled
+    - succeeded
+    type: string
+    x-enum-varnames:
+    - StripePaymentStatusRequiresPaymentMethod
+    - StripePaymentStatusRequiresConfirmation
+    - StripePaymentStatusRequiresAction
+    - StripePaymentStatusProcessing
+    - StripePaymentStatusRequiresCapture
+    - StripePaymentStatusCanceled
+    - StripePaymentStatusSucceeded
   dto_request.OrderStatusCheckRequest:
     properties:
       invoice_number:
         type: string
     required:
     - invoice_number
+    type: object
+  dto_request.PaymentGatewayCurrencyConfigCreateRequest:
+    properties:
+      currency:
+        $ref: '#/definitions/CurrencyEnum'
+      currency_conversion_enabled:
+        type: boolean
+      fee_percentage:
+        maximum: 100
+        minimum: 0
+        type: number
+      fixed_fee:
+        minimum: 0
+        type: number
+      is_enabled:
+        type: boolean
+      maximum_amount:
+        minimum: 0
+        type: number
+      minimum_amount:
+        minimum: 0
+        type: number
+      payment_gateway:
+        $ref: '#/definitions/PaymentGatewayEnum'
+      priority:
+        minimum: 1
+        type: integer
+      target_processing_currency:
+        $ref: '#/definitions/CurrencyEnum'
+    required:
+    - currency
+    - payment_gateway
+    type: object
+  dto_request.PaymentGatewayCurrencyConfigUpdateRequest:
+    properties:
+      currency:
+        $ref: '#/definitions/CurrencyEnum'
+      currency_conversion_enabled:
+        type: boolean
+      fee_percentage:
+        maximum: 100
+        minimum: 0
+        type: number
+      fixed_fee:
+        minimum: 0
+        type: number
+      is_enabled:
+        type: boolean
+      maximum_amount:
+        minimum: 0
+        type: number
+      minimum_amount:
+        minimum: 0
+        type: number
+      payment_gateway:
+        $ref: '#/definitions/PaymentGatewayEnum'
+      priority:
+        minimum: 1
+        type: integer
+      target_processing_currency:
+        $ref: '#/definitions/CurrencyEnum'
+    type: object
+  dto_response.AvailablePaymentOptionResponse:
+    properties:
+      currency:
+        $ref: '#/definitions/CurrencyEnum'
+      currency_conversion_required:
+        type: boolean
+      currency_string:
+        type: string
+      estimated_fee:
+        type: number
+      fee_percentage:
+        type: number
+      fixed_fee:
+        type: number
+      is_recommended:
+        type: boolean
+      payment_gateway:
+        $ref: '#/definitions/PaymentGatewayEnum'
+      payment_gateway_string:
+        type: string
+      priority:
+        type: integer
+      processing_currency:
+        $ref: '#/definitions/CurrencyEnum'
+      processing_currency_string:
+        type: string
+    type: object
+  dto_response.GetAvailablePaymentOptionsResponse:
+    properties:
+      available_options:
+        items:
+          $ref: '#/definitions/dto_response.AvailablePaymentOptionResponse'
+        type: array
+      recommended_option:
+        $ref: '#/definitions/dto_response.AvailablePaymentOptionResponse'
+      requested_amount:
+        type: number
+      requested_currency:
+        $ref: '#/definitions/CurrencyEnum'
+      total_options_count:
+        type: integer
+    type: object
+  dto_response.PaymentGatewayCurrencyConfigFetchResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto_response.PaymentGatewayCurrencyConfigResponse'
+        type: array
+      limit:
+        example: 10
+        type: integer
+      nodes: {}
+      page:
+        example: 1
+        type: integer
+      total:
+        example: 24
+        type: integer
+    type: object
+  dto_response.PaymentGatewayCurrencyConfigResponse:
+    properties:
+      created_at:
+        type: string
+      currency:
+        $ref: '#/definitions/CurrencyEnum'
+      currency_conversion_enabled:
+        type: boolean
+      currency_string:
+        type: string
+      fee_percentage:
+        type: number
+      fixed_fee:
+        type: number
+      id:
+        type: string
+      is_enabled:
+        type: boolean
+      maximum_amount:
+        type: number
+      minimum_amount:
+        type: number
+      payment_gateway:
+        $ref: '#/definitions/PaymentGatewayEnum'
+      payment_gateway_string:
+        type: string
+      priority:
+        type: integer
+      target_processing_currency:
+        $ref: '#/definitions/CurrencyEnum'
+      target_processing_currency_string:
+        type: string
+      updated_at:
+        type: string
     type: object
   dto_response.XenditPaymentResponseCard:
     properties:
@@ -5423,6 +6110,140 @@ info:
   title: Sailtix
   version: 1.0.0
 paths:
+  /currency/convert:
+    get:
+      consumes:
+      - application/json
+      description: Convert an amount from source currency to target currency
+      parameters:
+      - description: Amount to convert
+        in: query
+        name: amount
+        required: true
+        type: number
+      - description: Source currency (IDR, USD, EUR, GBP, JPY, SGD, AUD, THB, MYR,
+          PHP, VND)
+        in: query
+        name: source
+        required: true
+        type: string
+      - description: Target currency (IDR, USD, EUR, GBP, JPY, SGD, AUD, THB, MYR,
+          PHP, VND)
+        in: query
+        name: target
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Convert currency amount
+      tags:
+      - Currency
+  /currency/rate:
+    get:
+      consumes:
+      - application/json
+      description: Get the current exchange rate from source to target currency
+      parameters:
+      - description: Source currency (IDR, USD, EUR, GBP, JPY, SGD, AUD, THB, MYR,
+          PHP, VND)
+        in: query
+        name: source
+        required: true
+        type: string
+      - description: Target currency (IDR, USD, EUR, GBP, JPY, SGD, AUD, THB, MYR,
+          PHP, VND)
+        in: query
+        name: target
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Get exchange rate
+      tags:
+      - Currency
+  /currency/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Manually refresh all exchange rates from Wise API
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Refresh exchange rates
+      tags:
+      - Currency
+  /currency/supported:
+    get:
+      consumes:
+      - application/json
+      description: Get the list of currencies supported by the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+      summary: Get supported currencies
+      tags:
+      - Currency
   /dash/auth/login:
     post:
       consumes:
@@ -7577,7 +8398,6 @@ paths:
                 type: string
             required:
             - id
-            - value
             type: object
           type: array
       produces:
@@ -7896,6 +8716,37 @@ paths:
       summary: Download Order Invoice (Dashboard)
       tags:
       - Orders
+  /dash/orders/analytics:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.OrderAnalyticsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderAnalyticsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      analytics:
+                        $ref: '#/definitions/OrderAnalyticsResponse'
+                    type: object
+              type: object
+      summary: Get Order Analytics (Dashboard)
+      tags:
+      - Orders
   /dash/orders/filter:
     post:
       consumes:
@@ -7929,6 +8780,346 @@ paths:
       summary: Fetch Orders (Dashboard)
       tags:
       - Orders
+  /dash/payment-gateway-currency-configs:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Payment gateway filter (DOKU, STRIPE, XENDIT)
+        in: query
+        name: payment_gateway
+        type: string
+      - description: Currency filter (IDR, USD, EUR, etc.)
+        in: query
+        name: currency
+        type: string
+      - description: Enabled status filter
+        in: query
+        name: is_enabled
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto_response.PaymentGatewayCurrencyConfigFetchResponse'
+              type: object
+      summary: Fetch payment gateway currency configurations (Dashboard)
+      tags:
+      - PaymentGatewayCurrencyConfigs
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.PaymentGatewayCurrencyConfigCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/dto_request.PaymentGatewayCurrencyConfigCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto_response.PaymentGatewayCurrencyConfigResponse'
+              type: object
+      summary: Create payment gateway currency configuration (Dashboard)
+      tags:
+      - PaymentGatewayCurrencyConfigs
+  /dash/payment-gateway-currency-configs/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Configuration ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Delete payment gateway currency configuration (Dashboard)
+      tags:
+      - PaymentGatewayCurrencyConfigs
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Configuration ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto_response.PaymentGatewayCurrencyConfigResponse'
+              type: object
+      summary: Get payment gateway currency configuration by ID (Dashboard)
+      tags:
+      - PaymentGatewayCurrencyConfigs
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Configuration ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.PaymentGatewayCurrencyConfigUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/dto_request.PaymentGatewayCurrencyConfigUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto_response.PaymentGatewayCurrencyConfigResponse'
+              type: object
+      summary: Update payment gateway currency configuration (Dashboard)
+      tags:
+      - PaymentGatewayCurrencyConfigs
+  /dash/payment-gateway-currency-configs/available-options:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Currency (IDR, USD, EUR, etc.)
+        in: query
+        name: currency
+        required: true
+        type: string
+      - description: Payment amount
+        in: query
+        name: amount
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto_response.GetAvailablePaymentOptionsResponse'
+              type: object
+      summary: Get available payment options (Dashboard)
+      tags:
+      - PaymentGatewayCurrencyConfigs
+  /dash/payment-gateway-currency-configs/batch:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.PaymentGatewayCurrencyConfigBatchUpdateRequest
+        required: true
+        schema:
+          items:
+            properties:
+              currency:
+                $ref: '#/definitions/CurrencyEnum'
+              currency_conversion_enabled:
+                type: boolean
+              fee_percentage:
+                maximum: 100
+                minimum: 0
+                type: number
+              fixed_fee:
+                minimum: 0
+                type: number
+              id:
+                type: string
+              is_enabled:
+                type: boolean
+              maximum_amount:
+                type: number
+              minimum_amount:
+                type: number
+              payment_gateway:
+                $ref: '#/definitions/PaymentGatewayEnum'
+              priority:
+                minimum: 1
+                type: integer
+              target_processing_currency:
+                $ref: '#/definitions/CurrencyEnum'
+            required:
+            - id
+            type: object
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Batch update payment gateway currency configurations (Dashboard)
+      tags:
+      - PaymentGatewayCurrencyConfigs
+  /dash/payment-gateway-currency-configs/gateway/{gateway}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Payment Gateway (DOKU, STRIPE, XENDIT)
+        in: path
+        name: gateway
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto_response.PaymentGatewayCurrencyConfigResponse'
+                  type: array
+              type: object
+      summary: Get enabled configurations for payment gateway (Dashboard)
+      tags:
+      - PaymentGatewayCurrencyConfigs
+  /dash/payment-gateway-currency-configs/initialize:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Initialize default configurations (Dashboard)
+      tags:
+      - PaymentGatewayCurrencyConfigs
+  /dash/payment-gateways/stripe/config:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/StripeConfigResponse'
+              type: object
+      summary: Get Stripe configuration (Dashboard)
+      tags:
+      - PaymentGateways
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.StripeConfigRequest
+        required: true
+        schema:
+          $ref: '#/definitions/StripeConfigRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/StripeConfigResponse'
+              type: object
+      summary: Update Stripe configuration (Dashboard)
+      tags:
+      - PaymentGateways
+  /dash/payment-gateways/stripe/test:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/PaymentGatewayTestResponse'
+              type: object
+      summary: Test Stripe connection (Dashboard)
+      tags:
+      - PaymentGateways
   /dash/payment-method-channels/{id}:
     get:
       consumes:
@@ -9293,6 +10484,244 @@ paths:
       summary: Upload image
       tags:
       - Uploads
+  /dash/url-redirects:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.UrlRedirectCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/UrlRedirectCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      url_redirect:
+                        $ref: '#/definitions/UrlRedirectResponse'
+                    type: object
+              type: object
+      summary: Create URL Redirect (Dashboard)
+      tags:
+      - URL Redirects
+  /dash/url-redirects/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Delete URL Redirect by ID (Dashboard)
+      tags:
+      - URL Redirects
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      url_redirect:
+                        $ref: '#/definitions/UrlRedirectResponse'
+                    type: object
+              type: object
+      summary: Get URL Redirect by ID (Dashboard)
+      tags:
+      - URL Redirects
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.UrlRedirectUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/UrlRedirectUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      url_redirect:
+                        $ref: '#/definitions/UrlRedirectResponse'
+                    type: object
+              type: object
+      summary: Update URL Redirect by ID (Dashboard)
+      tags:
+      - URL Redirects
+  /dash/url-redirects/{id}/toggle-status:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      url_redirect:
+                        $ref: '#/definitions/UrlRedirectResponse'
+                    type: object
+              type: object
+      summary: Toggle URL Redirect Status (Dashboard)
+      tags:
+      - URL Redirects
+  /dash/url-redirects/analytics:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      analytics:
+                        $ref: '#/definitions/UrlRedirectAnalyticsResponse'
+                    type: object
+              type: object
+      summary: Get URL Redirect Analytics (Dashboard)
+      tags:
+      - URL Redirects
+  /dash/url-redirects/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.UrlRedirectFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/UrlRedirectFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/UrlRedirectResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter URL Redirects (Dashboard)
+      tags:
+      - URL Redirects
+  /dash/url-redirects/test:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.UrlRedirectTestRequest
+        required: true
+        schema:
+          $ref: '#/definitions/UrlRedirectTestRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      test:
+                        $ref: '#/definitions/UrlRedirectTestResponse'
+                    type: object
+              type: object
+      summary: Test URL Redirect (Dashboard)
+      tags:
+      - URL Redirects
   /dash/users:
     post:
       consumes:
@@ -10776,6 +12205,31 @@ paths:
       summary: Get Available List of Payment Method & Payment Channels (Landing)
       tags:
       - PaymentMethods
+  /landing/payment-methods/from-token:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CreatePaymentMethodFromTokenRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CreatePaymentMethodFromTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data: {}
+              type: object
+      summary: Create Payment Method from Token (Landing)
+      tags:
+      - Payments
   /landing/payment-methods/xendit-public-key:
     get:
       consumes:
@@ -10800,6 +12254,31 @@ paths:
       summary: Get xendit public api key for Card Payment (Landing)
       tags:
       - PaymentMethods
+  /landing/payment-sessions:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CreatePaymentSessionRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CreatePaymentSessionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data: {}
+              type: object
+      summary: Create Payment Session for Modern Card Tokenization
+      tags:
+      - Payments
   /landing/payments:
     post:
       consumes:
@@ -10824,6 +12303,56 @@ paths:
                   $ref: '#/definitions/SuccessResponse'
               type: object
       summary: Create Payment Request (Dashboard)
+      tags:
+      - Payments
+  /landing/payments/with-method-id:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CreatePaymentWithMethodIdRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CreatePaymentWithMethodIdRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data: {}
+              type: object
+      summary: Create Payment with Payment Method ID (Landing)
+      tags:
+      - Payments
+  /landing/payments/xendit/card-token:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.PaymentLandingCreateXenditCardTokenRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PaymentLandingCreateXenditCardTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data: {}
+              type: object
+      summary: Create Xendit Card Payment Request with Token (Landing)
       tags:
       - Payments
   /landing/places/{slug}:
@@ -11194,4 +12723,100 @@ paths:
       summary: Get vessel by slug (Landing Page)
       tags:
       - Vessels
+  /payment/stripe/create-intent:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.CreatePaymentIntentRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CreatePaymentIntentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/CreatePaymentIntentResponse'
+              type: object
+      summary: Create Stripe payment intent
+      tags:
+      - Stripe
+  /payment/stripe/status:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Payment Intent ID
+        in: query
+        name: payment_intent_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/PaymentStatusResponse'
+              type: object
+      summary: Get payment status
+      tags:
+      - Stripe
+  /payment/stripe/webhook:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.ProcessWebhookRequest
+        required: true
+        schema:
+          $ref: '#/definitions/ProcessWebhookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/SuccessResponse'
+      summary: Process Stripe webhook
+      tags:
+      - Stripe
+  /redirect/{path}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Source Path
+        in: path
+        name: path
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "302":
+          description: Redirect
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Public URL Redirect
+      tags:
+      - URL Redirects
 swagger: "2.0"
