@@ -3382,6 +3382,28 @@ definitions:
         example: 125000
         type: number
     type: object
+  OrderCancellationRequest:
+    properties:
+      guest_email:
+        type: string
+      guest_name:
+        maxLength: 255
+        type: string
+      guest_phone:
+        maxLength: 20
+        type: string
+      order_id:
+        type: string
+      reason:
+        maxLength: 500
+        type: string
+    required:
+    - guest_email
+    - guest_name
+    - guest_phone
+    - order_id
+    - reason
+    type: object
   OrderCreateRequest:
     properties:
       customer_id:
@@ -3478,6 +3500,33 @@ definitions:
         uniqueItems: true
     type: object
   OrderGetRequest:
+    type: object
+  OrderGuestLookupRequest:
+    properties:
+      email:
+        type: string
+      invoice_number:
+        type: string
+    required:
+    - email
+    - invoice_number
+    type: object
+  OrderGuestLookupResponse:
+    properties:
+      can_request_cancellation:
+        type: boolean
+      can_request_reschedule:
+        type: boolean
+      cancellation_policy:
+        type: string
+      existing_requests:
+        items:
+          $ref: '#/definitions/OrderRequestResponse'
+        type: array
+      order:
+        $ref: '#/definitions/OrderResponse'
+      reschedule_policy:
+        type: string
     type: object
   OrderIssuedByEnum:
     enum:
@@ -3694,6 +3743,170 @@ definitions:
     required:
     - name
     - nationality
+    type: object
+  OrderRequestFetchRequest:
+    properties:
+      guest_email:
+        type: string
+        x-nullable: true
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      processed_by:
+        type: string
+        x-nullable: true
+      requested_by:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - type
+              - status
+              - reason
+              - created_at
+              - updated_at
+              - processed_at
+              example: created_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+      status:
+        allOf:
+        - $ref: '#/definitions/OrderRequestStatusEnum'
+        x-nullable: true
+      type:
+        allOf:
+        - $ref: '#/definitions/OrderRequestTypeEnum'
+        x-nullable: true
+    type: object
+  OrderRequestFetchResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/OrderRequestResponse'
+        type: array
+      pagination:
+        $ref: '#/definitions/PaginationResponse'
+    type: object
+  OrderRequestListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/OrderRequestResponse'
+        type: array
+    type: object
+  OrderRequestProcessRequest:
+    properties:
+      admin_notes:
+        maxLength: 1000
+        type: string
+        x-nullable: true
+      status:
+        $ref: '#/definitions/OrderRequestStatusEnum'
+    required:
+    - status
+    type: object
+  OrderRequestResponse:
+    properties:
+      admin:
+        $ref: '#/definitions/UserResponse'
+      admin_notes:
+        type: string
+      created_at:
+        type: string
+      customer:
+        $ref: '#/definitions/CustomerResponse'
+      expired_at:
+        type: string
+      guest_email:
+        type: string
+      guest_name:
+        type: string
+      guest_phone:
+        type: string
+      id:
+        type: string
+      new_travel_date:
+        type: string
+      order:
+        allOf:
+        - $ref: '#/definitions/OrderResponse'
+        description: Related data
+      order_id:
+        type: string
+      processed_at:
+        type: string
+      processed_by:
+        type: string
+      reason:
+        type: string
+      requested_by:
+        type: string
+      status:
+        $ref: '#/definitions/OrderRequestStatusEnum'
+      type:
+        $ref: '#/definitions/OrderRequestTypeEnum'
+      updated_at:
+        type: string
+    type: object
+  OrderRequestStatusEnum:
+    enum:
+    - PENDING
+    - APPROVED
+    - REJECTED
+    - EXPIRED
+    type: string
+  OrderRequestTypeEnum:
+    enum:
+    - CANCELLATION
+    - RESCHEDULE
+    type: string
+  OrderRescheduleRequest:
+    properties:
+      guest_email:
+        type: string
+      guest_name:
+        maxLength: 255
+        type: string
+      guest_phone:
+        maxLength: 20
+        type: string
+      new_travel_date:
+        type: string
+      order_id:
+        type: string
+      reason:
+        maxLength: 500
+        type: string
+    required:
+    - guest_email
+    - guest_name
+    - guest_phone
+    - new_travel_date
+    - order_id
+    - reason
     type: object
   OrderResponse:
     properties:
@@ -9330,6 +9543,132 @@ paths:
       summary: Filter LandingSeo (Dashboard)
       tags:
       - Landing Seos
+  /dash/order-requests:
+    post:
+      consumes:
+      - application/json
+      description: Fetch paginated list of order requests with optional filters
+      parameters:
+      - description: Fetch request
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/OrderRequestFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OrderRequestFetchResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Admin fetch order requests
+      tags:
+      - Order Request (Admin)
+  /dash/order-requests/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information about a specific order request
+      parameters:
+      - description: Order Request UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OrderRequestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Admin get order request by ID
+      tags:
+      - Order Request (Admin)
+  /dash/order-requests/{id}/process:
+    patch:
+      consumes:
+      - application/json
+      description: Process an order request by approving or rejecting it
+      parameters:
+      - description: Order Request UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Process request
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/OrderRequestProcessRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OrderRequestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Admin process order request (approve/reject)
+      tags:
+      - Order Request (Admin)
   /dash/orders:
     post:
       consumes:
@@ -9445,6 +9784,47 @@ paths:
       summary: Download Order Invoice (Dashboard)
       tags:
       - Orders
+  /dash/orders/{id}/requests:
+    get:
+      consumes:
+      - application/json
+      description: Get all order requests for a specific order
+      parameters:
+      - description: Order UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OrderRequestListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Admin get order requests by order ID
+      tags:
+      - Order Request (Admin)
   /dash/orders/analytics:
     get:
       consumes:
@@ -12909,6 +13289,109 @@ paths:
       summary: Get LandingSeo by Page (Landing)
       tags:
       - Landing Seos
+  /landing/order-requests/guest/cancellation:
+    post:
+      consumes:
+      - application/json
+      description: Allows guests to create a cancellation request for their order
+      parameters:
+      - description: Cancellation request
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/OrderCancellationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/OrderRequestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Guest create cancellation request
+      tags:
+      - Order Request (Guest)
+  /landing/order-requests/guest/lookup:
+    post:
+      consumes:
+      - application/json
+      description: Allows guests to lookup their order using order UUID and email
+        to check if they can request cancellation or reschedule
+      parameters:
+      - description: Order lookup request
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/OrderGuestLookupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/OrderGuestLookupResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Guest lookup order for cancellation/reschedule
+      tags:
+      - Order Request (Guest)
+  /landing/order-requests/guest/reschedule:
+    post:
+      consumes:
+      - application/json
+      description: Allows guests to create a reschedule request for their order
+      parameters:
+      - description: Reschedule request
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/OrderRescheduleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/OrderRequestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Guest create reschedule request
+      tags:
+      - Order Request (Guest)
   /landing/orders:
     post:
       consumes:
