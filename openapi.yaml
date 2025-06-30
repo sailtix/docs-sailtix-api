@@ -2336,6 +2336,204 @@ definitions:
     - description
     - name
     type: object
+  FishingBoatCreateRequest:
+    properties:
+      duration:
+        type: string
+      image_ids:
+        items:
+          type: string
+        type: array
+        x-nullable: true
+      photo:
+        type: string
+      price:
+        type: number
+      rating:
+        type: number
+      roundtrip_from:
+        type: string
+      ship_name:
+        type: string
+      title:
+        type: string
+      visiting:
+        type: string
+    required:
+    - duration
+    - photo
+    - price
+    - rating
+    - roundtrip_from
+    - ship_name
+    - title
+    - visiting
+    type: object
+  FishingBoatFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  FishingBoatLandingSearchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  FishingBoatResponse:
+    properties:
+      content:
+        example: <h1>Welcome to our fishing trip! Experience the thrill of deep sea
+          fishing.</h1>
+        type: string
+        x-nullable: true
+      content_1:
+        example: <p>Join us for an unforgettable adventure on the open waters.</p>
+        type: string
+        x-nullable: true
+      created_at:
+        type: string
+      created_by:
+        type: string
+      duration:
+        example: 4 hours
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      images:
+        items:
+          $ref: '#/definitions/ImageResponse'
+        type: array
+        x-nullable: true
+      is_active:
+        example: true
+        type: boolean
+      photo:
+        example: https://example.com/photos/fishing-boat.jpg
+        type: string
+      price:
+        example: 150
+        type: number
+      rating:
+        example: 4.5
+        type: number
+      roundtrip_from:
+        example: Benoa Harbor
+        type: string
+      ship_name:
+        example: Sea Explorer
+        type: string
+      title:
+        example: Fishing Trip to Maldives
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+      visiting:
+        example: Nusa Penida, Crystal Bay
+        type: string
+    type: object
+  FishingBoatUpdateRequest:
+    properties:
+      duration:
+        type: string
+      image_ids:
+        items:
+          type: string
+        type: array
+        x-nullable: true
+      is_active:
+        type: boolean
+      photo:
+        type: string
+      price:
+        type: number
+      rating:
+        type: number
+      roundtrip_from:
+        type: string
+      ship_name:
+        type: string
+      title:
+        type: string
+      visiting:
+        type: string
+    required:
+    - duration
+    - is_active
+    - photo
+    - price
+    - rating
+    - roundtrip_from
+    - ship_name
+    - title
+    - visiting
+    type: object
   GlobalSettingFetchRequest:
     properties:
       group:
@@ -2377,6 +2575,7 @@ definitions:
     enum:
     - AWS
     - ZEPTOMAIL
+    - POSTMARK
     - XENDIT
     - DOKU
     - WISE
@@ -2393,6 +2592,10 @@ definitions:
     - ZEPTOMAIL_API_KEY
     - ZEPTOMAIL_SENDER_EMAIL
     - ZEPTOMAIL_SENDER_NAME
+    - POSTMARK_SERVER_TOKEN
+    - POSTMARK_SENDER_EMAIL
+    - POSTMARK_SENDER_NAME
+    - POSTMARK_WEBHOOK_URL
     - XENDIT_PUBLIC_API_KEY
     - XENDIT_API_KEY
     - XENDIT_WEBHOOK_AUTH_HEADER
@@ -3409,6 +3612,79 @@ definitions:
     type: object
   OrderLandingGetRequest:
     type: object
+  OrderPaymentSessionCreateRequest:
+    properties:
+      amount:
+        example: 100000
+        type: number
+      currency:
+        enum:
+        - IDR
+        - USD
+        example: IDR
+        type: string
+      description:
+        example: Vessel booking payment
+        maxLength: 500
+        type: string
+      guest_email:
+        example: john@example.com
+        maxLength: 255
+        type: string
+      guest_name:
+        example: John Doe
+        maxLength: 255
+        type: string
+      guest_phone:
+        example: "+1234567890"
+        type: string
+      vessel_bookings:
+        items:
+          $ref: '#/definitions/OrderPaymentSessionCreateRequestVesselBooking'
+        type: array
+    required:
+    - amount
+    - currency
+    - guest_email
+    - guest_name
+    - guest_phone
+    type: object
+  OrderPaymentSessionCreateRequestVesselBooking:
+    properties:
+      depart_route_id:
+        example: dcf9a815-21b5-4a97-b953-7e34dfccf5b4
+        type: string
+      depart_travel_date:
+        type: string
+      passengers:
+        items:
+          $ref: '#/definitions/OrderPaymentSessionCreateRequestVesselBookingPassenger'
+        minItems: 1
+        type: array
+      return_route_id:
+        example: a92f3235-7470-4ceb-8b61-ba32db060c9c
+        type: string
+      return_travel_date:
+        type: string
+    required:
+    - depart_route_id
+    - depart_travel_date
+    - passengers
+    type: object
+  OrderPaymentSessionCreateRequestVesselBookingPassenger:
+    properties:
+      name:
+        maxLength: 255
+        type: string
+      nationality:
+        maxLength: 255
+        type: string
+      type:
+        $ref: '#/definitions/VesselBookingPassengerTypeEnum'
+    required:
+    - name
+    - nationality
+    type: object
   OrderResponse:
     properties:
       created_at:
@@ -3897,6 +4173,11 @@ definitions:
     - FACILITY_GET
     - FACILITY_UPDATE
     - FACILITY_DELETE
+    - FHISING_BOAT_CREATE
+    - FHISING_BOAT_FETCH
+    - FHISING_BOAT_GET
+    - FHISING_BOAT_UPDATE
+    - FHISING_BOAT_DELETE
     - GLOBAL_SETTING_CREATE
     - GLOBAL_SETTING_FETCH
     - GLOBAL_SETTING_GET
@@ -8310,6 +8591,231 @@ paths:
       summary: Filter Facility (Dashboard)
       tags:
       - Facilities
+  /dash/fishing-boat:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.FishingBoatCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/FishingBoatCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      fishingBoat:
+                        $ref: '#/definitions/FishingBoatResponse'
+                    type: object
+              type: object
+      summary: Create Fishing Boat (Dashboard)
+      tags:
+      - Fishing Boats
+  /dash/fishing-boat/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete Fishing Boat by Id (Dashboard)
+      tags:
+      - Fishing Boats
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      fishingBoat:
+                        $ref: '#/definitions/FishingBoatResponse'
+                    type: object
+              type: object
+      summary: Get Fishing Boat by Id (Dashboard)
+      tags:
+      - Fishing Boats
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.FishingBoatUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/FishingBoatUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      fishingBoat:
+                        $ref: '#/definitions/FishingBoatResponse'
+                    type: object
+              type: object
+      summary: Update Fishing Boat by Id (Dashboard)
+      tags:
+      - Fishing Boats
+  /dash/fishing-boat/{id}/content:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.PlaceUpdateContentRequest
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceUpdateContentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      fishingBoat:
+                        $ref: '#/definitions/FishingBoatResponse'
+                    type: object
+              type: object
+      summary: Update Fishing Boat Content by Id (Dashboard)
+      tags:
+      - Fishing Boats
+  /dash/fishing-boat/{id}/content-1:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.PlaceUpdateContent1Request
+        required: true
+        schema:
+          $ref: '#/definitions/PlaceUpdateContent1Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      fishingBoat:
+                        $ref: '#/definitions/FishingBoatResponse'
+                    type: object
+              type: object
+      summary: Update Fishing Boat Content 1 by Id (Dashboard)
+      tags:
+      - Fishing Boats
+  /dash/fishing-boat/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.FishingBoatFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/FishingBoatFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/FishingBoatResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Fishing Boat (Dashboard)
+      tags:
+      - Fishing Boats
   /dash/global-settings/{id}:
     get:
       consumes:
@@ -11891,6 +12397,39 @@ paths:
       summary: Filter Facility (Landing)
       tags:
       - Facilities
+  /landing/fishing-boat/search:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.FishingBoatLandingSearchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/FishingBoatLandingSearchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/FishingBoatResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Search Fishing Boat (Landing)
+      tags:
+      - Fishing Boats
   /landing/landing-seo/get-by-page:
     post:
       consumes:
@@ -12104,6 +12643,37 @@ paths:
         "200":
           description: 'content-type: application/pdf'
       summary: Download Eticket of 'Paid' order by invoice number (Landing Page)
+      tags:
+      - Orders
+  /landing/orders/payment-session:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.OrderPaymentSessionCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/OrderPaymentSessionCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      order:
+                        $ref: '#/definitions/OrderResponse'
+                    type: object
+              type: object
+      summary: Create Minimal Order for Payment Session (Landing Page)
       tags:
       - Orders
   /landing/orders/status:
