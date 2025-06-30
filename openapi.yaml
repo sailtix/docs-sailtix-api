@@ -2498,6 +2498,16 @@ definitions:
         example: Nusa Penida, Crystal Bay
         type: string
     type: object
+  FishingBoatUpdateContent1Request:
+    properties:
+      content_1:
+        type: string
+    type: object
+  FishingBoatUpdateContentRequest:
+    properties:
+      content:
+        type: string
+    type: object
   FishingBoatUpdateRequest:
     properties:
       duration:
@@ -4259,6 +4269,11 @@ definitions:
     - BLOG_TAG_GET
     - BLOG_TAG_UPDATE
     - BLOG_TAG_DELETE
+    - YACHT_CREATE
+    - YACHT_FETCH
+    - YACHT_GET
+    - YACHT_UPDATE
+    - YACHT_DELETE
     type: string
   PlaceCreateRequest:
     properties:
@@ -6144,6 +6159,214 @@ definitions:
         allOf:
         - $ref: '#/definitions/dto_response.XenditPaymentResponseVirtualAccount'
         x-nullable: true
+    type: object
+  YachtCreateRequest:
+    properties:
+      duration:
+        type: string
+      image_ids:
+        items:
+          type: string
+        type: array
+        x-nullable: true
+      photo:
+        type: string
+      price:
+        type: number
+      rating:
+        type: number
+      roundtrip_from:
+        type: string
+      ship_name:
+        type: string
+      title:
+        type: string
+      visiting:
+        type: string
+    required:
+    - duration
+    - photo
+    - price
+    - rating
+    - roundtrip_from
+    - ship_name
+    - title
+    - visiting
+    type: object
+  YachtFetchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  YachtLandingSearchRequest:
+    properties:
+      limit:
+        example: 100
+        maximum: 100
+        minimum: 1
+        type: integer
+      page:
+        example: 1
+        minimum: 1
+        type: integer
+      phrase:
+        type: string
+        x-nullable: true
+      sorts:
+        items:
+          properties:
+            direction:
+              enum:
+              - asc
+              - desc
+              example: desc
+              type: string
+            field:
+              enum:
+              - name
+              - created_at
+              - updated_at
+              example: updated_at
+              type: string
+          required:
+          - direction
+          - field
+          type: object
+        type: array
+        uniqueItems: true
+    type: object
+  YachtResponse:
+    properties:
+      content:
+        example: <h1>Experience Ultimate Luxury on Our Premium Yacht Charter</h1>
+        type: string
+        x-nullable: true
+      content_1:
+        example: <p>Indulge in a day of luxury aboard our state-of-the-art yacht.
+          Perfect for special occasions and memorable experiences.</p>
+        type: string
+        x-nullable: true
+      created_at:
+        type: string
+      created_by:
+        type: string
+      duration:
+        example: 8 hours
+        type: string
+      id:
+        example: 9ae3c71a-1007-433d-ae8b-3b45d06b5e5b
+        type: string
+      images:
+        items:
+          $ref: '#/definitions/ImageResponse'
+        type: array
+        x-nullable: true
+      is_active:
+        example: true
+        type: boolean
+      photo:
+        example: https://example.com/photos/luxury-yacht.jpg
+        type: string
+      price:
+        example: 2500
+        type: number
+      rating:
+        example: 4.8
+        type: number
+      roundtrip_from:
+        example: Marina Bay
+        type: string
+      ship_name:
+        example: Ocean Princess
+        type: string
+      title:
+        example: Luxury Yacht Charter
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+      visiting:
+        example: Private Islands, Coral Reefs
+        type: string
+    type: object
+  YachtUpdateContent1Request:
+    properties:
+      content_1:
+        type: string
+    type: object
+  YachtUpdateContentRequest:
+    properties:
+      content:
+        type: string
+    type: object
+  YachtUpdateRequest:
+    properties:
+      duration:
+        type: string
+      image_ids:
+        items:
+          type: string
+        type: array
+        x-nullable: true
+      is_active:
+        type: boolean
+      photo:
+        type: string
+      price:
+        type: number
+      rating:
+        type: number
+      roundtrip_from:
+        type: string
+      ship_name:
+        type: string
+      title:
+        type: string
+      visiting:
+        type: string
+    required:
+    - duration
+    - is_active
+    - photo
+    - price
+    - rating
+    - roundtrip_from
+    - ship_name
+    - title
+    - visiting
     type: object
   data_type.HourTime:
     type: object
@@ -8723,10 +8946,10 @@ paths:
         type: string
       - description: Body Request
         in: body
-        name: dto_request.PlaceUpdateContentRequest
+        name: dto_request.FishingBoatUpdateContentRequest
         required: true
         schema:
-          $ref: '#/definitions/PlaceUpdateContentRequest'
+          $ref: '#/definitions/FishingBoatUpdateContentRequest'
       produces:
       - application/json
       responses:
@@ -8759,10 +8982,10 @@ paths:
         type: string
       - description: Body Request
         in: body
-        name: dto_request.PlaceUpdateContent1Request
+        name: dto_request.FishingBoatUpdateContent1Request
         required: true
         schema:
-          $ref: '#/definitions/PlaceUpdateContent1Request'
+          $ref: '#/definitions/FishingBoatUpdateContent1Request'
       produces:
       - application/json
       responses:
@@ -11737,6 +11960,231 @@ paths:
       summary: Option list for Route Pricing Filter (Dashboard)
       tags:
       - Vessels
+  /dash/yacht:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.YachtCreateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/YachtCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      yacht:
+                        $ref: '#/definitions/YachtResponse'
+                    type: object
+              type: object
+      summary: Create Yacht (Dashboard)
+      tags:
+      - Yachts
+  /dash/yacht/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/SuccessResponse'
+              type: object
+      summary: Soft Delete Yacht by Id (Dashboard)
+      tags:
+      - Yachts
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      yacht:
+                        $ref: '#/definitions/YachtResponse'
+                    type: object
+              type: object
+      summary: Get Yacht by Id (Dashboard)
+      tags:
+      - Yachts
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Id
+        in: body
+        name: dto_request.YachtUpdateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/YachtUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      yacht:
+                        $ref: '#/definitions/YachtResponse'
+                    type: object
+              type: object
+      summary: Update Yacht by Id (Dashboard)
+      tags:
+      - Yachts
+  /dash/yacht/{id}/content:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.YachtUpdateContentRequest
+        required: true
+        schema:
+          $ref: '#/definitions/YachtUpdateContentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      yacht:
+                        $ref: '#/definitions/YachtResponse'
+                    type: object
+              type: object
+      summary: Update Yacht Content by Id (Dashboard)
+      tags:
+      - Yachts
+  /dash/yacht/{id}/content-1:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Body Request
+        in: body
+        name: dto_request.YachtUpdateContent1Request
+        required: true
+        schema:
+          $ref: '#/definitions/YachtUpdateContent1Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/DataResponse'
+                  - properties:
+                      yacht:
+                        $ref: '#/definitions/YachtResponse'
+                    type: object
+              type: object
+      summary: Update Yacht Content 1 by Id (Dashboard)
+      tags:
+      - Yachts
+  /dash/yacht/filter:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.YachtFetchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/YachtFetchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/YachtResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Filter Yacht (Dashboard)
+      tags:
+      - Yachts
   /landing/auth/check-email:
     post:
       consumes:
@@ -13293,6 +13741,39 @@ paths:
       summary: Get vessel by slug (Landing Page)
       tags:
       - Vessels
+  /landing/yacht/search:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Body Request
+        in: body
+        name: dto_request.YachtLandingSearchRequest
+        required: true
+        schema:
+          $ref: '#/definitions/YachtLandingSearchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/PaginationResponse'
+                  - properties:
+                      nodes:
+                        items:
+                          $ref: '#/definitions/YachtResponse'
+                        type: array
+                    type: object
+              type: object
+      summary: Search Yacht (Landing)
+      tags:
+      - Yachts
   /payment/stripe/create-intent:
     post:
       consumes:
