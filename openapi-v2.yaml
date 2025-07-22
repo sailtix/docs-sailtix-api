@@ -4,52 +4,26 @@ info:
   description: |
     # Sailtix Maritime Ticketing Platform API v2
     
-    ## Overview
-    Comprehensive API for maritime ticketing, booking, and payment processing. This version includes significant improvements and breaking changes from v1.
+    Comprehensive API for maritime ticketing, booking, and payment processing.
     
-    ## Key Features
-    - **Maritime Ticketing**: Route pricing, vessel management, dock operations
-    - **Payment Processing**: Multi-gateway support (Xendit, Stripe)
-    - **Order Management**: Complete booking lifecycle
-    - **Authentication**: JWT-based auth with Google OAuth
-    - **File Management**: Image uploads and storage
-    - **Webhooks**: Real-time payment and order notifications
-    
-    ## Breaking Changes from v1
-    - Updated response formats for consistency
-    - Enhanced error handling with detailed error codes
-    - Improved validation with better error messages
-    - New payment gateway integrations
-    - Enhanced security with improved JWT handling
-    - Updated file upload endpoints with better validation
+    ## Features
+    - Maritime ticketing and route pricing
+    - Multi-payment gateway support (Xendit, Stripe)
+    - Order management and booking lifecycle
+    - JWT-based authentication with Google OAuth
+    - File uploads and storage
+    - Real-time webhooks
     
     ## Authentication
-    Most endpoints require JWT authentication. Include the token in the Authorization header:
+    Include JWT token in Authorization header:
     ```
     Authorization: Bearer <your-jwt-token>
     ```
-    
-    ## Rate Limiting
-    - 100 requests per minute for authenticated users
-    - 20 requests per minute for guest endpoints
-    - 1000 requests per hour for file uploads
-    
-    ## Base URLs
-    - Production: `https://api.sailtix.com`
-    - Development: `http://localhost:8080`
-    
-    ## Support
-    - Email: api-support@sailtix.com
-    - Documentation: https://docs.sailtix.com
-    - Status: https://status.sailtix.com
   version: 2.0.0
   contact:
     name: Sailtix API Support
     email: api-support@sailtix.com
     url: https://sailtix.com
-  license:
-    name: Proprietary
-    url: https://sailtix.com/terms
 
 servers:
   - url: https://api.sailtix.com
@@ -66,25 +40,10 @@ tags:
     description: Payment processing and gateway integrations
   - name: Route Pricing
     description: Route pricing and search functionality
-  - name: Vessels
-    description: Vessel management and operations
-  - name: Companies
-    description: Company and operator management
-  - name: Docks
-    description: Dock and harbor management
-  - name: Customers
-    description: Customer management and profiles
   - name: File Uploads
     description: File and image upload operations
-  - name: Webhooks
-    description: Webhook endpoints for real-time notifications
-  - name: Dashboard
-    description: Administrative dashboard operations
-  - name: Landing
-    description: Public-facing landing page operations
 
 paths:
-  # Authentication Endpoints
   /landing/auth/check-email:
     post:
       tags:
@@ -105,76 +64,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response'
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      exists:
-                        type: boolean
-                        description: Whether the email exists
-                      available:
-                        type: boolean
-                        description: Whether the email is available for registration
         '400':
           description: Invalid request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
-
-  /landing/auth/register:
-    post:
-      tags:
-        - Authentication
-      summary: Register new user
-      description: Register a new user account with email verification
-      operationId: registerUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthLandingRegisterEmailRequest'
-      responses:
-        '200':
-          description: Registration successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      user:
-                        $ref: '#/components/schemas/UserResponse'
-                      token:
-                        type: string
-                        description: JWT authentication token
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '409':
-          description: Email already exists
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
 
   /landing/auth/login:
     post:
@@ -196,71 +91,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response'
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      user:
-                        $ref: '#/components/schemas/UserResponse'
-                      token:
-                        type: string
-                        description: JWT authentication token
         '401':
           description: Invalid credentials
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
 
-  /landing/auth/login-google:
-    post:
-      tags:
-        - Authentication
-      summary: Google OAuth login
-      description: Authenticate user with Google OAuth
-      operationId: loginGoogle
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthLandingLoginGoogleRequest'
-      responses:
-        '200':
-          description: Login successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      user:
-                        $ref: '#/components/schemas/UserResponse'
-                      token:
-                        type: string
-                        description: JWT authentication token
-        '401':
-          description: Invalid Google token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
-
-  # Route Pricing Endpoints
   /landing/route-pricings/search:
     post:
       tags:
@@ -281,57 +118,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response'
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      route_pricings:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/RoutePricingResponse'
-                      meta:
-                        $ref: '#/components/schemas/PaginationMeta'
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
-
-  /landing/route-pricings/best-for-you:
-    post:
-      tags:
-        - Route Pricing
-      summary: Get best for you recommendations
-      description: Get personalized route recommendations
-      operationId: getBestForYou
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RoutePricingLandingBestForYouRequest'
-      responses:
-        '200':
-          description: Recommendations
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      route_pricings:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/RoutePricingResponse'
         '400':
           description: Invalid request
           content:
@@ -339,7 +125,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  # Order Endpoints
   /landing/orders:
     post:
       tags:
@@ -362,30 +147,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response'
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      order:
-                        $ref: '#/components/schemas/OrderResponse'
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
 
   /landing/orders/{id}:
     get:
@@ -411,12 +178,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response'
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      order:
-                        $ref: '#/components/schemas/OrderResponse'
         '401':
           description: Unauthorized
           content:
@@ -430,45 +191,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /landing/orders/{id}/eticket:
-    get:
-      tags:
-        - Orders
-      summary: Download e-ticket
-      description: Download e-ticket PDF for the order
-      operationId: downloadEticket
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: Order ID
-      responses:
-        '200':
-          description: E-ticket PDF
-          content:
-            application/pdf:
-              schema:
-                type: string
-                format: binary
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: Order not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  # Payment Endpoints
   /landing/payments:
     post:
       tags:
@@ -489,119 +211,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response'
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      payment_url:
-                        type: string
-                        description: Payment gateway URL
-                      payment_id:
-                        type: string
-                        description: Payment ID
-                      status:
-                        type: string
-                        description: Payment status
         '400':
           description: Invalid request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
 
-  /landing/payments/xendit/card-token:
-    post:
-      tags:
-        - Payments
-      summary: Create Xendit card payment with token
-      description: Create a card payment using Xendit with card token
-      operationId: createXenditCardTokenPayment
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PaymentLandingCreateXenditCardTokenRequest'
-      responses:
-        '200':
-          description: Payment created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      payment_id:
-                        type: string
-                      status:
-                        type: string
-                      amount:
-                        type: number
-                      currency:
-                        type: string
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
-
-  /landing/payment-methods/from-token:
-    post:
-      tags:
-        - Payments
-      summary: Create payment method from token
-      description: Create a reusable payment method from a card token
-      operationId: createPaymentMethodFromToken
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreatePaymentMethodFromTokenRequest'
-      responses:
-        '200':
-          description: Payment method created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      payment_method_id:
-                        type: string
-                      status:
-                        type: string
-        '400':
-          description: Invalid request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '422':
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
-
-  # File Upload Endpoints
   /dash/uploads/image:
     post:
       tags:
@@ -633,19 +249,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Response'
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      url:
-                        type: string
-                        description: URL of uploaded image
-                      filename:
-                        type: string
-                        description: Filename of uploaded image
-                      size:
-                        type: integer
-                        description: File size in bytes
         '400':
           description: Invalid file
           content:
@@ -654,76 +257,6 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '413':
-          description: File too large
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  # Webhook Endpoints
-  /webhooks/xendit:
-    post:
-      tags:
-        - Webhooks
-      summary: Xendit webhook
-      description: Handle Xendit payment webhooks
-      operationId: xenditWebhook
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/XenditWebhookRequest'
-      responses:
-        '200':
-          description: Webhook processed successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "success"
-        '400':
-          description: Invalid webhook
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /webhooks/stripe:
-    post:
-      tags:
-        - Webhooks
-      summary: Stripe webhook
-      description: Handle Stripe payment webhooks
-      operationId: stripeWebhook
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              description: Stripe webhook payload
-      responses:
-        '200':
-          description: Webhook processed successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "success"
-        '400':
-          description: Invalid webhook
           content:
             application/json:
               schema:
@@ -738,7 +271,6 @@ components:
       description: JWT token for authentication
 
   schemas:
-    # Base Response Schemas
     Response:
       type: object
       properties:
@@ -772,49 +304,6 @@ components:
           type: boolean
           example: false
 
-    ValidationErrorResponse:
-      allOf:
-        - $ref: '#/components/schemas/ErrorResponse'
-        - type: object
-          properties:
-            error:
-              type: object
-              properties:
-                validation_errors:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      field:
-                        type: string
-                        description: Field name
-                      message:
-                        type: string
-                        description: Validation message
-                      value:
-                        description: Invalid value
-
-    PaginationMeta:
-      type: object
-      properties:
-        page:
-          type: integer
-          description: Current page number
-          example: 1
-        limit:
-          type: integer
-          description: Items per page
-          example: 20
-        total:
-          type: integer
-          description: Total number of items
-          example: 100
-        total_pages:
-          type: integer
-          description: Total number of pages
-          example: 5
-
-    # Authentication Schemas
     AuthLandingCheckEmailRequest:
       type: object
       required:
@@ -826,41 +315,6 @@ components:
           maxLength: 100
           description: Email address to check
           example: "user@example.com"
-
-    AuthLandingRegisterEmailRequest:
-      type: object
-      required:
-        - email
-        - first_name
-        - last_name
-        - password
-        - phone_number
-      properties:
-        email:
-          type: string
-          format: email
-          maxLength: 100
-          description: Email address
-          example: "user@example.com"
-        first_name:
-          type: string
-          maxLength: 255
-          description: First name
-          example: "John"
-        last_name:
-          type: string
-          maxLength: 255
-          description: Last name
-          example: "Doe"
-        password:
-          type: string
-          minLength: 8
-          description: Password (minimum 8 characters)
-          example: "securepassword123"
-        phone_number:
-          type: string
-          description: Phone number
-          example: "+6281234567890"
 
     AuthLandingLoginEmailRequest:
       type: object
@@ -879,55 +333,6 @@ components:
           description: Password
           example: "securepassword123"
 
-    AuthLandingLoginGoogleRequest:
-      type: object
-      required:
-        - code
-      properties:
-        code:
-          type: string
-          maxLength: 1000
-          description: Google OAuth authorization code
-          example: "4/0AfJohXn..."
-
-    # User Response Schema
-    UserResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: User ID
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        email:
-          type: string
-          format: email
-          description: Email address
-          example: "user@example.com"
-        first_name:
-          type: string
-          description: First name
-          example: "John"
-        last_name:
-          type: string
-          description: Last name
-          example: "Doe"
-        phone_number:
-          type: string
-          description: Phone number
-          example: "+6281234567890"
-        created_at:
-          type: string
-          format: date-time
-          description: Account creation date
-          example: "2024-01-01T00:00:00Z"
-        updated_at:
-          type: string
-          format: date-time
-          description: Last update date
-          example: "2024-01-01T00:00:00Z"
-
-    # Route Pricing Schemas
     RoutePricingLandingSearchRequest:
       type: object
       required:
@@ -946,40 +351,11 @@ components:
           format: uuid
           description: Arrival dock ID
           example: "123e4567-e89b-12d3-a456-426614174001"
-        departure_dock_slug:
-          type: string
-          description: Departure dock slug
-          example: "bali-sanur"
-        arrival_dock_slug:
-          type: string
-          description: Arrival dock slug
-          example: "lombok-gili"
         departure_date:
           type: string
           format: date
           description: Departure date (YYYY-MM-DD)
           example: "2024-12-25"
-        vessel_types:
-          type: array
-          items:
-            type: string
-            enum: [FERRY, SPEEDBOAT, YACHT, FISHING_BOAT]
-          description: Vessel types to filter by
-          example: ["FERRY", "SPEEDBOAT"]
-        vessel_classes:
-          type: array
-          items:
-            type: string
-            enum: [ECONOMY, BUSINESS, FIRST, LUXURY]
-          description: Vessel classes to filter by
-          example: ["ECONOMY", "BUSINESS"]
-        company_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Company IDs to filter by
-          example: ["123e4567-e89b-12d3-a456-426614174000"]
         adult:
           type: integer
           minimum: 0
@@ -995,27 +371,6 @@ components:
           minimum: 0
           description: Number of infant passengers
           example: 0
-        facility_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Facility IDs to filter by
-          example: ["123e4567-e89b-12d3-a456-426614174000"]
-        departure_times:
-          type: array
-          items:
-            type: string
-            format: time
-          minItems: 2
-          maxItems: 2
-          description: Departure time range [start, end]
-          example: ["08:00", "18:00"]
-        sort_type:
-          type: string
-          enum: [PRICE_LOW_TO_HIGH, PRICE_HIGH_TO_LOW, DEPARTURE_TIME, ARRIVAL_TIME]
-          description: Sort order for results
-          example: "PRICE_LOW_TO_HIGH"
         page:
           type: integer
           minimum: 1
@@ -1030,179 +385,6 @@ components:
           description: Items per page
           example: 20
 
-    RoutePricingLandingBestForYouRequest:
-      type: object
-      properties:
-        customer_id:
-          type: string
-          format: uuid
-          description: Customer ID for personalized recommendations
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        limit:
-          type: integer
-          minimum: 1
-          maximum: 50
-          default: 10
-          description: Number of recommendations
-          example: 10
-
-    RoutePricingResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Route pricing ID
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        route_id:
-          type: string
-          format: uuid
-          description: Route ID
-          example: "123e4567-e89b-12d3-a456-426614174001"
-        vessel:
-          $ref: '#/components/schemas/VesselResponse'
-        departure_dock:
-          $ref: '#/components/schemas/DockResponse'
-        arrival_dock:
-          $ref: '#/components/schemas/DockResponse'
-        departure_time:
-          type: string
-          format: time
-          description: Departure time
-          example: "10:30"
-        arrival_time:
-          type: string
-          format: time
-          description: Arrival time
-          example: "12:30"
-        sailing_time:
-          type: string
-          description: Sailing duration
-          example: "2h 0m"
-        adult_fee:
-          type: number
-          description: Adult ticket price
-          example: 150000
-        child_fee:
-          type: number
-          description: Child ticket price
-          example: 75000
-        infant_fee:
-          type: number
-          description: Infant ticket price
-          example: 0
-        seat_left:
-          type: integer
-          description: Available seats
-          example: 45
-        currency:
-          type: string
-          description: Price currency
-          example: "IDR"
-        created_at:
-          type: string
-          format: date-time
-          description: Creation date
-          example: "2024-01-01T00:00:00Z"
-        updated_at:
-          type: string
-          format: date-time
-          description: Last update date
-          example: "2024-01-01T00:00:00Z"
-
-    # Vessel Response Schema
-    VesselResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Vessel ID
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        name:
-          type: string
-          description: Vessel name
-          example: "Fast Ferry 1"
-        type:
-          type: string
-          enum: [FERRY, SPEEDBOAT, YACHT, FISHING_BOAT]
-          description: Vessel type
-          example: "FERRY"
-        vessel_class:
-          type: string
-          enum: [ECONOMY, BUSINESS, FIRST, LUXURY]
-          description: Vessel class
-          example: "ECONOMY"
-        capacity:
-          type: integer
-          description: Passenger capacity
-          example: 200
-        company:
-          $ref: '#/components/schemas/CompanyResponse'
-
-    # Dock Response Schema
-    DockResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Dock ID
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        name:
-          type: string
-          description: Dock name
-          example: "Sanur Harbor"
-        slug:
-          type: string
-          description: Dock slug
-          example: "bali-sanur"
-        address:
-          type: string
-          description: Dock address
-          example: "Jl. Hang Tuah, Sanur, Bali"
-        latitude:
-          type: number
-          description: Latitude coordinate
-          example: -8.6833
-        longitude:
-          type: number
-          description: Longitude coordinate
-          example: 115.2667
-
-    # Company Response Schema
-    CompanyResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Company ID
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        name:
-          type: string
-          description: Company name
-          example: "Fast Ferry Company"
-        legal_name:
-          type: string
-          description: Legal company name
-          example: "PT Fast Ferry Indonesia"
-        logo:
-          type: string
-          description: Company logo URL
-          example: "https://assets.sailtix.com/logos/fast-ferry.png"
-        photo:
-          type: string
-          description: Company photo URL
-          example: "https://assets.sailtix.com/photos/fast-ferry.jpg"
-        facilities:
-          type: array
-          items:
-            type: string
-          description: Available facilities
-          example: ["WiFi", "AC", "Cafe"]
-
-    # Order Schemas
     OrderCreateRequest:
       type: object
       required:
@@ -1243,10 +425,6 @@ components:
           items:
             $ref: '#/components/schemas/PassengerDetail'
           description: Passenger details
-        special_requests:
-          type: string
-          description: Special requests or notes
-          example: "Wheelchair assistance needed"
         contact_info:
           $ref: '#/components/schemas/ContactInfo'
 
@@ -1281,15 +459,6 @@ components:
           type: string
           description: ID document number
           example: "1234567890123456"
-        date_of_birth:
-          type: string
-          format: date
-          description: Date of birth
-          example: "1990-01-01"
-        nationality:
-          type: string
-          description: Nationality
-          example: "Indonesia"
 
     ContactInfo:
       type: object
@@ -1306,73 +475,7 @@ components:
           type: string
           description: Contact phone number
           example: "+6281234567890"
-        address:
-          type: string
-          description: Contact address
-          example: "Jl. Sudirman No. 123, Jakarta"
 
-    OrderResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Order ID
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        invoice_number:
-          type: string
-          description: Invoice number
-          example: "INV-2024-001"
-        status:
-          type: string
-          enum: [PENDING, CONFIRMED, CANCELLED, COMPLETED]
-          description: Order status
-          example: "PENDING"
-        route_pricing:
-          $ref: '#/components/schemas/RoutePricingResponse'
-        departure_date:
-          type: string
-          format: date
-          description: Departure date
-          example: "2024-12-25"
-        adult_count:
-          type: integer
-          description: Number of adult passengers
-          example: 2
-        child_count:
-          type: integer
-          description: Number of child passengers
-          example: 1
-        infant_count:
-          type: integer
-          description: Number of infant passengers
-          example: 0
-        total_amount:
-          type: number
-          description: Total order amount
-          example: 375000
-        currency:
-          type: string
-          description: Order currency
-          example: "IDR"
-        passenger_details:
-          type: array
-          items:
-            $ref: '#/components/schemas/PassengerDetail'
-        contact_info:
-          $ref: '#/components/schemas/ContactInfo'
-        created_at:
-          type: string
-          format: date-time
-          description: Order creation date
-          example: "2024-01-01T00:00:00Z"
-        updated_at:
-          type: string
-          format: date-time
-          description: Last update date
-          example: "2024-01-01T00:00:00Z"
-
-    # Payment Schemas
     PaymentLandingCreateOrderPaymentRequest:
       type: object
       required:
@@ -1391,170 +494,4 @@ components:
         payment_channel:
           type: string
           description: Payment channel
-          example: "BCA"
-
-    PaymentLandingCreateXenditCardTokenRequest:
-      type: object
-      required:
-        - amount
-        - currency
-        - reference_id
-        - customer
-        - payment_method
-      properties:
-        amount:
-          type: number
-          minimum: 0
-          description: Payment amount
-          example: 375000
-        currency:
-          type: string
-          enum: [IDR]
-          description: Payment currency
-          example: "IDR"
-        reference_id:
-          type: string
-          description: Reference ID for the payment
-          example: "order_123e4567-e89b-12d3-a456-426614174000"
-        customer:
-          $ref: '#/components/schemas/PaymentCustomer'
-        payment_method:
-          $ref: '#/components/schemas/PaymentMethodCardToken'
-        metadata:
-          type: object
-          description: Additional metadata
-          example:
-            order_id: "123e4567-e89b-12d3-a456-426614174000"
-
-    PaymentCustomer:
-      type: object
-      required:
-        - given_names
-        - email
-        - mobile_number
-      properties:
-        given_names:
-          type: string
-          description: Customer given names
-          example: "John Doe"
-        surname:
-          type: string
-          description: Customer surname
-          example: "Smith"
-        email:
-          type: string
-          format: email
-          description: Customer email
-          example: "john.doe@example.com"
-        mobile_number:
-          type: string
-          description: Customer mobile number
-          example: "+6281234567890"
-
-    PaymentMethodCardToken:
-      type: object
-      required:
-        - type
-        - card
-      properties:
-        type:
-          type: string
-          enum: [CARD]
-          description: Payment method type
-          example: "CARD"
-        card:
-          $ref: '#/components/schemas/PaymentCardTokenInfo'
-
-    PaymentCardTokenInfo:
-      type: object
-      required:
-        - currency
-        - channel_properties
-        - card_token
-      properties:
-        currency:
-          type: string
-          enum: [IDR]
-          description: Card currency
-          example: "IDR"
-        channel_properties:
-          $ref: '#/components/schemas/PaymentChannelProperties'
-        card_token:
-          type: string
-          description: Card token from Xendit
-          example: "tok_1234567890abcdef"
-
-    PaymentChannelProperties:
-      type: object
-      required:
-        - success_return_url
-        - failure_return_url
-      properties:
-        success_return_url:
-          type: string
-          format: uri
-          description: Success redirect URL
-          example: "https://sailtix.com/payment/success"
-        failure_return_url:
-          type: string
-          format: uri
-          description: Failure redirect URL
-          example: "https://sailtix.com/payment/failed"
-
-    CreatePaymentMethodFromTokenRequest:
-      type: object
-      required:
-        - card_token
-        - customer
-      properties:
-        card_token:
-          type: string
-          description: Card token from Xendit
-          example: "tok_1234567890abcdef"
-        customer:
-          $ref: '#/components/schemas/PaymentCustomer'
-
-    # Webhook Schemas
-    XenditWebhookRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Webhook ID
-          example: "wh_1234567890abcdef"
-        event:
-          type: string
-          description: Webhook event type
-          example: "payment.succeeded"
-        created:
-          type: string
-          format: date-time
-          description: Webhook creation time
-          example: "2024-01-01T00:00:00Z"
-        data:
-          type: object
-          description: Webhook payload data
-          properties:
-            id:
-              type: string
-              description: Payment ID
-              example: "pay_1234567890abcdef"
-            status:
-              type: string
-              description: Payment status
-              example: "SUCCEEDED"
-            amount:
-              type: number
-              description: Payment amount
-              example: 375000
-            currency:
-              type: string
-              description: Payment currency
-              example: "IDR"
-            reference_id:
-              type: string
-              description: Reference ID
-              example: "order_123e4567-e89b-12d3-a456-426614174000"
-
-# Additional schemas and endpoints would continue here...
-# This is a comprehensive foundation for the v2 API documentation 
+          example: "BCA" 
