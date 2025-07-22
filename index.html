@@ -1,25 +1,241 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>SailTix REST API Documentation</title>
-    <!-- Redoc CDN -->
-    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sailtix API Documentation</title>
     <style>
-      body {
-        margin: 0;
-        padding: 0;
-      }
-      #redoc-container {
-        height: 100vh;
-      }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+        }
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+        .version-badge {
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .doc-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: left;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .doc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        .doc-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        .doc-card p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+        .doc-card .features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .doc-card .features li {
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            padding-left: 20px;
+            position: relative;
+        }
+        .doc-card .features li:before {
+            content: "✓";
+            color: #28a745;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 15px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+        .breaking-changes {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        .breaking-changes h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        .breaking-changes ul {
+            color: #856404;
+            margin: 0;
+            padding-left: 20px;
+        }
+        .breaking-changes li {
+            margin-bottom: 8px;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
     </style>
-  </head>
-  <body>
-    <div id="redoc-container"></div>
-    <script>
-      Redoc.init('openapi.yaml', {
-        scrollYOffset: 50
-      }, document.getElementById('redoc-container'));
-    </script>
-  </body>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">S</div>
+        <h1>Sailtix API Documentation</h1>
+        <p class="subtitle">Comprehensive maritime ticketing and booking platform API</p>
+        
+        <div class="version-badge">Version 2.0.0 - Latest Release</div>
+        
+        <div class="docs-grid">
+            <div class="doc-card">
+                <h3>🚀 API v2.0.0 (Current)</h3>
+                <p>Latest version with enhanced features, improved security, and better performance.</p>
+                <ul class="features">
+                    <li>Enhanced authentication & authorization</li>
+                    <li>Multi-payment gateway support</li>
+                    <li>Improved error handling</li>
+                    <li>Real-time order tracking</li>
+                    <li>Advanced search capabilities</li>
+                    <li>Comprehensive webhook system</li>
+                </ul>
+                <a href="openapi-v2.yaml" class="btn">View API v2.0.0</a>
+            </div>
+            
+            <div class="doc-card">
+                <h3>📋 Changelog & Migration</h3>
+                <p>Detailed changelog and migration guide for upgrading from v1 to v2.</p>
+                <ul class="features">
+                    <li>Breaking changes documentation</li>
+                    <li>Migration guide with examples</li>
+                    <li>Performance improvements</li>
+                    <li>Security enhancements</li>
+                    <li>New feature overview</li>
+                    <li>Technical improvements</li>
+                </ul>
+                <a href="CHANGELOG-v2.md" class="btn">View Changelog</a>
+            </div>
+            
+            <div class="doc-card">
+                <h3>📖 Legacy API v1.x</h3>
+                <p>Previous version documentation for reference and migration purposes.</p>
+                <ul class="features">
+                    <li>Original API specification</li>
+                    <li>Legacy endpoint documentation</li>
+                    <li>Deprecated features</li>
+                    <li>Migration reference</li>
+                    <li>Historical documentation</li>
+                    <li>Backward compatibility info</li>
+                </ul>
+                <a href="openapi.yaml" class="btn btn-secondary">View Legacy API</a>
+            </div>
+        </div>
+        
+        <div class="breaking-changes">
+            <h3>⚠️ Important: Breaking Changes in v2.0.0</h3>
+            <ul>
+                <li><strong>Response Format:</strong> All responses now follow a standardized format with data wrapping</li>
+                <li><strong>Authentication:</strong> JWT token structure has been updated for enhanced security</li>
+                <li><strong>Payment System:</strong> Complete overhaul with new payment gateway integrations</li>
+                <li><strong>Error Handling:</strong> Enhanced error responses with detailed error codes</li>
+                <li><strong>File Uploads:</strong> Improved validation and security measures</li>
+                <li><strong>Database Schema:</strong> Updated schema with new tables and optimized indexes</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>
+                <strong>Need Help?</strong> Contact our development team at 
+                <a href="mailto:api-support@sailtix.com">api-support@sailtix.com</a> | 
+                <a href="https://sailtix.com">Visit Website</a> | 
+                <a href="https://status.sailtix.com">API Status</a>
+            </p>
+            <p>© 2024 Sailtix. All rights reserved.</p>
+        </div>
+    </div>
+</body>
 </html>
