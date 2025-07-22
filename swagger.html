@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sailtix API Documentation - Swagger UI</title>
+    <!-- Swagger UI CDN -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css" />
+    <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-standalone-preset.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .version-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 15px;
+            border: 1px solid #e1e5e9;
+        }
+        .version-selector h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+        }
+        .version-btn {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            color: #333;
+            text-decoration: none;
+            font-size: 13px;
+            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .version-btn:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+        .version-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .version-btn.v2 {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        .version-btn.v2:hover {
+            background: #218838;
+        }
+        .version-btn.v1 {
+            background: #6c757d;
+            color: white;
+            border-color: #6c757d;
+        }
+        .version-btn.v1:hover {
+            background: #5a6268;
+        }
+        .changelog-link {
+            background: #ffc107;
+            color: #212529;
+            border-color: #ffc107;
+        }
+        .changelog-link:hover {
+            background: #e0a800;
+        }
+        .ui-selector {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 15px;
+            border: 1px solid #e1e5e9;
+        }
+        .ui-selector h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+        }
+        .ui-btn {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            color: #333;
+            text-decoration: none;
+            font-size: 13px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        .ui-btn:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+        .ui-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        #swagger-ui {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="ui-selector">
+        <h3>Documentation Style</h3>
+        <a href="index.html" class="ui-btn">📖 Redoc (Recommended)</a>
+        <a href="swagger.html" class="ui-btn active">🔧 Swagger UI</a>
+    </div>
+    
+    <div class="version-selector">
+        <h3>API Version</h3>
+        <button class="version-btn v2 active" onclick="loadAPI('v2')">🚀 v2.0.0 (Current)</button>
+        <button class="version-btn v1" onclick="loadAPI('v1')">📖 v1.x (Legacy)</button>
+        <a href="CHANGELOG-v2.md" class="version-btn changelog-link" target="_blank">📋 Changelog</a>
+    </div>
+    
+    <div id="swagger-ui"></div>
+    
+    <script>
+        let currentVersion = 'v2';
+        
+        function loadAPI(version) {
+            currentVersion = version;
+            
+            // Update active button
+            document.querySelectorAll('.version-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Load appropriate API spec
+            const specUrl = version === 'v2' ? 'openapi-v2.yaml' : 'openapi.yaml';
+            
+            // Initialize Swagger UI
+            const ui = SwaggerUIBundle({
+                url: specUrl,
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout",
+                validatorUrl: null,
+                docExpansion: "list",
+                filter: true,
+                showRequestHeaders: true,
+                showCommonExtensions: true,
+                tryItOutEnabled: true,
+                requestInterceptor: function(request) {
+                    // Add any request interceptors here
+                    return request;
+                },
+                responseInterceptor: function(response) {
+                    // Add any response interceptors here
+                    return response;
+                }
+            });
+        }
+        
+        // Load v2 by default
+        loadAPI('v2');
+    </script>
+</body>
+</html> 
