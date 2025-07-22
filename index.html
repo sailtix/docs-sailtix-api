@@ -3,131 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sailtix API Documentation</title>
-    <!-- Redoc CDN -->
-    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+    <title>Sailtix API Documentation - Locked</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-sizing: border-box;
         }
-        #redoc-container {
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error {
+            color: #e74c3c;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .success {
+            color: #27ae60;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .docs-container {
+            width: 100%;
             height: 100vh;
         }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            font-size: 1.2rem;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
         .version-selector {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            padding: 15px;
-            border: 1px solid #e1e5e9;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
-        .version-selector h3 {
-            margin: 0 0 10px 0;
-            font-size: 14px;
-            color: #333;
-            font-weight: 600;
-        }
+
         .version-btn {
-            display: block;
-            width: 100%;
-            padding: 8px 12px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: white;
-            color: #333;
-            text-decoration: none;
-            font-size: 13px;
-            text-align: center;
-            transition: all 0.2s ease;
+            background: #34495e;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
-        .version-btn:hover {
-            background: #f8f9fa;
-            border-color: #667eea;
-        }
+
         .version-btn.active {
             background: #667eea;
-            color: white;
-            border-color: #667eea;
         }
-        .version-btn.v2 {
-            background: #28a745;
-            color: white;
-            border-color: #28a745;
-        }
-        .version-btn.v2:hover {
-            background: #218838;
-        }
-        .version-btn.v1 {
-            background: #6c757d;
-            color: white;
-            border-color: #6c757d;
-        }
-        .version-btn.v1:hover {
-            background: #5a6268;
-        }
-        .changelog-link {
-            background: #ffc107;
-            color: #212529;
-            border-color: #ffc107;
-        }
-        .changelog-link:hover {
-            background: #e0a800;
+
+        .version-btn:hover {
+            background: #5a6fd8;
         }
     </style>
 </head>
 <body>
-    <div class="version-selector">
-        <h3>API Version</h3>
-        <a href="#" class="version-btn v2 active" onclick="loadAPI('v2')">🚀 v2.0.0 (Current)</a>
-        <a href="#" class="version-btn v1" onclick="loadAPI('v1')">📖 v1.x (Legacy)</a>
-        <a href="CHANGELOG-v2.md" class="version-btn changelog-link" target="_blank">📋 Changelog</a>
-        <a href="swagger.html" class="version-btn" style="background: #17a2b8; color: white; border-color: #17a2b8;">🔧 Swagger UI</a>
-    </div>
-    
-    <div id="redoc-container"></div>
-    
-    <script>
-        let currentVersion = 'v2';
+    <!-- Authentication Form -->
+    <div id="authForm" class="auth-container">
+        <div class="logo">S</div>
+        <h1>Sailtix API Docs</h1>
+        <p class="subtitle">Access restricted to authorized agents only</p>
         
-        function loadAPI(version) {
-            currentVersion = version;
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="agentId">Agent ID</label>
+                <input type="text" id="agentId" name="agentId" required placeholder="Enter your agent ID">
+            </div>
             
-            // Update active button
-            document.querySelectorAll('.version-btn').forEach(btn => {
-                btn.classList.remove('active');
+            <div class="form-group">
+                <label for="accessKey">Access Key</label>
+                <input type="password" id="accessKey" name="accessKey" required placeholder="Enter your access key">
+            </div>
+            
+            <button type="submit" class="btn" id="loginBtn">
+                <span id="loginText">Access Documentation</span>
+                <div id="loginSpinner" class="spinner hidden"></div>
+            </button>
+        </form>
+        
+        <div id="errorMsg" class="error hidden"></div>
+        <div id="successMsg" class="success hidden"></div>
+    </div>
+
+    <!-- Documentation Container -->
+    <div id="docsContainer" class="docs-container hidden">
+        <div class="header">
+            <h2>Sailtix API Documentation</h2>
+            <div class="version-selector">
+                <button class="version-btn active" onclick="switchVersion('v1')">API v1</button>
+                <button class="version-btn" onclick="switchVersion('v2')">API v2</button>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+        <div id="redocContainer"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/redoc@2.1.3/bundles/redoc.standalone.js"></script>
+    <script>
+        // Authorized agents configuration
+        const AUTHORIZED_AGENTS = {
+            'sailtix-agent-001': 'access-key-2024-sailtix-secure',
+            'sailtix-agent-002': 'access-key-2024-sailtix-secure',
+            'sailtix-dev-001': 'dev-access-key-2024',
+            'sailtix-admin': 'admin-access-key-2024-secure'
+        };
+
+        // Session management
+        const SESSION_KEY = 'sailtix_docs_session';
+        const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+
+        // Check if user is already authenticated
+        function checkAuth() {
+            const session = localStorage.getItem(SESSION_KEY);
+            if (session) {
+                const sessionData = JSON.parse(session);
+                const now = Date.now();
+                
+                if (now < sessionData.expires) {
+                    // Session is valid
+                    showDocumentation();
+                    return true;
+                } else {
+                    // Session expired
+                    localStorage.removeItem(SESSION_KEY);
+                }
+            }
+            return false;
+        }
+
+        // Authenticate user
+        function authenticate(agentId, accessKey) {
+            return new Promise((resolve, reject) => {
+                // Simulate API call delay
+                setTimeout(() => {
+                    if (AUTHORIZED_AGENTS[agentId] === accessKey) {
+                        // Create session
+                        const sessionData = {
+                            agentId: agentId,
+                            expires: Date.now() + SESSION_DURATION
+                        };
+                        localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+                        resolve(true);
+                    } else {
+                        reject(new Error('Invalid credentials'));
+                    }
+                }, 1000);
             });
-            event.target.classList.add('active');
+        }
+
+        // Show documentation
+        function showDocumentation() {
+            document.getElementById('authForm').classList.add('hidden');
+            document.getElementById('docsContainer').classList.remove('hidden');
+            loadDocumentation('v1'); // Default to v1
+        }
+
+        // Load documentation
+        function loadDocumentation(version) {
+            const container = document.getElementById('redocContainer');
+            container.innerHTML = '';
             
-            // Load appropriate API spec
-            const specUrl = version === 'v2' ? 'openapi-v2.yaml' : 'openapi.yaml';
+            const specUrl = version === 'v2' ? './openapi-v2.yaml' : './openapi.yaml';
             
             Redoc.init(specUrl, {
-                scrollYOffset: 50,
-                hideDownloadButton: false,
-                hideHostname: false,
-                hideInfoSection: false,
-                hideLoading: false,
-                hideSchemaPattern: false,
-                hideSingleRequestSampleTab: false,
-                expandResponses: "200,201",
-                expandSingleSchemaField: false,
-                jsonSampleExpandLevel: 2,
-                menuToggle: true,
-                nativeScrollbars: false,
-                noAutoAuth: false,
-                pathInMiddlePanel: false,
-                requiredPropsFirst: false,
-                scrollYOffset: 0,
-                showExtensions: false,
-                showObjectSchemaExamples: true,
-                sortPropsAlphabetically: false,
-                suppressWarnings: false,
+                scrollYOffset: 60,
+                hideDownloadButton: true,
                 theme: {
                     colors: {
                         primary: {
@@ -140,27 +321,97 @@
                         code: {
                             fontSize: '13px',
                             fontFamily: 'Courier, monospace',
-                            fontWeight: '400',
-                            color: '#e83e8c',
-                            backgroundColor: 'rgba(0,0,0,0.05)',
-                            borderRadius: '3px',
-                            padding: '3px 5px'
-                        },
-                        headings: {
-                            fontFamily: 'Inter, sans-serif',
-                            fontWeight: '600'
+                            backgroundColor: '#f5f5f5'
                         }
-                    },
-                    sidebar: {
-                        backgroundColor: '#fafafa',
-                        textColor: '#333333'
                     }
                 }
-            }, document.getElementById('redoc-container'));
+            }, container);
         }
-        
-        // Load v2 by default
-        loadAPI('v2');
+
+        // Switch version
+        function switchVersion(version) {
+            // Update active button
+            document.querySelectorAll('.version-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Load documentation
+            loadDocumentation(version);
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem(SESSION_KEY);
+            location.reload();
+        }
+
+        // Handle form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const agentId = document.getElementById('agentId').value;
+            const accessKey = document.getElementById('accessKey').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            const errorMsg = document.getElementById('errorMsg');
+            const successMsg = document.getElementById('successMsg');
+            
+            // Show loading state
+            loginBtn.disabled = true;
+            loginText.classList.add('hidden');
+            loginSpinner.classList.remove('hidden');
+            errorMsg.classList.add('hidden');
+            successMsg.classList.add('hidden');
+            
+            try {
+                await authenticate(agentId, accessKey);
+                successMsg.textContent = 'Authentication successful! Loading documentation...';
+                successMsg.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    showDocumentation();
+                }, 1000);
+                
+            } catch (error) {
+                errorMsg.textContent = 'Invalid agent ID or access key. Please try again.';
+                errorMsg.classList.remove('hidden');
+                
+                // Reset form
+                loginBtn.disabled = false;
+                loginText.classList.remove('hidden');
+                loginSpinner.classList.add('hidden');
+            }
+        });
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkAuth()) {
+                // Show auth form
+                document.getElementById('authForm').classList.remove('hidden');
+            }
+        });
+
+        // Auto-logout when tab becomes inactive for too long
+        let inactivityTimer;
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                if (localStorage.getItem(SESSION_KEY)) {
+                    logout();
+                }
+            }, 30 * 60 * 1000); // 30 minutes
+        }
+
+        // Reset timer on user activity
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keypress', resetInactivityTimer);
+        document.addEventListener('click', resetInactivityTimer);
+        document.addEventListener('scroll', resetInactivityTimer);
+
+        // Initialize inactivity timer
+        resetInactivityTimer();
     </script>
 </body>
 </html>
